@@ -16,6 +16,19 @@ TODO: add info
 - `npm run preview` - launch built project
 - `npm run lint` - lint code
 
+## VSCode Setup
+
+Add this to `.vscode/settings.json`:
+
+```JSON
+{
+  "editor.tabSize": 2,
+  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "svelte.enable-ts-plugin": true
+}
+```
+
 ## Svelte + TS + Vite template information
 
 This template should help get you started developing with Svelte and TypeScript in Vite.
