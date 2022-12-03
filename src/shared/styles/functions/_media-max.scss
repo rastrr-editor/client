@@ -8,5 +8,5 @@
 //    >> media-max(768px)
 //    767.98px
 @function media-max($size) {
-  @return $size - .02
+  @return $size - 0.02;
 }

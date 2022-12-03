@@ -1,6 +1,5 @@
 <main>
   <h1>Hello this is Rastrr!</h1>
-  <!-- TODO: include home page component -->
 </main>
 
 <style lang="scss">
