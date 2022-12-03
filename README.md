@@ -14,6 +14,7 @@ TODO: add info
 - `npm run format:check` - check formatting errors
 - `npm run build` - build project
 - `npm run preview` - launch built project
+- `npm run lint` - lint code
 
 ## Svelte + TS + Vite template information
 
