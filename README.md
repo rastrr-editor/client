@@ -2,6 +2,19 @@
 
 TODO: add info
 
+## Quick Start
+
+1. `npm i`
+2. `npm run dev`
+
+## NPM Scripts
+
+- `npm run format` - format code using prettier
+- `npm run check` - check code for svelte errors
+- `npm run format:check` - check formatting errors
+- `npm run build` - build project
+- `npm run preview` - launch built project
+
 ## Svelte + TS + Vite template information
 
 This template should help get you started developing with Svelte and TypeScript in Vite.
