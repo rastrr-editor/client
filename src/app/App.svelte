@@ -1,3 +1,7 @@
+<script lang="ts">
+  const test = 1;
+</script>
+
 <main>
   <h1>Hello this is Rastrr!</h1>
 </main>
