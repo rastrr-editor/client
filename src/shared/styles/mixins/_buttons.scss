@@ -1,0 +1,11 @@
+@mixin reset-button($resetFont: true) {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  @if ($resetFont) {
+    line-height: 1;
+    font-size: 0;
+  }
+}

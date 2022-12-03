@@ -1,0 +1,24 @@
+@mixin hide-scrollbar {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  &::-webkit-scrollbar { 
+    display: none;
+  }
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+@mixin custom-scroll($width: 4px) {
+  overflow-y: auto;
+  /* Firefox */
+  scrollbar-color: $grey $white;
+  scrollbar-width: thin;
+  /* Chome */
+  &::-webkit-scrollbar {
+    width: $width;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: $width / 2;
+    background: $grey;
+  }
+}

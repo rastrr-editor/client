@@ -1,0 +1,3 @@
+@function spacing($index) {
+  @return 0.25rem * $index; // step = 4px 
+}
