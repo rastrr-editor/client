@@ -1,9 +1,9 @@
 <script lang="ts">
-  const test = 1;
+  import { MainPage } from '~/pages/main';
 </script>
 
 <main>
-  <h1>Hello this is Rastrr!</h1>
+  <MainPage name="Rastrr" />
 </main>
 
 <style lang="scss">
@@ -14,9 +14,5 @@
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-
-  h1 {
-    color: $body-color;
   }
 </style>
