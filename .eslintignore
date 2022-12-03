@@ -1,3 +1,5 @@
 # Ignore artifacts:
 dist
 vite.config.ts
+svelte.config.js
+.eslintrc*

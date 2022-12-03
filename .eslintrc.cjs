@@ -3,7 +3,15 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  plugins: ['svelte3'],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    tsconfigRootDir: __dirname,
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    project: 'tsconfig.json',
+    extraFileExtensions: ['.svelte'],
+  },
+  plugins: ['svelte3', '@typescript-eslint'],
   extends: ['standard-with-typescript', 'prettier'],
   overrides: [
     {
@@ -11,10 +19,9 @@ module.exports = {
       processor: 'svelte3/svelte3',
     },
   ],
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: 'tsconfig.json',
+  settings: {
+    'svelte3/typescript': () => require('typescript'),
+    'svelte3/ignore-styles': () => true,
   },
   rules: {
     '@typescript-eslint/triple-slash-reference': 'off',
