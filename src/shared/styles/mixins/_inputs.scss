@@ -11,3 +11,26 @@
     -moz-appearance: textfield;
   }
 }
+
+@mixin style-input-field {
+  width: 100%;
+  padding: spacing($index: 3);
+  border: none;
+  background-color: transparent;
+  font-size: 1rem;
+  color: $body-color;
+  transition: border-color $animation-time;
+  cursor: url("~/shared/ui/icons/cursor-text.svg"), auto;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:disabled {
+    cursor: url("~/shared/ui/icons/cursor-default.svg"), auto;
+  }
+
+  &::placeholder {
+    color: $placeholder-color;
+  }
+}
