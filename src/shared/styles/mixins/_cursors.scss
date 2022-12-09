@@ -1,0 +1,7 @@
+@mixin action-cursor {
+  cursor: url("~/shared/ui/icons/cursor-action.svg") 8 0, auto;
+
+  &:active {
+    cursor: url("~/shared/ui/icons/cursor-active.svg") 9 1, auto;
+  }
+}
