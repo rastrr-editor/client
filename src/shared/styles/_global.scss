@@ -1,5 +1,10 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
-  // TODO: this is temporary
-  padding: 0;
-  margin: 0;
+  font-family: "PT Root UI", sans-serif;
+  cursor: url("~/shared/ui/icons/cursor-default.svg"), auto;
 }
