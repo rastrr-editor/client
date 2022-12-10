@@ -3,17 +3,14 @@
 
   interface $$Props extends svelte.JSX.HTMLAttributes<HTMLButtonElement> {
     type?: ButtonType;
-    disabled?: boolean | undefined;
   }
 
   export let type: ButtonType = 'button';
-  export let disabled: boolean | undefined = undefined;
 </script>
 
 <button
   {...$$restProps}
   {type}
-  {disabled}
   on:keyup
   on:keydown
   on:keypress
@@ -29,15 +26,14 @@
 
 <style lang="scss">
   button {
-    @include reset-button($resetFont: false);
+    @include reset-button(false);
     @include action-cursor;
+    @include typography(button);
+
     min-width: 190px;
     padding: spacing(3) spacing(5);
     border-radius: $border-radius;
     background-color: $body-color;
-    font-size: 1rem;
-    font-weight: 500;
-    color: $bg-extra;
     transition: background-color $animation-time;
 
     &:hover,
@@ -54,13 +50,9 @@
     }
 
     &:disabled {
+      background-color: $button-disabled-bg-color;
       color: $button-disabled-color;
-      cursor: url('~/shared/ui/icons/cursor-default.svg'), auto;
-
-      &,
-      &:hover {
-        background-color: $button-disabled-bg-color;
-      }
+      cursor: url('/icons/cursor-default.svg'), auto;
     }
   }
 </style>
