@@ -1,0 +1,1 @@
+export { default as MoveIcon } from './move-icon.svelte';

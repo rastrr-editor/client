@@ -1,0 +1,1 @@
+export { default as ExpandVerticalIcon } from './expand-vertical-icon.svelte';

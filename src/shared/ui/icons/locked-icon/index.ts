@@ -1,0 +1,1 @@
+export { default as LockedIcon } from './locked-icon.svelte';
