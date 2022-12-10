@@ -60,12 +60,13 @@
   .container {
     display: flex;
     flex-direction: column;
+    cursor: inherit;
   }
 
   .label {
-    margin-bottom: spacing($index: 2);
-    font-size: 1rem;
-    color: $body-color;
+    @include typography;
+
+    margin-bottom: spacing(2);
   }
 
   .wrapper {
@@ -97,7 +98,7 @@
   }
 
   .densed {
-    padding: spacing($index: 1);
+    padding: spacing(1);
   }
 
   .noBorder {

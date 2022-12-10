@@ -44,6 +44,11 @@
   input {
     @include style-input-field;
     @include disable-input-number-arrows;
+
+    &.densed {
+      padding: spacing(1);
+      font-size: 0.75rem;
+    }
   }
 
   .units {
@@ -53,12 +58,9 @@
     color: $placeholder-color;
   }
 
-  .densed {
-    padding: spacing($index: 1);
-  }
-
   .units.densed {
-    padding: spacing($index: 1);
+    padding: spacing(1);
     padding-left: 0;
+    font-size: 0.75rem;
   }
 </style>
