@@ -20,14 +20,14 @@
   font-size: 1rem;
   color: $body-color;
   transition: border-color $animation-time;
-  cursor: url("~/shared/ui/icons/cursor-text.svg"), auto;
+  cursor: url("/icons/cursor-text.svg"), auto;
 
   &:focus {
     outline: none;
   }
 
   &:disabled {
-    cursor: url("~/shared/ui/icons/cursor-default.svg"), auto;
+    cursor: url("/icons/cursor-default.svg"), auto;
   }
 
   &::placeholder {
