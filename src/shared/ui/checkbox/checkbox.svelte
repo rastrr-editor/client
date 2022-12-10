@@ -15,7 +15,7 @@
     _: HTMLElement,
     valuesGroup: (string | number)[]
   ): void {
-    checked = valuesGroup.includes(value);
+    checked = checked || valuesGroup.includes(value);
   }
 
   function handleChange(event: Event): void {
@@ -55,18 +55,18 @@
 
 <style lang="scss">
   label {
+    @include typography;
+    @include action-cursor;
+
     display: flex;
     align-items: center;
-    font-size: 1rem;
-    color: $body-color;
-    @include action-cursor;
   }
 
   input {
     width: 24px;
     height: 24px;
     margin: 0;
-    margin-right: spacing($index: 2);
+    margin-right: spacing(2);
     border: 1px solid $border-color;
     border-radius: $border-radius;
     appearance: none;
@@ -104,7 +104,7 @@
 
     &,
     &:active {
-      cursor: url('~/shared/ui/icons/cursor-default.svg'), auto;
+      cursor: url('/icons/cursor-default.svg'), auto;
     }
 
     input:hover {
