@@ -6,12 +6,17 @@
     value?: number;
     densed?: boolean | undefined;
     noBorder?: boolean | undefined;
+    fitWidth?: boolean | undefined;
   }
 
   export let units: string | undefined = undefined;
   export let value: number = 0;
   export let densed: boolean | undefined = undefined;
   export let noBorder: boolean | undefined = undefined;
+  export let fitWidth: boolean | undefined = undefined;
+
+  $: width =
+    fitWidth && $$restProps.max ? `${String($$restProps.max).length}ch` : '';
 </script>
 
 <TextInput let:props {...$$restProps} {noBorder}>
@@ -19,6 +24,7 @@
     {...props}
     type="number"
     class:densed
+    style:width
     bind:value
     on:input
     on:change

@@ -72,6 +72,7 @@
   .wrapper {
     display: flex;
     align-items: center;
+    width: fit-content;
     border: 1px solid $border-color;
     border-radius: $border-radius;
     background-color: $bg-extra;

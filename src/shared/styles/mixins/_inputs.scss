@@ -13,6 +13,7 @@
 }
 
 @mixin style-input-field {
+  box-sizing: content-box;
   width: 100%;
   padding: spacing($index: 3);
   border: none;

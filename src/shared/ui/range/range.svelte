@@ -12,8 +12,10 @@
   export let value: number = 0;
 </script>
 
-<label>
-  <span class="label">{label}</span>
+<label class="container">
+  {#if label.length > 0}
+    <span class="label">{label}</span>
+  {/if}
 
   <div class="wrapper">
     <input
@@ -28,17 +30,30 @@
     />
 
     <div class="numeric">
-      <NumberInput {...$$restProps} {units} bind:value densed noBorder />
+      <NumberInput
+        {...$$restProps}
+        {units}
+        max={$$restProps.max ?? 100}
+        bind:value
+        densed
+        noBorder
+        fitWidth
+      />
     </div>
   </div>
 </label>
 
 <style lang="scss">
+  .container {
+    display: block;
+    cursor: inherit;
+  }
+
   .label {
+    @include typography(body3);
+
     position: relative;
     top: 8px;
-    font-size: 0.75rem;
-    color: $body-color;
   }
 
   .wrapper {
@@ -48,12 +63,13 @@
   }
 
   input {
+    @include action-cursor;
+
     -webkit-appearance: none;
     appearance: none;
     width: 100%;
-    padding: spacing($index: 2) 0;
+    padding: spacing(2) 0;
     background-color: transparent;
-    @include action-cursor;
 
     &:hover,
     &:focus {
@@ -111,6 +127,6 @@
   }
 
   .numeric {
-    margin-left: spacing($index: 1);
+    margin-left: spacing(1);
   }
 </style>
