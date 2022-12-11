@@ -6,5 +6,7 @@
 
 body {
   font-family: "PT Root UI", sans-serif;
+  font-weight: 400;
+  color: $body-color;
   cursor: url("/icons/cursor-default.svg"), auto;
 }

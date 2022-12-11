@@ -4,9 +4,6 @@
 }
 
 @mixin typography($variant: body1) {
-  font-weight: 400;
-  color: $body-color;
-
   @if ($variant == h1) {
     font-size: 2.25rem;
     font-weight: 500;
