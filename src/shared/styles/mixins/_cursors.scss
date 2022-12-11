@@ -1,0 +1,7 @@
+@mixin action-cursor {
+  cursor: url("/icons/cursor-action.svg") 8 0, auto;
+
+  &:active {
+    cursor: url("/icons/cursor-action-active.svg") 9 1, auto;
+  }
+}

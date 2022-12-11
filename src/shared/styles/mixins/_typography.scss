@@ -3,6 +3,42 @@
   letter-spacing: 1px;
 }
 
-@mixin typography($variant) {
-  // TODO: implement typography mixin
+@mixin typography($variant: body1) {
+  @if ($variant == h1) {
+    font-size: 2.25rem;
+    font-weight: 500;
+  }
+
+  @if ($variant == h2) {
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  @if ($variant == body1) {
+    font-size: 1rem;
+  }
+
+  @if ($variant == h3) {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  @if ($variant == body2) {
+    font-size: 0.875rem;
+  }
+
+  @if ($variant == placeholder) {
+    font-size: 0.875rem;
+    color: $placeholder-color;
+  }
+
+  @if ($variant == body3) {
+    font-size: 0.75rem;
+  }
+
+  @if ($variant == button) {
+    font-size: 1rem;
+    font-weight: 500;
+    color: $bg-extra;
+  }
 }

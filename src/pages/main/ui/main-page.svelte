@@ -6,6 +6,6 @@
 
 <style lang="scss">
   h1 {
-    color: $body-color;
+    @include typography(h1);
   }
 </style>
