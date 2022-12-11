@@ -1,1 +1,0 @@
-export { default as OpenIcon } from './open-icon.svelte';

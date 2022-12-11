@@ -1,1 +1,0 @@
-export { default as PenEraseIcon } from './pen-erase-icon.svelte';

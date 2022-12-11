@@ -1,1 +1,0 @@
-export { default as LayersIcon } from './layers-icon.svelte';

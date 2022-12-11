@@ -1,1 +1,0 @@
-export { default as PenMoveIcon } from './pen-move-icon.svelte';

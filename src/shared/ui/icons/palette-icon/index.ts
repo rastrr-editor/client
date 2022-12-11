@@ -1,1 +1,0 @@
-export { default as PaletteIcon } from './palette-icon.svelte';

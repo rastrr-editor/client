@@ -1,1 +1,0 @@
-export { default as BrushIcon } from './brush-icon.svelte';

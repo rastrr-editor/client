@@ -1,1 +1,0 @@
-export { default as HistoryIcon } from './history-icon.svelte';

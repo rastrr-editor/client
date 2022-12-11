@@ -1,1 +1,0 @@
-export { default as InvisibleIcon } from './invisible-icon.svelte';

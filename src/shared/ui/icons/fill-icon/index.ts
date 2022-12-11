@@ -1,1 +1,0 @@
-export { default as FillIcon } from './fill-icon.svelte';
