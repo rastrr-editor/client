@@ -37,6 +37,10 @@
     "vite": "^3.2.3"
   },
   "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown"
+    "*.{ts,svelte}": [
+      "prettier --write",
+      "eslint"
+    ],
+    "*.{css,scss,json,svg,js,cjs,html,md}": "prettier --write --ignore-unknown"
   }
 }
