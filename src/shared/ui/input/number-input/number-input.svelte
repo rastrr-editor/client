@@ -2,18 +2,18 @@
   import { TextInput } from '~/shared/ui/input/';
 
   interface $$Props extends svelte.JSX.HTMLAttributes<HTMLInputElement> {
-    units?: string | undefined;
+    units?: string;
     value?: number;
-    densed?: boolean | undefined;
-    noBorder?: boolean | undefined;
-    fitWidth?: boolean | undefined;
+    densed?: boolean;
+    noBorder?: boolean;
+    fitWidth?: boolean;
   }
 
-  export let units: string | undefined = undefined;
+  export let units: string = '';
   export let value: number = 0;
-  export let densed: boolean | undefined = undefined;
-  export let noBorder: boolean | undefined = undefined;
-  export let fitWidth: boolean | undefined = undefined;
+  export let densed: boolean = false;
+  export let noBorder: boolean = false;
+  export let fitWidth: boolean = false;
 
   $: width =
     fitWidth && $$restProps.max ? `${String($$restProps.max).length}ch` : '';

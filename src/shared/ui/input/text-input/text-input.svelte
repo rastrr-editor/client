@@ -5,17 +5,17 @@
     label?: string;
     type?: TextFieldType;
     value?: string | number;
-    disabled?: boolean | undefined;
-    densed?: boolean | undefined;
-    noBorder?: boolean | undefined;
+    disabled?: boolean;
+    densed?: boolean;
+    noBorder?: boolean;
   }
 
   export let label: string = '';
   export let type: TextFieldType = 'text';
   export let value: string | number = '';
-  export let disabled: boolean | undefined = undefined;
-  export let densed: boolean | undefined = undefined;
-  export let noBorder: boolean | undefined = undefined;
+  export let disabled: boolean = false;
+  export let densed: boolean = false;
+  export let noBorder: boolean = false;
 
   const defineInputType = (
     node: HTMLInputElement,

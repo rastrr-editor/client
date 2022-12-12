@@ -17,6 +17,12 @@ module.exports = {
     {
       files: ['*.svelte'],
       processor: 'svelte3/svelte3',
+      globals: {
+        svelte: true,
+      },
+      rules: {
+        'import/first': 'off', // import order cannot be determined correctly in .svelte components
+      },
     },
   ],
   settings: {

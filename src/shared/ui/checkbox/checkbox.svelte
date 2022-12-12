@@ -3,13 +3,13 @@
     value?: string | number;
     group?: (string | number)[];
     checked?: boolean;
-    disabled?: boolean | undefined;
+    disabled?: boolean;
   }
 
   export let value: string | number = '';
   export let group: (string | number)[] = [];
   export let checked: boolean = false;
-  export let disabled: boolean | undefined = undefined;
+  export let disabled: boolean = false;
 
   function initiateCheckedState(
     _: HTMLElement,
