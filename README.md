@@ -4,8 +4,13 @@ TODO: add info
 
 ## Quick Start
 
-1. `npm i`
-2. `npm run dev`
+1. Create `.npmrc` file in the root directory with given contents:
+   ```
+   @rastrr-editor:registry=https://npm.pkg.github.com
+   //npm.pkg.github.com/:_authToken=<PERSONAL ACCESS TOKEN WITH read:packages SCOPE>
+   ```
+2. `npm i`
+3. `npm run dev`
 
 ## NPM Scripts
 

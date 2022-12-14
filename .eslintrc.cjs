@@ -13,6 +13,9 @@ module.exports = {
   },
   plugins: ['svelte3', '@typescript-eslint'],
   extends: ['standard-with-typescript', 'prettier'],
+  globals: {
+    Rastrr: true,
+  },
   overrides: [
     {
       files: ['*.svelte'],

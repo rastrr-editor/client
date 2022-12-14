@@ -1,5 +1,5 @@
 {
-  "name": "@rastrr/client",
+  "name": "@rastrr-editor/client",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -42,5 +42,8 @@
       "eslint"
     ],
     "*.{css,scss,json,svg,js,cjs,html,md}": "prettier --write --ignore-unknown"
+  },
+  "dependencies": {
+    "@rastrr-editor/core": "0.2.0"
   }
 }
