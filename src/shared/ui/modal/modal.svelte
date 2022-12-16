@@ -3,7 +3,11 @@
   import { CloseIcon } from '~/shared/ui/icons';
   import focusTrap from './modal.utils';
 
+  import type { ModalSize } from './modal.types';
+
   export let open: boolean = false;
+  export let densed: boolean = false;
+  export let size: ModalSize = 'medium';
 
   const hide = () => {
     open = false;
@@ -25,7 +29,8 @@
     on:click={hide}
   >
     <div
-      class="modal"
+      class={`modal ${[size]}`}
+      class:densed
       on:click|stopPropagation
       on:keydown|stopPropagation={keyboardEventHandler}
     >
@@ -50,15 +55,14 @@
     justify-content: center;
     width: 100vw;
     height: 100vh;
-    background-color: #17181ab8;
+    background-color: $modal-backdrop-color;
     backdrop-filter: blur(2px);
   }
 
   .modal {
     position: relative;
     width: 100%;
-    max-width: 510px;
-    padding: spacing(12);
+    padding: spacing(10);
     border: 1px solid $modal-border-color;
     border-radius: $border-radius;
     background-color: $bg-main;
@@ -66,7 +70,27 @@
 
   .close-button {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 16px;
+    right: 16px;
+  }
+
+  .densed {
+    padding: spacing(3);
+  }
+
+  .small {
+    max-width: 300px;
+  }
+
+  .medium {
+    max-width: 500px;
+  }
+
+  .large {
+    max-width: 800px;
+  }
+
+  .extra {
+    max-width: 1140px;
   }
 </style>
