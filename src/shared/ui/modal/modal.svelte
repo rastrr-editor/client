@@ -1,9 +1,9 @@
 <script lang="ts">
   import { IconButton } from '~/shared/ui';
   import { CloseIcon } from '~/shared/ui/icons';
-  import focusTrap from './modal.utils';
+  import focusTrap from './utils';
 
-  import type { ModalSize } from './modal.types';
+  import type { ModalSize } from './types';
 
   export let open: boolean = false;
   export let densed: boolean = false;
@@ -50,6 +50,8 @@
 <style lang="scss">
   .backdrop {
     position: fixed;
+    top: 0;
+    left: 0;
     display: flex;
     align-items: center;
     justify-content: center;
