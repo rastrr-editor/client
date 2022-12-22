@@ -10,7 +10,7 @@
   }
 
   export let units: string = '';
-  export let value: number = 0;
+  export let value: number | null = null;
   export let densed: boolean = false;
   export let noBorder: boolean = false;
   export let fitWidth: boolean = false;

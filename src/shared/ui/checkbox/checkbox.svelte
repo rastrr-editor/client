@@ -60,6 +60,7 @@
 
     display: flex;
     align-items: center;
+    user-select: none;
   }
 
   input {
