@@ -15,6 +15,7 @@
 @mixin style-input-field {
   box-sizing: content-box;
   width: 100%;
+  line-height: 1.2;
   padding: spacing(3);
   border: none;
   background-color: transparent;

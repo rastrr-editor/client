@@ -81,7 +81,7 @@
   }
 
   .small {
-    max-width: 300px;
+    max-width: 410px;
   }
 
   .medium {

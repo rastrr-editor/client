@@ -1,11 +1,17 @@
 <script lang="ts">
-  export let name: string = 'Rastrr';
+  import { CreateProject } from '~/features/create-project';
+  import MainPageHeader from './main-page-header.svelte';
+
+  let showNewProject = false;
 </script>
 
-<h1>Hello this is {name}!</h1>
+<MainPageHeader on:createNewProject={() => (showNewProject = true)} />
+<main id="canvas-container" />
+<CreateProject bind:open={showNewProject} />
 
 <style lang="scss">
-  h1 {
-    @include typography(h1);
+  #canvas-container {
+    background-color: $bg-canvas;
+    height: calc(100vh - 1.75rem);
   }
 </style>
