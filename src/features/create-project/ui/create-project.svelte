@@ -3,17 +3,28 @@
   import { Checkbox } from '~/shared/ui/checkbox';
   import { NumberInput, TextInput } from '~/shared/ui/input';
   import { Modal } from '~/shared/ui/modal';
+  import createProject from '../model/create-project';
 
   export let open: boolean = false;
+
+  let disabled = false;
 
   function onSubmit(e: SubmitEvent) {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
-    // TODO: create new project
-    for (const [key, value] of formData) {
-      console.log(`${key}: ${value}`);
-    }
+    disabled = true;
+    createProject(formData)
+      .then(() => {
+        open = false;
+      })
+      .catch((error) => {
+        // TODO: show custom alert
+        alert(error.message);
+      })
+      .finally(() => {
+        disabled = false;
+      });
   }
 </script>
 
@@ -27,7 +38,7 @@
         <NumberInput name="height" label="Высота" units="px" required />
       </div>
       <Checkbox name="transparent" value="1">Прозрачный холст</Checkbox>
-      <Button type="submit">Создать</Button>
+      <Button type="submit" {disabled}>Создать</Button>
     </form>
   </div>
 </Modal>
