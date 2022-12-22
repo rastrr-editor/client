@@ -12,3 +12,15 @@ body {
   color: $body-color;
   cursor: url("/icons/cursor-default.svg"), auto;
 }
+
+h1 {
+  @include typography("h1");
+}
+
+h2 {
+  @include typography("h2");
+}
+
+h3 {
+  @include typography("h3");
+}
