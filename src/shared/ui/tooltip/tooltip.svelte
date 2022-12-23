@@ -76,14 +76,14 @@
     tooltip.style.top = calculateTopPosition();
   }
 
-  function handleTriggerMouseEnter(): void {
+  function handleTriggerVisibilitySet(): void {
     if (active) return;
 
     updateTooltipPosition();
     visible = true;
   }
 
-  function handleTriggerMouseLeave(): void {
+  function handleTriggerVisibilityReset(): void {
     if (active) return;
 
     visible = false;
@@ -140,8 +140,10 @@
 
 <div
   bind:this={trigger}
-  on:mouseenter={handleTriggerMouseEnter}
-  on:mouseleave={handleTriggerMouseLeave}
+  on:mouseenter={handleTriggerVisibilitySet}
+  on:mouseleave={handleTriggerVisibilityReset}
+  on:focus|capture={handleTriggerVisibilitySet}
+  on:blur|capture={handleTriggerVisibilityReset}
   on:click={handleTriggerClick}
   on:keydown={handleTriggerKeydown}
 >
