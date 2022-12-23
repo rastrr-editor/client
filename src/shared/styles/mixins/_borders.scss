@@ -1,0 +1,21 @@
+@mixin animated-underline($classOrProperty, $animateVisibility: false) {
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    height: 1px;
+    width: 0;
+    border-radius: 14px;
+    visibility: hidden;
+    transition: width ease-in-out $animation-time,
+      visibility if($animateVisibility, $animation-time, 0s);
+    @content;
+  }
+
+  &#{$classOrProperty} {
+    &::after {
+      width: 100%;
+      visibility: visible;
+    }
+  }
+}
