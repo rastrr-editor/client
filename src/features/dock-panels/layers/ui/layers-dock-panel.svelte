@@ -79,6 +79,8 @@
     padding: spacing(1.25) spacing(3) spacing(1.5) spacing(2);
     line-height: 1;
     position: relative;
+    /* FIXME: this is a hack */
+    height: 1.75rem;
 
     h3 {
       display: inline-block;
