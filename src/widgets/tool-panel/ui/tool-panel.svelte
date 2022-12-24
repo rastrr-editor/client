@@ -3,16 +3,12 @@
   import { CursorIcon, BrushIcon } from '~/shared/ui/icons';
   import { toolStore } from '~/entities/tool';
   import { BrushTool, brushToolId } from '~/features/tools/brush';
+  import { position } from '../model/store';
 
   const { activeTool } = toolStore;
-
-  export let position: 'bottom' | 'left' = 'bottom';
-
-  $: bottom = position === 'bottom';
-  $: left = position === 'left';
 </script>
 
-<div class:bottom class:left>
+<div class:bottom={$position === 'bottom'} class:left={$position === 'left'}>
   <button on:click={() => activeTool.set(null)}><CursorIcon /></button>
   <button
     class:active={$activeTool?.id === brushToolId}
@@ -20,7 +16,9 @@
   >
     <BrushIcon />
   </button>
-  <ChooseColor />
+  <ChooseColor
+    orientation={$position === 'bottom' ? 'horizontal' : 'vertical'}
+  />
 </div>
 
 <style lang="scss">
@@ -43,6 +41,7 @@
     border-top-left-radius: $border-radius;
     border-top-right-radius: $border-radius;
     padding: spacing(2) spacing(4) spacing(3);
+    border-bottom-width: 0;
   }
 
   .left {
@@ -54,6 +53,7 @@
     padding: spacing(4) spacing(2);
     padding-right: spacing(3);
     flex-direction: column;
+    border-left-width: 0;
   }
 
   button {

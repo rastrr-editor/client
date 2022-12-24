@@ -4,6 +4,9 @@
   import Dropdown from '~/shared/ui/dropdown/dropdown.svelte';
   import DropdownMenu from '~/shared/ui/dropdown/dropdown-menu.svelte';
   import DropdownMenuItem from '~/shared/ui/dropdown/dropdown-menu-item.svelte';
+  import { toolPanelStore } from '~/widgets/tool-panel';
+
+  const { position: toolPanelPosition } = toolPanelStore;
 
   type NavigationEvents = {
     createNewProject: void;
@@ -32,14 +35,13 @@
             class="menu-item dropdown"
             on:click={() => (openFileMenu = true)}>Файл</button
           >
-
           <DropdownMenu slot="menu">
-            <DropdownMenuItem on:click={() => dispatch('createNewProject')}
-              >Создать новый файл</DropdownMenuItem
-            >
-            <DropdownMenuItem on:click={() => console.log('Save...')}
-              >Сохранить проект</DropdownMenuItem
-            >
+            <DropdownMenuItem on:click={() => dispatch('createNewProject')}>
+              Создать новый файл
+            </DropdownMenuItem>
+            <DropdownMenuItem on:click={() => console.log('Save...')}>
+              Сохранить проект
+            </DropdownMenuItem>
             <DropdownMenuItem>Сохранить как</DropdownMenuItem>
           </DropdownMenu>
         </Dropdown>
@@ -51,19 +53,23 @@
             class="menu-item dropdown"
             on:click={() => (openViewMenu = true)}>Вид</button
           >
-
           <DropdownMenu slot="menu">
-            <DropdownMenuItem on:click={() => console.log('Hide rulers...')}
-              >Скрыть линейки</DropdownMenuItem
-            >
+            <DropdownMenuItem on:click={() => console.log('Hide rulers...')}>
+              Скрыть линейки
+            </DropdownMenuItem>
             <DropdownMenuItem
-              on:click={() => console.log('Place control panel to left...')}
-              >Панель инструметов слева</DropdownMenuItem
+              on:click={() =>
+                toolPanelStore.position.set(
+                  $toolPanelPosition === 'bottom' ? 'left' : 'bottom'
+                )}
             >
+              Панель инструметов {$toolPanelPosition === 'bottom'
+                ? 'слева'
+                : 'снизу'}
+            </DropdownMenuItem>
           </DropdownMenu>
         </Dropdown>
       </li>
-
       <li>
         <button class="menu-item">Проекты</button>
       </li>

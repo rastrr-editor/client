@@ -4,18 +4,14 @@
   import { SwapIcon } from '~/shared/ui/icons';
   import { mainColor, secondaryColor } from '../model/store';
 
+  export let orientation: 'vertical' | 'horizontal' = 'horizontal';
+
   function swapColors() {
     const tmp = get(mainColor);
     mainColor.set(get(secondaryColor));
     secondaryColor.set(tmp);
   }
 
-  // FIXME: add toString method to Color class
-  const colorToHex = (color: Color) => {
-    return `#${color.r.toString(16).padStart(2, '0')}${color.g
-      .toString(16)
-      .padStart(2, '0')}${color.b.toString(16).padStart(2, '0')}`;
-  };
   // FIXME: add static .from method to Color class
   const hexToColor = (hex: string) => {
     return new Color(
@@ -35,21 +31,30 @@
     };
 </script>
 
-<div class="root">
-  <div style={`background-color: ${colorToHex($mainColor)};`} class="active">
+<div
+  class="root"
+  class:horizontal={orientation === 'horizontal'}
+  class:vertical={orientation === 'vertical'}
+>
+  <div
+    style={`background-color: ${$mainColor.toString('hex')};`}
+    class="active"
+  >
     <input
       type="color"
-      value={colorToHex($mainColor)}
+      value={$mainColor.toString('hex')}
       on:input={createUpdateColor(mainColor)}
     />
   </div>
   <button on:click={swapColors}>
-    <SwapIcon />
+    <SwapIcon
+      transform={`rotate(${orientation === 'vertical' ? '90' : '0'})`}
+    />
   </button>
-  <div style={`background-color: ${colorToHex($secondaryColor)};`}>
+  <div style={`background-color: ${$secondaryColor.toString('hex')};`}>
     <input
       type="color"
-      value={colorToHex($secondaryColor)}
+      value={$secondaryColor.toString('hex')}
       on:input={createUpdateColor(secondaryColor)}
     />
   </div>
@@ -57,10 +62,13 @@
 
 <style lang="scss">
   button {
-    @include reset-button(false);
+    @include reset-button(true);
     @include action-cursor;
     color: #80898f;
-    line-height: 1;
+
+    > :global(svg) {
+      font-size: 1rem;
+    }
   }
 
   input[type='color'] {
@@ -74,9 +82,16 @@
 
   .root {
     display: grid;
-    grid-template-columns: spacing(5) spacing(4) spacing(5);
     align-items: center;
     gap: spacing(1);
+
+    &.horizontal {
+      grid-template-columns: spacing(5) spacing(4) spacing(5);
+    }
+
+    &.vertical {
+      grid-template-rows: spacing(5) spacing(4) spacing(5);
+    }
 
     > div {
       border-radius: 2px;
