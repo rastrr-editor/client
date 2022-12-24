@@ -1,6 +1,10 @@
 <script lang="ts">
   import { ChooseColor } from '~/features/tools/choose-color';
   import { CursorIcon, BrushIcon } from '~/shared/ui/icons';
+  import { toolStore } from '~/entities/tool';
+  import { BrushTool, brushToolId } from '~/features/tools/brush';
+
+  const { activeTool } = toolStore;
 
   export let position: 'bottom' | 'left' = 'bottom';
 
@@ -9,8 +13,13 @@
 </script>
 
 <div class:bottom class:left>
-  <button><CursorIcon /></button>
-  <button><BrushIcon /></button>
+  <button on:click={() => activeTool.set(null)}><CursorIcon /></button>
+  <button
+    class:active={$activeTool?.id === brushToolId}
+    on:click={() => activeTool.set(new BrushTool({ size: 10 }))}
+  >
+    <BrushIcon />
+  </button>
   <ChooseColor />
 </div>
 
@@ -65,7 +74,7 @@
       padding: 0.125rem 0.3125rem 0.375rem 0.1875rem;
     }
 
-    &:hover::after {
+    &.active::after {
       background-color: $bg-extra;
     }
 
