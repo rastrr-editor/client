@@ -1,7 +1,15 @@
 <script lang="ts">
-  import { LayerFactory, Viewport } from '@rastrr-editor/core';
+  import { get } from 'svelte/store';
+  import {
+    LayerFactory,
+    Viewport,
+    events,
+    asyncIter,
+  } from '@rastrr-editor/core';
+  import { onMount } from 'svelte';
   import { projectStore } from '~/entities/project';
   import { toolStore } from '~/entities/tool';
+  import { chooseColorStore } from '~/features/tools/choose-color';
 
   const { activeTool } = toolStore;
 
@@ -11,6 +19,39 @@
   const CanvasLayerFactory = LayerFactory.setType('canvas');
 
   // NOTE: this is WIP - refactor nedeed
+  onMount(() => {
+    container.addEventListener('pointerdown', (e) => {
+      if (e.button === 0 && $activeTool && viewport) {
+        viewport.layers.setActive(0);
+        // TODO: refactor using dot notation
+        const iterable = asyncIter.map(
+          asyncIter.every(
+            asyncIter.any(
+              events.on(container, 'pointermove'),
+              events.on(container, 'pointerup')
+            ),
+            (e) => e.type === 'pointermove',
+            { includeLast: true }
+          ),
+          (e) => ({
+            x: e.offsetX - viewport.offset.x,
+            y: e.offsetY - viewport.offset.y,
+          })
+        );
+        const command = $activeTool.createCommand(
+          viewport.layers.activeLayer,
+          iterable,
+          { color: get(chooseColorStore.mainColor), width: 10 }
+        );
+        command
+          ?.execute()
+          .then((done) =>
+            console.log(`Command '${command.name}' result: ${done}`)
+          );
+      }
+    });
+  });
+
   projectStore.activeProject.subscribe((newProject) => {
     viewport?.destroy();
     if (newProject && container) {
