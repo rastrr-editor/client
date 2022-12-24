@@ -3,6 +3,7 @@ export { default as AddIcon } from './add-icon.svelte';
 export { default as BrushIcon } from './brush-icon.svelte';
 export { default as CheckIcon } from './check-icon.svelte';
 export { default as CloseIcon } from './close-icon.svelte';
+export { default as CursorIcon } from './cursor-icon.svelte';
 export { default as EraserIcon } from './eraser-icon.svelte';
 export { default as ExpandHorizontalIcon } from './expand-horizontal-icon.svelte';
 export { default as ExpandVerticalIcon } from './expand-vertical-icon.svelte';
