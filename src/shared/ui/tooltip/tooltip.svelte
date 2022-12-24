@@ -1,166 +1,105 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { afterUpdate } from 'svelte';
 
-  import type { Position, GapRatio } from './types';
+  import { clickOutside } from '~/shared/lib';
+  import { BASE_SPACING } from '~/shared/config';
+  import { calculateLeftPosition, calculateTopPosition } from './utils';
+  import type { Position } from './types';
 
+  export let open: boolean = false;
   export let active: boolean = false;
   export let position: Position = 'top';
-  export let gap: GapRatio = 0;
+  export let gap: number = 0;
   export let showDelay: number = 0;
   export let hideDelay: number = 0;
 
-  const gapValue = 4;
-  let visible: boolean = false;
   let trigger: HTMLElement;
   let tooltip: HTMLElement;
   let tooltipVisibilityTransition = '';
 
   $: {
-    if (!active && !visible) {
+    if (!active && !open) {
       tooltipVisibilityTransition = `visibility 0ms ${hideDelay}ms`;
     }
 
-    if (!active && visible) {
+    if (!active && open) {
       tooltipVisibilityTransition = `visibility 0ms ${showDelay}ms`;
     }
   }
 
-  function calculateLeftPosition(): string {
-    const triggerLeftPosition = trigger.getBoundingClientRect().x;
-
-    let calculatedLeftPosition = 0;
-    if (position === 'top' || position === 'bottom') {
-      calculatedLeftPosition =
-        triggerLeftPosition + trigger.offsetWidth / 2 - tooltip.clientWidth / 2;
-    }
-
-    if (position === 'left') {
-      calculatedLeftPosition =
-        triggerLeftPosition - tooltip.offsetWidth - gapValue * gap;
-    }
-
-    if (position === 'right') {
-      calculatedLeftPosition =
-        triggerLeftPosition + trigger.offsetWidth + gapValue * gap;
-    }
-
-    return `${calculatedLeftPosition}px`;
-  }
-
-  function calculateTopPosition(): string {
-    const triggerTopPosition = trigger.getBoundingClientRect().y;
-
-    let calculatedTopPosition = 0;
-    if (position === 'top') {
-      calculatedTopPosition =
-        triggerTopPosition - tooltip.offsetHeight - gapValue * gap;
-    }
-
-    if (position === 'bottom') {
-      calculatedTopPosition =
-        triggerTopPosition + trigger.offsetHeight + gapValue * gap;
-    }
-
-    if (position === 'left' || position === 'right') {
-      calculatedTopPosition =
-        triggerTopPosition +
-        trigger.offsetHeight / 2 -
-        tooltip.offsetHeight / 2;
-    }
-
-    return `${calculatedTopPosition}px`;
-  }
-
   function updateTooltipPosition(): void {
-    tooltip.style.left = calculateLeftPosition();
-    tooltip.style.top = calculateTopPosition();
+    tooltip.style.left = calculateLeftPosition(
+      trigger,
+      tooltip,
+      position,
+      BASE_SPACING * gap
+    );
+    tooltip.style.top = calculateTopPosition(
+      trigger,
+      tooltip,
+      position,
+      BASE_SPACING * gap
+    );
   }
 
-  function handleTriggerVisibilitySet(): void {
+  function openInactiveTooltip(): void {
     if (active) return;
 
-    updateTooltipPosition();
-    visible = true;
+    open = true;
   }
 
-  function handleTriggerVisibilityReset(): void {
+  function hideInactiveTooltip(): void {
     if (active) return;
 
-    visible = false;
-  }
-
-  function handleTriggerClick(): void {
-    if (!active) return;
-
-    updateTooltipPosition();
-    visible = true;
-  }
-
-  function handleTriggerKeydown(event: KeyboardEvent): void {
-    if (!active) return;
-
-    if (event.key === 'Enter' || event.key === ' ') {
-      updateTooltipPosition();
-      visible = true;
-    }
+    open = false;
   }
 
   function handleTooltipKeydown(event: KeyboardEvent): void {
     if (!active) return;
 
     if (event.key === 'Escape') {
-      visible = false;
+      open = false;
     }
   }
 
-  function handleOutsideClick(event: MouseEvent): void {
-    if (!visible) return;
+  function handleOutsideClick(): void {
+    if (!active) return;
 
-    const eventPath = event.composedPath();
-    const isTrigger = eventPath.includes(trigger);
-    const isTooltip = eventPath.includes(tooltip);
-
-    if (!isTrigger && !isTooltip) {
-      visible = false;
-    }
+    open = false;
   }
 
-  onMount(() => {
-    if (active) {
-      window.addEventListener('click', handleOutsideClick);
-    }
-
-    return () => {
-      if (active) {
-        window.removeEventListener('click', handleOutsideClick);
-      }
-    };
+  afterUpdate(() => {
+    updateTooltipPosition();
   });
 </script>
 
 <div
+  class="trigger"
   bind:this={trigger}
-  on:mouseenter={handleTriggerVisibilitySet}
-  on:mouseleave={handleTriggerVisibilityReset}
-  on:focus|capture={handleTriggerVisibilitySet}
-  on:blur|capture={handleTriggerVisibilityReset}
-  on:click={handleTriggerClick}
-  on:keydown={handleTriggerKeydown}
+  on:mouseenter={openInactiveTooltip}
+  on:mouseleave={hideInactiveTooltip}
+  on:focus|capture={openInactiveTooltip}
+  on:blur|capture={hideInactiveTooltip}
 >
   <slot />
 </div>
 
 <div
   class="tooltip"
-  class:visible
+  class:open
   style:transition={tooltipVisibilityTransition}
   bind:this={tooltip}
+  use:clickOutside={handleOutsideClick}
   on:keydown={handleTooltipKeydown}
 >
   <slot name="tooltip" />
 </div>
 
 <style lang="scss">
+  .trigger {
+    width: fit-content;
+  }
+
   .tooltip {
     @include typography(body2);
 
@@ -172,7 +111,7 @@
     background-color: $bg-extra;
   }
 
-  .visible {
+  .open {
     visibility: visible;
   }
 </style>
