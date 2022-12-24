@@ -1,9 +1,13 @@
 <script lang="ts">
   import { LayerFactory, Viewport } from '@rastrr-editor/core';
   import { projectStore } from '~/entities/project';
+  import { toolStore } from '~/entities/tool';
+
+  const { activeTool } = toolStore;
 
   let container: HTMLElement;
   let viewport: Viewport;
+  $: cursor = $activeTool?.getCursor() ?? 'url(/icons/cursor-default.svg)';
   const CanvasLayerFactory = LayerFactory.setType('canvas');
 
   // NOTE: this is WIP - refactor nedeed
@@ -29,12 +33,13 @@
   });
 </script>
 
-<main id="canvas-container" bind:this={container} />
+<main id="canvas-container" style:--cursor={cursor} bind:this={container} />
 
 <style lang="scss">
   #canvas-container {
     background-color: $bg-canvas;
     height: calc(100vh - 1.75rem);
     overflow-x: auto;
+    cursor: var(--cursor), auto;
   }
 </style>
