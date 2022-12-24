@@ -1,5 +1,6 @@
 <script lang="ts">
   import { CreateProject } from '~/features/create-project';
+  import { ToolPanel } from '~/widgets/tool-panel';
   import MainPageCanvasContainer from './main-page-canvas-container.svelte';
   import MainPageHeader from './main-page-header.svelte';
 
@@ -8,4 +9,5 @@
 
 <MainPageHeader on:createNewProject={() => (showNewProject = true)} />
 <MainPageCanvasContainer />
+<ToolPanel />
 <CreateProject bind:open={showNewProject} />
