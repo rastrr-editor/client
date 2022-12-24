@@ -23,7 +23,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: spacing(4);
+    gap: spacing(5);
     background-color: $bg-main;
   }
 
@@ -33,7 +33,7 @@
     transform: translateX(-50%);
     border-top-left-radius: $border-radius;
     border-top-right-radius: $border-radius;
-    padding: spacing(2) spacing(4);
+    padding: spacing(2) spacing(4) spacing(3);
   }
 
   .left {
@@ -43,6 +43,7 @@
     border-top-right-radius: $border-radius;
     border-bottom-right-radius: $border-radius;
     padding: spacing(4) spacing(2);
+    padding-right: spacing(3);
     flex-direction: column;
   }
 
