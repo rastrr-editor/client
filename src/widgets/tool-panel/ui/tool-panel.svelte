@@ -1,5 +1,6 @@
 <script lang="ts">
-  import ChooseColor from '~/features/tools/choose-color/ui/choose-color.svelte';
+  import { ChooseColor } from '~/features/tools/choose-color';
+  import { CursorIcon, BrushIcon } from '~/shared/ui/icons';
 
   export let position: 'bottom' | 'left' = 'bottom';
 
@@ -8,7 +9,8 @@
 </script>
 
 <div class:bottom class:left>
-  <button><img src="/icons/cursor-default.svg" alt="Move" /></button>
+  <button><CursorIcon /></button>
+  <button><BrushIcon /></button>
   <ChooseColor />
 </div>
 
