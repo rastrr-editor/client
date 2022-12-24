@@ -86,7 +86,7 @@
 
 <style lang="scss">
   .trigger {
-    width: fit-content;
+    display: inline-block;
   }
 
   .tooltip {
