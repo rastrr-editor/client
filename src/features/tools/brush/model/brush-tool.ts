@@ -1,3 +1,4 @@
+import { BrushCommand } from '@rastrr-editor/core';
 import type { Tool } from '~/entities/tool';
 import type { BrushOptions } from '../types';
 
@@ -32,5 +33,11 @@ export default class BrushTool implements Tool<BrushOptions> {
 
   setOptions(options: BrushOptions): void {
     this.#options = options;
+  }
+
+  createCommand(
+    ...args: ConstructorParameters<typeof BrushCommand>
+  ): BrushCommand {
+    return new BrushCommand(...args);
   }
 }
