@@ -10,19 +10,23 @@
   import { projectStore } from '~/entities/project';
   import { toolStore } from '~/entities/tool';
   import { chooseColorStore } from '~/features/tools/choose-color';
+  import { viewport as viewportStore } from '../model/store';
 
   const { activeTool } = toolStore;
-
   let container: HTMLElement;
-  let viewport: Viewport;
   $: cursor = $activeTool?.getCursor() ?? 'url(/icons/cursor-default.svg)';
   const CanvasLayerFactory = LayerFactory.setType('canvas');
 
   // NOTE: this is WIP - refactor nedeed
   onMount(() => {
     container.addEventListener('pointerdown', (e) => {
-      if (e.button === 0 && $activeTool && viewport) {
-        viewport.layers.setActive(0);
+      const viewport = get(viewportStore);
+      if (
+        e.button === 0 &&
+        $activeTool &&
+        viewport &&
+        viewport.layers.activeIndex !== undefined
+      ) {
         // TODO: refactor using dot notation
         const iterable = asyncIter.map(
           asyncIter.every(
@@ -53,19 +57,22 @@
   });
 
   projectStore.activeProject.subscribe((newProject) => {
+    let viewport = get(viewportStore);
     viewport?.destroy();
     if (newProject && container) {
-      // Create new viewport if active project has changed
       viewport = new Viewport(container, {
         strategy: 'canvas',
         minOffset: { x: 16, y: 16 },
         canvasSize: { x: newProject.width, y: newProject.height },
         htmlSizeDelta: { x: 0, y: -6 },
       });
+      // Create new viewport if active project has changed
+      viewportStore.set(viewport);
       const layer = CanvasLayerFactory.empty(
         newProject.width,
         newProject.height
       );
+      layer.name = 'Фон';
       if (newProject.isTransparent) {
         layer.setOpacity(0);
       }
