@@ -1,11 +1,18 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
 
+  import Dropdown from '~/shared/ui/dropdown/dropdown.svelte';
+  import DropdownMenu from '~/shared/ui/dropdown/dropdown-menu.svelte';
+  import DropdownMenuItem from '~/shared/ui/dropdown/dropdown-menu-item.svelte';
+
   type NavigationEvents = {
     createNewProject: void;
   };
 
   const dispatch = createEventDispatcher<NavigationEvents>();
+
+  let openFileMenu: boolean = false;
+  let openViewMenu: boolean = false;
 </script>
 
 <header>
@@ -19,17 +26,50 @@
   </div>
   <nav>
     <ul>
-      <!-- TODO: this is temporary -->
       <li>
-        <button
-          class="reset-button-partial"
-          on:click={() => dispatch('createNewProject')}
-          >Создать новый проект</button
-        >
+        <Dropdown bind:open={openFileMenu} autoClose>
+          <button
+            class="menu-item dropdown"
+            on:click={() => (openFileMenu = true)}>Файл</button
+          >
+
+          <DropdownMenu slot="menu">
+            <DropdownMenuItem on:click={() => dispatch('createNewProject')}
+              >Создать новый файл</DropdownMenuItem
+            >
+            <DropdownMenuItem on:click={() => console.log('Save...')}
+              >Сохранить проект</DropdownMenuItem
+            >
+            <DropdownMenuItem>Сохранить как</DropdownMenuItem>
+          </DropdownMenu>
+        </Dropdown>
       </li>
-      <li>Вид</li>
-      <li>Проекты</li>
-      <li>О программе</li>
+
+      <li>
+        <Dropdown bind:open={openViewMenu} autoClose>
+          <button
+            class="menu-item dropdown"
+            on:click={() => (openViewMenu = true)}>Вид</button
+          >
+
+          <DropdownMenu slot="menu">
+            <DropdownMenuItem on:click={() => console.log('Hide rulers...')}
+              >Скрыть линейки</DropdownMenuItem
+            >
+            <DropdownMenuItem
+              on:click={() => console.log('Place control panel to left...')}
+              >Панель инструметов слева</DropdownMenuItem
+            >
+          </DropdownMenu>
+        </Dropdown>
+      </li>
+
+      <li>
+        <button class="menu-item">Проекты</button>
+      </li>
+      <li>
+        <button class="menu-item">О программе</button>
+      </li>
     </ul>
   </nav>
 </header>
@@ -64,6 +104,7 @@
       padding: 0;
       margin: 0;
       display: flex;
+      align-items: center;
       gap: spacing(6);
     }
   }
@@ -71,5 +112,38 @@
   button {
     @include reset-button(false);
     @include action-cursor;
+  }
+
+  .menu-item {
+    padding: spacing(1);
+    border-radius: $border-radius;
+    transition: background-color $animation-time;
+
+    &:hover,
+    &:focus-visible {
+      background-color: $bg-extra;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .dropdown {
+    position: relative;
+    padding-right: spacing(3);
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: spacing(1);
+      right: spacing(1);
+      display: block;
+      width: 6px;
+      height: 6px;
+      border: 3px solid transparent;
+      border-bottom-color: rgba(217, 217, 217, 0.3);
+      border-right-color: rgba(217, 217, 217, 0.3);
+    }
   }
 </style>
