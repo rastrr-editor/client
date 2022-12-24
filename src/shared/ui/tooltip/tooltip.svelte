@@ -1,7 +1,8 @@
 <script lang="ts">
   import { afterUpdate } from 'svelte';
+  import { noop } from 'svelte/internal';
 
-  import { clickOutside } from '~/shared/lib';
+  import { clickOutside } from '~/shared/lib/actions';
   import { BASE_SPACING } from '~/shared/config';
   import { calculateLeftPosition, calculateTopPosition } from './utils';
   import type { Position } from './types';
@@ -42,30 +43,18 @@
     );
   }
 
-  function openInactiveTooltip(): void {
-    if (active) return;
-
+  function openTooltip(): void {
     open = true;
   }
 
-  function hideInactiveTooltip(): void {
-    if (active) return;
-
+  function hideTooltip(): void {
     open = false;
   }
 
-  function handleTooltipKeydown(event: KeyboardEvent): void {
-    if (!active) return;
-
+  function hideTooltipByKeydown(event: KeyboardEvent): void {
     if (event.key === 'Escape') {
       open = false;
     }
-  }
-
-  function handleOutsideClick(): void {
-    if (!active) return;
-
-    open = false;
   }
 
   afterUpdate(() => {
@@ -76,10 +65,10 @@
 <div
   class="trigger"
   bind:this={trigger}
-  on:mouseenter={openInactiveTooltip}
-  on:mouseleave={hideInactiveTooltip}
-  on:focus|capture={openInactiveTooltip}
-  on:blur|capture={hideInactiveTooltip}
+  on:mouseenter={!active ? openTooltip : undefined}
+  on:mouseleave={!active ? hideTooltip : undefined}
+  on:focus|capture={!active ? openTooltip : undefined}
+  on:blur|capture={!active ? hideTooltip : undefined}
 >
   <slot />
 </div>
@@ -89,8 +78,8 @@
   class:open
   style:transition={tooltipVisibilityTransition}
   bind:this={tooltip}
-  use:clickOutside={handleOutsideClick}
-  on:keydown={handleTooltipKeydown}
+  use:clickOutside={active ? hideTooltip : noop}
+  on:keydown={active ? hideTooltipByKeydown : undefined}
 >
   <slot name="tooltip" />
 </div>
