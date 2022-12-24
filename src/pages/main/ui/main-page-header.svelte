@@ -39,10 +39,10 @@
             <DropdownMenuItem on:click={() => dispatch('createNewProject')}>
               Создать новый файл
             </DropdownMenuItem>
-            <DropdownMenuItem on:click={() => console.log('Save...')}>
+            <!-- <DropdownMenuItem on:click={() => console.log('Save...')}>
               Сохранить проект
             </DropdownMenuItem>
-            <DropdownMenuItem>Сохранить как</DropdownMenuItem>
+            <DropdownMenuItem>Сохранить как</DropdownMenuItem> -->
           </DropdownMenu>
         </Dropdown>
       </li>
@@ -54,9 +54,9 @@
             on:click={() => (openViewMenu = true)}>Вид</button
           >
           <DropdownMenu slot="menu">
-            <DropdownMenuItem on:click={() => console.log('Hide rulers...')}>
+            <!-- <DropdownMenuItem on:click={() => console.log('Hide rulers...')}>
               Скрыть линейки
-            </DropdownMenuItem>
+            </DropdownMenuItem> -->
             <DropdownMenuItem
               on:click={() =>
                 toolPanelStore.position.set(
@@ -70,12 +70,12 @@
           </DropdownMenu>
         </Dropdown>
       </li>
-      <li>
+      <!-- <li>
         <button class="menu-item">Проекты</button>
       </li>
       <li>
         <button class="menu-item">О программе</button>
-      </li>
+      </li> -->
     </ul>
   </nav>
 </header>
