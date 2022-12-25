@@ -46,7 +46,9 @@
   <div class="heading">
     <LayersIcon />
     <h3>Слои</h3>
-    <button class="add" on:click={addLayer}><AddIcon /></button>
+    <button class="add" on:click={addLayer} disabled={!viewport}
+      ><AddIcon /></button
+    >
   </div>
   <ul>
     {#each layers as layer, index}
@@ -103,6 +105,10 @@
     position: absolute;
     top: spacing(1.5);
     right: spacing(2);
+
+    &:disabled {
+      cursor: url('/icons/cursor-default.svg'), auto;
+    }
 
     > :global(svg) {
       font-size: 1rem;
