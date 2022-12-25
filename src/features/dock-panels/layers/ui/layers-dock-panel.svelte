@@ -6,11 +6,25 @@
 
   export let viewport: Viewport | null = null;
 
-  $: layers = Array.from(viewport?.layers ?? []);
+  $: layers = Array.from(viewport?.layers?.reverse() ?? []);
 
-  $: activeIndex = viewport?.layers.activeIndex;
+  $: activeIndex = viewport?.layers.activeIndex
+    ? getReversedIndex(viewport?.layers.activeIndex)
+    : undefined;
 
   let createdCount = 0;
+
+  function getIndex(reversedIndex: number): number {
+    return (viewport?.layers.length ?? 0) - 1 - reversedIndex;
+  }
+
+  function getReversedIndex(index: number): number {
+    return (viewport?.layers.length ?? 0) - 1 - index;
+  }
+
+  function getLayers() {
+    return Array.from(viewport?.layers?.reverse() ?? []);
+  }
 
   function addLayer() {
     if (!viewport) return;
@@ -23,20 +37,23 @@
     layer.name = `Новый слой${createdCount > 0 ? ` ${createdCount}` : ''}`;
     createdCount += 1;
     viewport.layers.add(layer);
-    layers = Array.from(viewport?.layers ?? []);
+    viewport.layers.setActive(viewport.layers.length - 1);
+    activeIndex = getReversedIndex(viewport.layers.length - 1);
+    layers = getLayers();
   }
 
-  function setActive(index: number) {
-    viewport?.layers.setActive(index);
-    activeIndex = index;
+  function setActive(reversedIndex: number) {
+    viewport?.layers.setActive(getIndex(reversedIndex));
+    activeIndex = reversedIndex;
   }
 
-  function setVisible(index: number, visible: boolean) {
+  function setVisible(reversedIndex: number, visible: boolean) {
     if (!viewport) return;
-    const layer = viewport.layers.get(index);
+
+    const layer = viewport.layers.get(getIndex(reversedIndex));
     if (layer) {
       layer.setVisible(visible);
-      layers[index] = layer;
+      layers[reversedIndex] = layer;
     }
   }
 </script>
@@ -51,16 +68,17 @@
     >
   </div>
   <ul>
-    {#each layers as layer, index}
+    {#each layers as layer, reversedIndex}
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <li
-        class:active={index === activeIndex}
-        on:click={() => setActive(index)}
+        class:active={reversedIndex === activeIndex}
+        on:click={() => setActive(reversedIndex)}
       >
         {layer.name}
         <div class="actions" class:active={!layer.visible || layer.locked}>
           <button
-            on:click|stopPropagation={() => setVisible(index, !layer.visible)}
+            on:click|stopPropagation={() =>
+              setVisible(reversedIndex, !layer.visible)}
             class:deactivated={!layer.visible}
           >
             {#if layer.visible}
@@ -119,6 +137,8 @@
   ul {
     list-style-type: none;
     padding: spacing(0.5);
+    max-height: spacing(72);
+    overflow-y: auto;
 
     li {
       position: relative;
