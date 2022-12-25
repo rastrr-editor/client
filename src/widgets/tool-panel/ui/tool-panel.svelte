@@ -25,7 +25,7 @@
   $border-radius: 8px;
 
   div {
-    position: fixed;
+    position: absolute;
     border: 1px solid $border-color;
     display: flex;
     justify-content: space-between;

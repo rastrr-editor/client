@@ -36,10 +36,7 @@
   class:horizontal={orientation === 'horizontal'}
   class:vertical={orientation === 'vertical'}
 >
-  <div
-    style={`background-color: ${$mainColor.toString('hex')};`}
-    class="active"
-  >
+  <div style={`background-color: ${$mainColor.toString('hex')};`} class="main">
     <input
       type="color"
       value={$mainColor.toString('hex')}
@@ -91,20 +88,24 @@
 
     &.vertical {
       grid-template-rows: spacing(5) spacing(4) spacing(5);
+
+      .main {
+        margin-bottom: spacing(2);
+      }
     }
 
     > div {
       border-radius: 2px;
       position: relative;
 
-      @include animated-underline('.active') {
+      @include animated-underline('.main') {
         bottom: -3px;
         left: 50%;
         background-color: #fff;
         transform: translateX(-50%);
       }
 
-      &.active::after {
+      &.main::after {
         width: 90%;
       }
     }

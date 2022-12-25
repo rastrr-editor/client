@@ -3,16 +3,20 @@
 </script>
 
 <svg
-  width="0.5em"
-  height="0.5em"
-  viewBox="0 0 12 12"
+  width="1em"
+  height="1em"
+  viewBox="0 0 24 24"
   fill="none"
   stroke="currentColor"
   xmlns="http://www.w3.org/2000/svg"
   {...$$restProps}
 >
-  <path d="M6 1.33333V10.6667" stroke-linecap="round" stroke-linejoin="round" />
-  <path d="M1.3335 6H10.6668" stroke-linecap="round" stroke-linejoin="round" />
+  <path
+    d="M12 5v14m-7-7h14"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="1.5"
+  />
 </svg>
 
 <style lang="scss">
