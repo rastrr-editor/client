@@ -59,7 +59,7 @@ export default class BrushTool implements Tool<BrushOptions, PointerEvent> {
         y: e.offsetY - viewport.offset.y,
       })
     );
-    return new BrushCommand(viewport.layers.activeLayer, iterable, {
+    return new BrushCommand(viewport.layers, iterable, {
       color,
       width: this.#options.size,
     });
