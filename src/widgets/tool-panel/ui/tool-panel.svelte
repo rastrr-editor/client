@@ -1,21 +1,32 @@
 <script lang="ts">
   import { ChooseColor } from '~/features/tools/choose-color';
   import { CursorIcon, BrushIcon } from '~/shared/ui/icons';
+  import { Tooltip } from '~/shared/ui/tooltip';
   import { toolStore } from '~/entities/tool';
   import { BrushTool, brushToolId } from '~/features/tools/brush';
   import { position } from '../model/store';
 
   const { activeTool } = toolStore;
+
+  let brushTooltipOpen = false;
 </script>
 
 <div class:bottom={$position === 'bottom'} class:left={$position === 'left'}>
   <button on:click={() => activeTool.set(null)}><CursorIcon /></button>
-  <button
-    class:active={$activeTool?.id === brushToolId}
-    on:click={() => activeTool.set(new BrushTool({ size: 10 }))}
-  >
-    <BrushIcon />
-  </button>
+  <Tooltip open={brushTooltipOpen}>
+    <button
+      class:active={$activeTool?.id === brushToolId}
+      on:click={() => activeTool.set(new BrushTool({ size: 10 }))}
+      on:contextmenu={(e) => {
+        e.preventDefault();
+        brushTooltipOpen = true;
+      }}
+    >
+      <BrushIcon />
+    </button>
+    <div slot="tooltip">Hello!</div>
+  </Tooltip>
+
   <ChooseColor
     orientation={$position === 'bottom' ? 'horizontal' : 'vertical'}
   />
