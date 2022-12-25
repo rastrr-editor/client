@@ -1,11 +1,18 @@
-import type { Command } from '@rastrr-editor/core';
+import type { Color, Command, Viewport } from '@rastrr-editor/core';
 
-export interface Tool<TOption> {
+export type ToolCreateCommandOptions<TEvent> = {
+  triggerEvent: TEvent;
+  color: Color;
+};
+
+export interface Tool<TOption, TEvent> {
   id: string;
   name: string;
   hotkey: string;
   getCursor: () => string | null;
   setOptions: (options: TOption) => void;
-  // FIXME: this is temporary
-  createCommand: (...args: any) => Command;
+  createCommand: (
+    viewport: Viewport,
+    options: ToolCreateCommandOptions<TEvent>
+  ) => Command | null;
 }

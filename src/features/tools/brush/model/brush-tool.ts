@@ -1,8 +1,8 @@
-import { BrushCommand } from '@rastrr-editor/core';
-import type { Tool } from '~/entities/tool';
+import { BrushCommand, Viewport, events, asyncIter } from '@rastrr-editor/core';
+import type { Tool, ToolCreateCommandOptions } from '~/entities/tool';
 import type { BrushOptions } from '../types';
 
-export default class BrushTool implements Tool<BrushOptions> {
+export default class BrushTool implements Tool<BrushOptions, PointerEvent> {
   #options: BrushOptions;
   readonly id: string = 'brush';
   readonly name: string = 'Кисть';
@@ -25,7 +25,7 @@ export default class BrushTool implements Tool<BrushOptions> {
           cy="${this.#options.size / 2 + 1}"
           r="${this.#options.size / 2}"
           fill="none"
-          stroke="#000"
+          stroke="#c1c1c1"
         />
       </svg>`
     )}") ${this.#options.size / 2 + 1} ${this.#options.size / 2 + 1}`;
@@ -36,8 +36,32 @@ export default class BrushTool implements Tool<BrushOptions> {
   }
 
   createCommand(
-    ...args: ConstructorParameters<typeof BrushCommand>
-  ): BrushCommand {
-    return new BrushCommand(...args);
+    viewport: Viewport,
+    { triggerEvent, color }: ToolCreateCommandOptions<PointerEvent>
+  ): BrushCommand | null {
+    if (viewport.layers.activeLayer == null) {
+      return null;
+    }
+    // TODO: refactor using dot notation
+    const iterable = asyncIter.map(
+      asyncIter.seq(
+        asyncIter.toAsyncIter([triggerEvent]),
+        asyncIter.until(
+          asyncIter.any(
+            events.on(viewport.container, 'pointermove'),
+            events.on(viewport.container, 'pointerup')
+          ),
+          events.onlyEvent('pointerup')
+        )
+      ),
+      (e) => ({
+        x: e.offsetX - viewport.offset.x,
+        y: e.offsetY - viewport.offset.y,
+      })
+    );
+    return new BrushCommand(viewport.layers.activeLayer, iterable, {
+      color,
+      width: this.#options.size,
+    });
   }
 }
