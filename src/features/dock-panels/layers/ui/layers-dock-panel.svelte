@@ -12,7 +12,7 @@
     ? getReversedIndex(viewport?.layers.activeIndex)
     : undefined;
 
-  let createdCount = 0;
+  $: createdCount = viewport && 0;
 
   function getIndex(reversedIndex: number): number {
     return (viewport?.layers.length ?? 0) - 1 - reversedIndex;
