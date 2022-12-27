@@ -1,30 +1,32 @@
 <script lang="ts">
-  import { afterUpdate } from 'svelte';
+  import { tick, onDestroy, afterUpdate, createEventDispatcher } from 'svelte';
   import { noop } from 'svelte/internal';
 
   import { clickOutside } from '~/shared/lib/actions';
   import { BASE_SPACING } from '~/shared/config';
   import { calculateLeftPosition, calculateTopPosition } from './utils';
-  import type { Position } from './types';
+  import type { Placement } from './types';
 
+  export let trigger: HTMLElement;
   export let open: boolean = false;
   export let active: boolean = false;
-  export let position: Position = 'top';
+  export let disabled: boolean = false;
+  export let placement: Placement = 'top';
   export let gap: number = 0;
-  export let showDelay: number = 0;
+  export let openDelay: number = 0;
   export let hideDelay: number = 0;
 
-  let trigger: HTMLElement;
-  let tooltip: HTMLElement;
+  const dispatch = createEventDispatcher();
+  let tooltip: HTMLDivElement;
   let tooltipVisibilityTransition = '';
 
   $: {
-    if (!active && !open) {
-      tooltipVisibilityTransition = `visibility 0ms ${hideDelay}ms`;
-    }
+    tooltipVisibilityTransition = open
+      ? `visibility 0ms ${openDelay}ms`
+      : `visibility 0ms ${hideDelay}ms`;
 
-    if (!active && open) {
-      tooltipVisibilityTransition = `visibility 0ms ${showDelay}ms`;
+    if (disabled) {
+      tooltipVisibilityTransition = '';
     }
   }
 
@@ -32,67 +34,90 @@
     tooltip.style.left = calculateLeftPosition(
       trigger,
       tooltip,
-      position,
+      placement,
       BASE_SPACING * gap
     );
     tooltip.style.top = calculateTopPosition(
       trigger,
       tooltip,
-      position,
+      placement,
       BASE_SPACING * gap
     );
   }
 
   function openTooltip(): void {
     open = true;
+
+    dispatch('open');
   }
 
   function hideTooltip(): void {
     open = false;
+
+    dispatch('hide');
   }
 
   function hideTooltipByKeydown(event: KeyboardEvent): void {
-    if (event.key === 'Escape') {
+    if (event.key === 'Escape' || event.code === 'Escape') {
       open = false;
     }
   }
 
+  function setTriggerListeners(): void {
+    trigger.addEventListener('mouseenter', openTooltip);
+    trigger.addEventListener('mouseleave', hideTooltip);
+    trigger.addEventListener('focus', openTooltip, true);
+    trigger.addEventListener('blur', hideTooltip, true);
+  }
+
+  function removeTriggerListeners(): void {
+    trigger.removeEventListener('mouseenter', openTooltip);
+    trigger.removeEventListener('mouseleave', hideTooltip);
+    trigger.removeEventListener('focus', openTooltip, true);
+    trigger.removeEventListener('blur', hideTooltip, true);
+  }
+
+  tick().then(() => {
+    if (trigger && !active) {
+      setTriggerListeners();
+    }
+  });
+
   afterUpdate(() => {
-    updateTooltipPosition();
+    if (disabled) {
+      open = false;
+    }
+
+    if (trigger) {
+      updateTooltipPosition();
+    }
+  });
+
+  onDestroy(() => {
+    if (!active) {
+      removeTriggerListeners();
+    }
   });
 </script>
 
 <div
-  class="trigger"
-  bind:this={trigger}
-  on:mouseenter={!active ? openTooltip : undefined}
-  on:mouseleave={!active ? hideTooltip : undefined}
-  on:focus|capture={!active ? openTooltip : undefined}
-  on:blur|capture={!active ? hideTooltip : undefined}
->
-  <slot />
-</div>
-
-<div
+  role="tooltip"
   class="tooltip"
-  class:open
+  class:open={open && !disabled}
   style:transition={tooltipVisibilityTransition}
   bind:this={tooltip}
   use:clickOutside={active ? hideTooltip : noop}
   on:keydown={active ? hideTooltipByKeydown : undefined}
 >
-  <slot name="tooltip" />
+  <slot />
 </div>
 
 <style lang="scss">
-  .trigger {
-    display: inline-block;
-  }
-
   .tooltip {
     @include typography(body2);
 
-    position: absolute;
+    position: fixed;
+    z-index: 100;
     visibility: hidden;
     padding: spacing(2);
     border: 1px solid $modal-border-color;

@@ -1,1 +1,1 @@
-export type Position = 'top' | 'left' | 'right' | 'bottom';
+export type Placement = 'top' | 'left' | 'right' | 'bottom';

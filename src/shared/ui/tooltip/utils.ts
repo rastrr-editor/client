@@ -1,37 +1,37 @@
-import type { Position } from './types';
+import type { Placement } from './types';
 
 export function calculateLeftPosition(
   trigger: HTMLElement,
   tooltip: HTMLElement,
-  position: Position,
+  placement: Placement,
   gap: number
 ): string {
-  const triggerLeftPosition = trigger.getBoundingClientRect().x;
+  const { x: triggerLeftPosition } = trigger.getBoundingClientRect();
 
   let calculatedLeftPosition = 0;
-  if (position === 'top' || position === 'bottom') {
+  if (placement === 'top' || placement === 'bottom') {
     calculatedLeftPosition =
       triggerLeftPosition + trigger.offsetWidth / 2 - tooltip.clientWidth / 2;
   }
 
-  if (position === 'left') {
+  if (placement === 'left') {
     calculatedLeftPosition = triggerLeftPosition - tooltip.offsetWidth - gap;
   }
 
-  if (position === 'right') {
+  if (placement === 'right') {
     calculatedLeftPosition = triggerLeftPosition + trigger.offsetWidth + gap;
   }
 
-  if (calculatedLeftPosition < gap) {
-    if (position === 'left') {
+  if (calculatedLeftPosition < 0) {
+    if (placement === 'left') {
       calculatedLeftPosition = triggerLeftPosition + trigger.offsetWidth + gap;
     } else {
       calculatedLeftPosition = gap;
     }
   }
 
-  if (calculatedLeftPosition + tooltip.clientWidth + gap > window.innerWidth) {
-    if (position === 'right') {
+  if (calculatedLeftPosition + tooltip.clientWidth > window.innerWidth) {
+    if (placement === 'right') {
       calculatedLeftPosition = triggerLeftPosition - tooltip.offsetWidth - gap;
     } else {
       calculatedLeftPosition = window.innerWidth - tooltip.clientWidth - gap;
@@ -44,35 +44,35 @@ export function calculateLeftPosition(
 export function calculateTopPosition(
   trigger: HTMLElement,
   tooltip: HTMLElement,
-  position: Position,
+  placement: Placement,
   gap: number
 ): string {
-  const triggerTopPosition = trigger.getBoundingClientRect().y;
+  const { y: triggerTopPosition } = trigger.getBoundingClientRect();
 
   let calculatedTopPosition = 0;
-  if (position === 'top') {
+  if (placement === 'top') {
     calculatedTopPosition = triggerTopPosition - tooltip.offsetHeight - gap;
   }
 
-  if (position === 'bottom') {
+  if (placement === 'bottom') {
     calculatedTopPosition = triggerTopPosition + trigger.offsetHeight + gap;
   }
 
-  if (position === 'left' || position === 'right') {
+  if (placement === 'left' || placement === 'right') {
     calculatedTopPosition =
       triggerTopPosition + trigger.offsetHeight / 2 - tooltip.offsetHeight / 2;
   }
 
-  if (calculatedTopPosition < gap) {
-    if (position === 'top') {
+  if (calculatedTopPosition < 0) {
+    if (placement === 'top') {
       calculatedTopPosition = triggerTopPosition + trigger.offsetHeight + gap;
     } else {
       calculatedTopPosition = gap;
     }
   }
 
-  if (calculatedTopPosition + tooltip.clientHeight + gap > window.innerHeight) {
-    if (position === 'bottom') {
+  if (calculatedTopPosition + tooltip.clientHeight > window.innerHeight) {
+    if (placement === 'bottom') {
       calculatedTopPosition = triggerTopPosition - tooltip.offsetHeight - gap;
     } else {
       calculatedTopPosition = window.innerHeight - tooltip.clientHeight - gap;
