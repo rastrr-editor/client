@@ -8,34 +8,60 @@
 
   const { activeTool } = toolStore;
 
+  let brushTooltipTrigger: HTMLButtonElement;
   let brushTooltipOpen = false;
 </script>
 
-<div class:bottom={$position === 'bottom'} class:left={$position === 'left'}>
+<div
+  class="tool-panel"
+  class:bottom={$position === 'bottom'}
+  class:left={$position === 'left'}
+>
   <button on:click={() => activeTool.set(null)}><CursorIcon /></button>
-  <Tooltip open={brushTooltipOpen}>
-    <button
-      class:active={$activeTool?.id === brushToolId}
-      on:click={() => activeTool.set(new BrushTool({ size: 10 }))}
-      on:contextmenu={(e) => {
-        e.preventDefault();
-        brushTooltipOpen = true;
-      }}
-    >
-      <BrushIcon />
-    </button>
-    <div slot="tooltip">Hello!</div>
-  </Tooltip>
+
+  <button
+    class:active={$activeTool?.id === brushToolId}
+    bind:this={brushTooltipTrigger}
+    on:click={() => activeTool.set(new BrushTool({ size: 10 }))}
+    on:contextmenu|preventDefault={() => (brushTooltipOpen = true)}
+  >
+    <BrushIcon />
+  </button>
 
   <ChooseColor
     orientation={$position === 'bottom' ? 'horizontal' : 'vertical'}
   />
 </div>
 
+<Tooltip
+  bind:disabled={brushTooltipOpen}
+  trigger={brushTooltipTrigger}
+  placement={$position === 'bottom' ? 'top' : 'right'}
+  openDelay={400}
+  gap={4}
+>
+  <div style="white-space: nowrap;">Hello, world!</div>
+</Tooltip>
+
+<Tooltip
+  bind:open={brushTooltipOpen}
+  trigger={brushTooltipTrigger}
+  placement={$position === 'bottom' ? 'top' : 'right'}
+  gap={4}
+  active
+>
+  <div
+    style="white-space:nowrap; min-height: 200px; display: flex; flex-direction: column; align-items: center"
+  >
+    <p>Active tooltip with some interactive shit</p>
+    <input type="text" />
+  </div>
+</Tooltip>
+
 <style lang="scss">
   $border-radius: 8px;
 
-  div {
+  .tool-panel {
     position: absolute;
     border: 1px solid $border-color;
     display: flex;
