@@ -5,21 +5,23 @@
 <svg
   width="1em"
   height="1em"
-  viewBox="0 0 12 8"
+  viewBox="0 0 24 24"
   fill="none"
-  stroke="currentColor"
   xmlns="http://www.w3.org/2000/svg"
+  stroke="currentColor"
   {...$$restProps}
 >
   <path
-    d="M6.99997 4C6.99997 4.55228 6.55225 5 5.99997 5C5.44768 5 4.99997 4.55228 4.99997 4C4.99997 3.44772 5.44768 3 5.99997 3C6.55225 3 6.99997 3.44772 6.99997 4Z"
+    d="M14 12a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"
     stroke-linecap="round"
     stroke-linejoin="round"
+    fill="currentColor"
   />
   <path
-    d="M11 4C9.66653 6.3335 8.00003 7.5 6.00003 7.5C4.00003 7.5 2.33353 6.3335 1.00003 4C2.33353 1.6665 4.00003 0.5 6.00003 0.5C8.00003 0.5 9.66653 1.6665 11 4Z"
+    d="M22 12c-2.666 4.666-6 7-10 7s-7.334-2.334-10-7c2.666-4.666 6-7 10-7s7.334 2.334 10 7Z"
     stroke-linecap="round"
     stroke-linejoin="round"
+    stroke-width="1.5"
   />
 </svg>
 
