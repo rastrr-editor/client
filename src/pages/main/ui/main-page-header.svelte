@@ -27,7 +27,7 @@
   <nav>
     <ul>
       <li>
-        <Dropdown bind:open={openFileMenu} autoClose>
+        <Dropdown bind:open={openFileMenu}>
           <button
             class="menu-item dropdown"
             on:click={() => (openFileMenu = true)}>Файл</button
@@ -37,16 +37,34 @@
             <DropdownMenuItem on:click={() => dispatch('createNewProject')}
               >Создать новый файл</DropdownMenuItem
             >
+
             <DropdownMenuItem on:click={() => console.log('Save...')}
               >Сохранить проект</DropdownMenuItem
             >
-            <DropdownMenuItem>Сохранить как</DropdownMenuItem>
+
+            <Dropdown nested hover>
+              <DropdownMenuItem nested>Сохранить как</DropdownMenuItem>
+
+              <DropdownMenu slot="menu" nested>
+                <DropdownMenuItem>JPEG</DropdownMenuItem>
+                <DropdownMenuItem>PNG</DropdownMenuItem>
+
+                <Dropdown nested hover>
+                  <DropdownMenuItem nested>WTF</DropdownMenuItem>
+
+                  <DropdownMenu slot="menu" nested>
+                    <DropdownMenuItem>Foo</DropdownMenuItem>
+                    <DropdownMenuItem>Bar</DropdownMenuItem>
+                  </DropdownMenu>
+                </Dropdown>
+              </DropdownMenu>
+            </Dropdown>
           </DropdownMenu>
         </Dropdown>
       </li>
 
       <li>
-        <Dropdown bind:open={openViewMenu} autoClose>
+        <Dropdown bind:open={openViewMenu}>
           <button
             class="menu-item dropdown"
             on:click={() => (openViewMenu = true)}>Вид</button
