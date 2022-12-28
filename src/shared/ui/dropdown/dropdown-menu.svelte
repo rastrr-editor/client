@@ -1,36 +1,28 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { BASE_SPACING } from '~/shared/config';
 
-  import {
-    X_PLACEMENT_POSITION_VALUES,
-    Y_PLACEMENT_POSITION_VALUES,
-  } from './utils';
-  import type { XPlacement, YPlacement, Placement } from './types';
+  export let nested: boolean = false;
 
-  export let placement: Placement = 'bottom-start';
-
-  let menu: HTMLUListElement;
-
-  function calculateMenuPlacement(): void {
-    const [y, x] = placement.split('-');
-
-    menu.style.top = Y_PLACEMENT_POSITION_VALUES[y as YPlacement];
-    menu.style.left = X_PLACEMENT_POSITION_VALUES[x as XPlacement];
+  function getMenuPlacement(): string {
+    return nested
+      ? `top: 0; left: 100%; padding-left: ${BASE_SPACING * 2}px`
+      : 'top: 100%; left: 0';
   }
-
-  onMount(() => {
-    calculateMenuPlacement();
-  });
 </script>
 
-<ul bind:this={menu}>
-  <slot />
-</ul>
+<div class="wrapper" style={getMenuPlacement()}>
+  <ul>
+    <slot />
+  </ul>
+</div>
 
 <style lang="scss">
-  ul {
+  .wrapper {
     position: absolute;
     z-index: 100;
+  }
+
+  ul {
     padding: spacing(0.5);
     border: 1px solid $modal-border-color;
     border-radius: $border-radius;
