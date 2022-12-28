@@ -36,5 +36,6 @@ module.exports = {
     '@typescript-eslint/triple-slash-reference': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/consistent-type-definitions': 'off',
+    '@typescript-eslint/return-await': 'off',
   },
 };
