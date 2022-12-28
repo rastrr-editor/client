@@ -44,6 +44,6 @@
     "*.{css,scss,json,svg,js,cjs,html,md}": "prettier --write --ignore-unknown"
   },
   "dependencies": {
-    "@rastrr-editor/core": "0.9.1"
+    "@rastrr-editor/core": "^0.10.0"
   }
 }

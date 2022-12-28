@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Color, LayerFactory, type Viewport } from '@rastrr-editor/core';
+  import { getCoords } from '~/shared/lib/dom';
   import { LayersIcon, AddIcon } from '~/shared/ui/icons';
   import InvisibleIcon from '~/shared/ui/icons/invisible-icon.svelte';
   import VisibleIcon from '~/shared/ui/icons/visible-icon.svelte';
@@ -12,7 +13,7 @@
     ? getReversedIndex(viewport?.layers.activeIndex)
     : undefined;
 
-  $: createdCount = viewport && 0;
+  $: createdCount = (viewport && 0) || 0;
 
   function getIndex(reversedIndex: number): number {
     return (viewport?.layers.length ?? 0) - 1 - reversedIndex;
@@ -56,6 +57,130 @@
       layers[reversedIndex] = layer;
     }
   }
+
+  // TODO: refactor to a drag&drop action
+  let list: HTMLElement;
+  let nodes: Array<{
+    el: HTMLElement;
+    top: number;
+    left: number;
+    bottom: number;
+    right: number;
+  }>;
+  let originalPosition: number;
+  let newPosition: number;
+  let dragNode: HTMLElement;
+  let cloneNode: HTMLElement;
+  let shiftX: number;
+  let shiftY: number;
+  let isDragging = false;
+
+  function dragStart(this: HTMLElement, event: MouseEvent) {
+    const { top, left } = getCoords(this);
+    const startDrag = () => {
+      nodes = Array.from(list.querySelectorAll('li'), (el) => ({
+        el,
+        ...getCoords(el),
+      }));
+      newPosition = originalPosition = nodes.findIndex(({ el }) => el === this);
+      isDragging = true;
+      const { clientX, clientY } = event;
+      shiftX = clientX - left;
+      shiftY = clientY - top;
+      cloneNode = this.cloneNode(true) as HTMLElement;
+      cloneNode.style.display = 'none';
+      cloneNode.classList.add('mirror');
+      this.after(cloneNode);
+      dragNode = this.cloneNode(true) as HTMLElement;
+      this.parentElement!.append(dragNode);
+      dragNode.focus();
+      dragNode.style.width = `${this.clientWidth}px`;
+      dragNode.style.position = 'fixed';
+      dragNode.style.top = '0px';
+      dragNode.style.left = '0px';
+      dragNode.style.transform = `translate3d(${event.pageX - shiftX}px, ${
+        event.pageY - shiftY
+      }px, 0px)`;
+      dragNode.style.zIndex = '1';
+      document.addEventListener('pointermove', dragMove);
+      document.addEventListener(
+        'pointerup',
+        createDragEnd(this, dragNode, cloneNode)
+      );
+
+      this.classList.add('dragging');
+    };
+    const timeout = setTimeout(startDrag, 150);
+
+    // User clicked
+    this.addEventListener(
+      'pointerup',
+      () => {
+        clearTimeout(timeout);
+      },
+      { once: true }
+    );
+  }
+
+  function dragMove(event: MouseEvent) {
+    if (dragNode) {
+      dragNode.style.transform = `translate3d(${event.pageX - shiftX}px, ${
+        event.pageY - shiftY
+      }px, 0px)`;
+      for (let i = 0; i < nodes.length; i += 1) {
+        const node = nodes[i];
+        const topDiff = event.pageY - node.top;
+        const bottomDiff = node.bottom - event.pageY;
+        // Vertical
+        if (topDiff > 0 && bottomDiff > 0) {
+          if (i === originalPosition) {
+            cloneNode.style.display = 'none';
+            node.el.after(cloneNode);
+          } else {
+            if (topDiff > bottomDiff && i + 1 !== originalPosition) {
+              cloneNode.style.display = getComputedStyle(dragNode).display;
+              node.el.after(cloneNode);
+            } else if (topDiff < bottomDiff && i - 1 !== originalPosition) {
+              cloneNode.style.display = getComputedStyle(dragNode).display;
+              node.el.before(cloneNode);
+            }
+          }
+          break;
+        }
+      }
+    }
+  }
+
+  function createDragEnd(
+    original: HTMLElement,
+    dragNode: HTMLElement,
+    cloneNode: HTMLElement
+  ): (event: MouseEvent) => void {
+    const pointerup = function () {
+      dragNode.remove();
+      cloneNode.after(original);
+      cloneNode.remove();
+      const newPosition = Array.from(list.children).indexOf(original);
+      original.classList.remove('dragging');
+      document.removeEventListener('pointermove', dragMove);
+      document.removeEventListener('pointerup', pointerup);
+      isDragging = false;
+      console.log('prev', originalPosition, 'next', newPosition);
+
+      if (viewport && originalPosition !== newPosition) {
+        viewport.layers.changePosition(
+          getIndex(originalPosition),
+          getIndex(newPosition)
+        );
+        layers = getLayers();
+        console.log(layers);
+        if (viewport.layers.activeIndex) {
+          activeIndex = getReversedIndex(viewport.layers.activeIndex);
+        }
+      }
+    };
+    return pointerup;
+  }
 </script>
 
 <!-- TODO: create shared ui for dock panels -->
@@ -67,11 +192,12 @@
       ><AddIcon /></button
     >
   </div>
-  <ul>
-    {#each layers as layer, reversedIndex}
+  <ul bind:this={list}>
+    {#each layers as layer, reversedIndex (layer.id)}
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <li
         class:active={reversedIndex === activeIndex}
+        on:pointerdown={dragStart}
         on:click={() => setActive(reversedIndex)}
       >
         {layer.name}
@@ -142,13 +268,17 @@
 
     li {
       position: relative;
+      /* TODO: create mixin */
       width: 100%;
-      padding: spacing(2);
+      padding: spacing(1);
       border-radius: $border-radius;
       text-align-last: left;
       transition: background-color $animation-time;
       background-color: $bg-main;
       border: 1px solid transparent;
+      user-select: none;
+      @include typography(body2);
+      line-height: 1.2;
 
       &:hover {
         background-color: #5f7079;
@@ -161,6 +291,25 @@
 
       &.active {
         border-color: $border-active-color;
+      }
+
+      &:global(.dragging),
+      &:global(.mirror) {
+        background-color: transparent;
+        opacity: 0.2;
+        color: transparent;
+
+        :global(svg) {
+          color: transparent;
+        }
+      }
+
+      &:global(.dragging) {
+        border-color: $border-active-color;
+      }
+
+      &:global(.mirror) {
+        background-color: $border-active-color;
       }
 
       + li {
