@@ -53,7 +53,7 @@
     @include typography(body3);
 
     position: relative;
-    top: 8px;
+    top: spacing(1);
   }
 
   .wrapper {
