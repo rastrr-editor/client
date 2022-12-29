@@ -38,8 +38,4 @@
       font-size: 1.25rem;
     }
   }
-
-  .tooltip {
-    background-color: $bg-main;
-  }
 </style>
