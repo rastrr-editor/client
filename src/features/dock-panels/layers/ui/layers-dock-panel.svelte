@@ -1,57 +1,58 @@
 <script lang="ts">
-  import { Color, LayerFactory, type Viewport } from '@rastrr-editor/core';
+  import { Color, LayerFactory, type LayerList } from '@rastrr-editor/core';
   import { draggable } from '~/shared/lib/actions';
   import { LayersIcon, AddIcon } from '~/shared/ui/icons';
   import InvisibleIcon from '~/shared/ui/icons/invisible-icon.svelte';
   import VisibleIcon from '~/shared/ui/icons/visible-icon.svelte';
 
-  export let viewport: Viewport | null = null;
+  export let layerList: LayerList | null = null;
+  export let canvasSize: Rastrr.Point = { x: 0, y: 0 };
 
-  $: layers = Array.from(viewport?.layers?.reverse() ?? []);
+  $: layers = Array.from(layerList?.reverse() ?? []);
 
-  $: activeIndex = viewport?.layers.activeIndex
-    ? getReversedIndex(viewport?.layers.activeIndex)
+  $: activeIndex = layerList?.activeIndex
+    ? getReversedIndex(layerList?.activeIndex)
     : undefined;
 
-  $: createdCount = (viewport && 0) || 0;
+  $: createdCount = (layerList && 0) || 0;
 
   function getIndex(reversedIndex: number): number {
-    return (viewport?.layers.length ?? 0) - 1 - reversedIndex;
+    return (layerList?.length ?? 0) - 1 - reversedIndex;
   }
 
   function getReversedIndex(index: number): number {
-    return (viewport?.layers.length ?? 0) - 1 - index;
+    return (layerList?.length ?? 0) - 1 - index;
   }
 
   function getLayers() {
-    return Array.from(viewport?.layers?.reverse() ?? []);
+    return Array.from(layerList?.reverse() ?? []);
   }
 
   function addLayer() {
-    if (!viewport) return;
+    if (!layerList) return;
     // TODO: factory should be a global object
     const layer = LayerFactory.setType('canvas').filled(
-      viewport.options.canvasSize.x,
-      viewport.options.canvasSize.y,
+      canvasSize.x,
+      canvasSize.y,
       new Color(0, 0, 0, 0)
     );
     layer.name = `Новый слой${createdCount > 0 ? ` ${createdCount}` : ''}`;
     createdCount += 1;
-    viewport.layers.add(layer);
-    viewport.layers.setActive(viewport.layers.length - 1);
-    activeIndex = getReversedIndex(viewport.layers.length - 1);
+    layerList.add(layer);
+    layerList.setActive(layerList.length - 1);
+    activeIndex = getReversedIndex(layerList.length - 1);
     layers = getLayers();
   }
 
   function setActive(reversedIndex: number) {
-    viewport?.layers.setActive(getIndex(reversedIndex));
+    layerList?.setActive(getIndex(reversedIndex));
     activeIndex = reversedIndex;
   }
 
   function setVisible(reversedIndex: number, visible: boolean) {
-    if (!viewport) return;
+    if (!layerList) return;
 
-    const layer = viewport.layers.get(getIndex(reversedIndex));
+    const layer = layerList.get(getIndex(reversedIndex));
     if (layer) {
       layer.setVisible(visible);
       layers[reversedIndex] = layer;
@@ -59,11 +60,11 @@
   }
 
   const dropCallback = (prevIndex: number, nextIndex: number) => {
-    if (viewport && prevIndex !== nextIndex) {
-      viewport.layers.changePosition(getIndex(prevIndex), getIndex(nextIndex));
+    if (layerList && prevIndex !== nextIndex) {
+      layerList.changePosition(getIndex(prevIndex), getIndex(nextIndex));
       layers = getLayers();
-      if (viewport.layers.activeIndex != null) {
-        activeIndex = getReversedIndex(viewport.layers.activeIndex);
+      if (layerList.activeIndex != null) {
+        activeIndex = getReversedIndex(layerList.activeIndex);
       }
     }
   };
@@ -74,7 +75,7 @@
   <div class="heading">
     <LayersIcon />
     <h3>Слои</h3>
-    <button class="add" on:click={addLayer} disabled={!viewport}
+    <button class="add" on:click={addLayer} disabled={!layerList}
       ><AddIcon /></button
     >
   </div>
