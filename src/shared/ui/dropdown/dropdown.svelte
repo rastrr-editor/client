@@ -7,8 +7,6 @@
   export let hover: boolean = false;
   export let nested: boolean = false;
 
-  let elm: HTMLElement;
-
   function openMenu(): void {
     open = true;
   }
