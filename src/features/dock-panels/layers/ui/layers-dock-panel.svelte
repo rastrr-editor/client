@@ -58,11 +58,11 @@
     }
   }
 
-  const dropCallback = (prevIndex: number, newIndex: number) => {
-    if (viewport && prevIndex !== newIndex) {
-      viewport.layers.changePosition(getIndex(prevIndex), getIndex(newIndex));
+  const dropCallback = (prevIndex: number, nextIndex: number) => {
+    if (viewport && prevIndex !== nextIndex) {
+      viewport.layers.changePosition(getIndex(prevIndex), getIndex(nextIndex));
       layers = getLayers();
-      if (viewport.layers.activeIndex) {
+      if (viewport.layers.activeIndex != null) {
         activeIndex = getReversedIndex(viewport.layers.activeIndex);
       }
     }
