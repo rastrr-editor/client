@@ -11,13 +11,14 @@ import type { Tool, ToolCreateCommandOptions } from '~/entities/tool';
 import { toolStore } from '~/entities/tool';
 import type { BrushOptions } from '../types';
 import { options as defaultOptions } from './store';
+import * as constants from './constants';
 
 export default class BrushTool implements Tool<BrushOptions, PointerEvent> {
   #options: BrushOptions;
   #unsubscribe: () => void = () => {};
-  readonly id: string = 'brush';
-  readonly name: string = 'Кисть';
-  readonly hotkey: string = 'B';
+  readonly id: string = constants.id;
+  readonly name: string = constants.name;
+  readonly hotkey: string = constants.hotkey;
 
   constructor(options?: BrushOptions) {
     this.#options = options ?? get(defaultOptions);
