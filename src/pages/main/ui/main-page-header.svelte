@@ -36,13 +36,13 @@
             on:click={() => (openFileMenu = true)}>Файл</button
           >
           <DropdownMenu slot="menu">
-            <DropdownMenuItem on:click={() => dispatch('createNewProject')}
-              >Создать новый файл</DropdownMenuItem
-            >
+            <DropdownMenuItem on:click={() => dispatch('createNewProject')}>
+              Создать новый файл
+            </DropdownMenuItem>
 
-            <DropdownMenuItem on:click={() => console.log('Save...')}
-              >Сохранить проект</DropdownMenuItem
-            >
+            <!-- <DropdownMenuItem on:click={() => console.log('Save...')}>
+              Сохранить проект
+            </DropdownMenuItem>
 
             <Dropdown nested hover>
               <DropdownMenuItem nested>Сохранить как</DropdownMenuItem>
@@ -50,17 +50,8 @@
               <DropdownMenu slot="menu" nested>
                 <DropdownMenuItem>JPEG</DropdownMenuItem>
                 <DropdownMenuItem>PNG</DropdownMenuItem>
-
-                <Dropdown nested hover>
-                  <DropdownMenuItem nested>WTF</DropdownMenuItem>
-
-                  <DropdownMenu slot="menu" nested>
-                    <DropdownMenuItem>Foo</DropdownMenuItem>
-                    <DropdownMenuItem>Bar</DropdownMenuItem>
-                  </DropdownMenu>
-                </Dropdown>
               </DropdownMenu>
-            </Dropdown>
+            </Dropdown> -->
           </DropdownMenu>
         </Dropdown>
       </li>
