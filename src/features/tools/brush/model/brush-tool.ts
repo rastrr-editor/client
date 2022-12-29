@@ -75,15 +75,13 @@ export default class BrushTool implements Tool<BrushOptions, PointerEvent> {
             events.onlyEvent('pointerup')
           )
         ),
-        (e) => {
-          console.log(coords, 'x', e.pageX, 'y', e.pageY);
-          return !(
-            e.pageX < coords.left ||
-            e.pageX > coords.right ||
-            e.pageY < coords.top ||
-            e.pageY > coords.bottom
-          );
-        }
+        (e) =>
+          !(
+            e.offsetX < coords.left ||
+            e.offsetX > coords.right ||
+            e.offsetY < coords.top ||
+            e.offsetY > coords.bottom
+          )
       ),
       (e) => ({
         x: e.offsetX - viewport.offset.x,
