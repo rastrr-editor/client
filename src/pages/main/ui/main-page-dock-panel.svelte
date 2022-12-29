@@ -4,7 +4,10 @@
 </script>
 
 <aside>
-  <LayersDockPanel viewport={$viewport} />
+  <LayersDockPanel
+    layerList={$viewport?.layers}
+    canvasSize={$viewport?.options.canvasSize}
+  />
 </aside>
 
 <style lang="scss">
