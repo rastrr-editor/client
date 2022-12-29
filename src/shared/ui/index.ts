@@ -6,3 +6,4 @@ export { Range } from './range';
 export { Search } from './search';
 export { Modal } from './modal';
 export { Tooltip } from './tooltip';
+export { Dropdown, DropdownMenu, DropdownMenuItem } from './dropdown';

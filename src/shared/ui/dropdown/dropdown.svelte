@@ -5,7 +5,6 @@
 
   export let open: boolean = false;
   export let hover: boolean = false;
-  export let autoClose: boolean = false;
   export let nested: boolean = false;
 
   function openMenu(): void {
@@ -17,7 +16,7 @@
   }
 
   function hideMenuByKeydown(event: KeyboardEvent): void {
-    if (event.key === 'Escape') {
+    if (event.key === 'Escape' || event.code === 'Escape') {
       open = false;
     }
   }
@@ -25,7 +24,7 @@
 
 <svelte:element
   this={nested ? 'li' : 'div'}
-  class="wrapper"
+  class="root"
   use:clickOutside={!hover ? hideMenu : noop}
   on:mouseenter={hover ? openMenu : undefined}
   on:mouseleave={hover ? hideMenu : undefined}
@@ -33,19 +32,29 @@
   on:blur|capture={hover ? hideMenu : undefined}
   on:keydown|capture={hideMenuByKeydown}
 >
-  <div class="trigger">
-    <slot />
-  </div>
+  <slot />
 
-  {#if open}
-    <div on:click={autoClose ? hideMenu : undefined} on:keyup>
-      <slot name="menu" />
-    </div>
-  {/if}
+  <div
+    class="menu"
+    class:open
+    on:click={hideMenu}
+    on:contextmenu={hideMenu}
+    on:keydown={noop}
+  >
+    <slot name="menu" />
+  </div>
 </svelte:element>
 
 <style lang="scss">
-  .wrapper {
+  .root {
     position: relative;
+  }
+
+  .menu {
+    visibility: hidden;
+  }
+
+  .open {
+    visibility: visible;
   }
 </style>
