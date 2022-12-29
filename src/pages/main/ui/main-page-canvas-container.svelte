@@ -3,7 +3,7 @@
   import { LayerFactory, Viewport } from '@rastrr-editor/core';
   import { onMount } from 'svelte';
   import { projectStore } from '~/entities/project';
-  import { toolStore } from '~/entities/tool';
+  import { toolStore, type Tool } from '~/entities/tool';
   import { viewport as viewportStore } from '../model/store';
   import { chooseColorStore } from '~/features/tools/choose-color';
 
@@ -14,9 +14,16 @@
 
   // NOTE: this is WIP - refactor nedeed
   onMount(() => {
-    container.addEventListener('pointerdown', (event) => {
-      const viewport = get(viewportStore);
-      const activeTool = get(toolStore.activeTool);
+    let viewport: Viewport | null = null;
+    let activeTool: Tool<any, any> | null = null;
+    const unsubsribeViewport = viewportStore.subscribe((value) => {
+      viewport = value;
+    });
+    const unsubsribeActiveTool = toolStore.activeTool.subscribe((value) => {
+      activeTool = value;
+    });
+
+    const onPointerDown = (event: MouseEvent) => {
       if (event.button === 0 && activeTool && viewport) {
         const command = activeTool.createCommand(viewport, {
           triggerEvent: event,
@@ -27,7 +34,13 @@
           console.log(`Command '${command.name}' result: ${done}`)
         );
       }
-    });
+    };
+    container.addEventListener('pointerdown', onPointerDown);
+    return () => {
+      unsubsribeViewport();
+      unsubsribeActiveTool();
+      container.removeEventListener('pointerdown', onPointerDown);
+    };
   });
 
   projectStore.activeProject.subscribe((newProject) => {
