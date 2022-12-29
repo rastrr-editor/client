@@ -12,6 +12,7 @@ import { toolStore } from '~/entities/tool';
 import type { BrushOptions } from '../types';
 import { options as defaultOptions } from './store';
 import * as constants from './constants';
+import { getCoords } from '~/shared/lib/dom';
 
 export default class BrushTool implements Tool<BrushOptions, PointerEvent> {
   #options: BrushOptions;
@@ -60,17 +61,29 @@ export default class BrushTool implements Tool<BrushOptions, PointerEvent> {
     if (viewport.layers.activeLayer == null) {
       return null;
     }
+    const coords = getCoords(viewport.container);
     // TODO: refactor using dot notation
     const iterable = asyncIter.map(
-      asyncIter.seq(
-        asyncIter.toAsyncIter([triggerEvent]),
-        asyncIter.until(
-          asyncIter.any(
-            events.on(viewport.container, 'pointermove'),
-            events.on(viewport.container, 'pointerup')
-          ),
-          events.onlyEvent('pointerup')
-        )
+      asyncIter.every(
+        asyncIter.seq(
+          asyncIter.toAsyncIter([triggerEvent]),
+          asyncIter.until(
+            asyncIter.any(
+              events.on(document.body, 'pointermove'),
+              events.on(document.body, 'pointerup')
+            ),
+            events.onlyEvent('pointerup')
+          )
+        ),
+        (e) => {
+          console.log(coords, 'x', e.pageX, 'y', e.pageY);
+          return !(
+            e.pageX < coords.left ||
+            e.pageX > coords.right ||
+            e.pageY < coords.top ||
+            e.pageY > coords.bottom
+          );
+        }
       ),
       (e) => ({
         x: e.offsetX - viewport.offset.x,
