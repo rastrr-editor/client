@@ -1,4 +1,5 @@
 <script lang="ts">
+  // TODO: handle window resize
   import { tick, onDestroy, afterUpdate, createEventDispatcher } from 'svelte';
   import { noop } from 'svelte/internal';
 
@@ -119,10 +120,10 @@
     position: fixed;
     z-index: 100;
     visibility: hidden;
-    padding: spacing(2);
+    padding: spacing(3);
     border: 1px solid $modal-border-color;
     border-radius: $border-radius;
-    background-color: $bg-extra;
+    background-color: var(--tooltip-background-color, #{$bg-extra});
   }
 
   .open {
