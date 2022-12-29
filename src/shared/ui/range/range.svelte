@@ -35,6 +35,7 @@
         {units}
         max={$$restProps.max ?? 100}
         bind:value
+        on:change
         densed
         noBorder
         fitWidth
