@@ -15,6 +15,7 @@ export interface Tool<TOption, TEvent> {
     viewport: Viewport,
     options: ToolCreateCommandOptions<TEvent>
   ) => Command | null;
+  destroy: () => void;
 }
 
 export interface ToolOptionsTooltipProps {

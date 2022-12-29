@@ -64,4 +64,6 @@ export default class BrushTool implements Tool<BrushOptions, PointerEvent> {
       width: this.#options.size,
     });
   }
+
+  destroy(): void {}
 }
