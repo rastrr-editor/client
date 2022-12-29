@@ -56,6 +56,7 @@
   });
 </script>
 
+<!-- NOTE: max cursor size is 128 x 128, @see https://developer.mozilla.org/en-US/docs/Web/CSS/cursor#icon_size_limits -->
 <main
   id="canvas-container"
   style:--cursor={$toolCursor}
