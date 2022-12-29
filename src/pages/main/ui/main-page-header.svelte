@@ -138,18 +138,6 @@
   .dropdown {
     position: relative;
     padding-right: spacing(3);
-
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: spacing(1);
-      right: spacing(1);
-      display: block;
-      width: 6px;
-      height: 6px;
-      border: 3px solid transparent;
-      border-bottom-color: rgba(217, 217, 217, 0.3);
-      border-right-color: rgba(217, 217, 217, 0.3);
-    }
+    @include triangle;
   }
 </style>

@@ -1,15 +1,33 @@
-import { BrushCommand, Viewport, events, asyncIter } from '@rastrr-editor/core';
+import type { ColorRange } from '@rastrr-editor/core';
+import {
+  BrushCommand,
+  Viewport,
+  events,
+  asyncIter,
+  Color,
+} from '@rastrr-editor/core';
+import { get } from 'svelte/store';
 import type { Tool, ToolCreateCommandOptions } from '~/entities/tool';
+import { toolStore } from '~/entities/tool';
 import type { BrushOptions } from '../types';
+import { options as defaultOptions } from './store';
+import * as constants from './constants';
 
 export default class BrushTool implements Tool<BrushOptions, PointerEvent> {
   #options: BrushOptions;
-  readonly id: string = 'brush';
-  readonly name: string = 'Кисть';
-  readonly hotkey: string = 'B';
+  #unsubscribe: () => void = () => {};
+  readonly id: string = constants.id;
+  readonly name: string = constants.name;
+  readonly hotkey: string = constants.hotkey;
 
-  constructor(options: BrushOptions = { size: 1 }) {
-    this.#options = options;
+  constructor(options?: BrushOptions) {
+    this.#options = options ?? get(defaultOptions);
+    if (options == null) {
+      this.#unsubscribe = defaultOptions.subscribe((value) => {
+        this.#options = value;
+        toolStore.toolCursor.set(this.getCursor());
+      });
+    }
   }
 
   getCursor(): string {
@@ -60,8 +78,18 @@ export default class BrushTool implements Tool<BrushOptions, PointerEvent> {
       })
     );
     return new BrushCommand(viewport.layers, iterable, {
-      color,
+      // TODO: reconsider constructor args or add opacity method for color
+      color: new Color(
+        color.r,
+        color.g,
+        color.b,
+        Math.round(Math.min(this.#options.opacity, 1) * 255) as ColorRange
+      ),
       width: this.#options.size,
     });
+  }
+
+  destroy(): void {
+    this.#unsubscribe();
   }
 }

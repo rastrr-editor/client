@@ -7,11 +7,9 @@
   import { viewport as viewportStore } from '../model/store';
   import { chooseColorStore } from '~/features/tools/choose-color';
 
+  const { toolCursor } = toolStore;
+
   let container: HTMLElement;
-  let cursor = '';
-  toolStore.activeTool.subscribe((tool) => {
-    cursor = tool?.getCursor() ?? 'url(/icons/cursor-default.svg)';
-  });
   const CanvasLayerFactory = LayerFactory.setType('canvas');
 
   // NOTE: this is WIP - refactor nedeed
@@ -58,7 +56,11 @@
   });
 </script>
 
-<main id="canvas-container" style:--cursor={cursor} bind:this={container} />
+<main
+  id="canvas-container"
+  style:--cursor={$toolCursor}
+  bind:this={container}
+/>
 
 <style lang="scss">
   #canvas-container {

@@ -15,4 +15,11 @@ export interface Tool<TOption, TEvent> {
     viewport: Viewport,
     options: ToolCreateCommandOptions<TEvent>
   ) => Command | null;
+  destroy: () => void;
+}
+
+export interface ToolOptionsTooltipProps {
+  show: boolean;
+  trigger: HTMLElement;
+  placement: 'top' | 'right';
 }
