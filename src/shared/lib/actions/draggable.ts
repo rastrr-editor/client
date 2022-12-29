@@ -86,46 +86,15 @@ const draggable: Action = (
 
 export default draggable;
 
-function createDragNode(el: HTMLElement): HTMLElement {
-  const dragNode = el.cloneNode(true) as HTMLElement;
-  dragNode.style.width = `${el.clientWidth}px`;
-  dragNode.style.position = 'fixed';
-  dragNode.style.top = '0px';
-  dragNode.style.left = '0px';
-  dragNode.style.zIndex = '1';
-  return dragNode;
-}
+// Drag event handlers
 
-function setDragNodePosition(
-  dragNode: HTMLElement,
-  event: MouseEvent,
-  shift: Rastrr.Point
-): void {
-  dragNode.style.transform = `translate3d(${event.pageX - shift.x}px, ${
-    event.pageY - shift.y
-  }px, 0px)`;
-}
-
-function setCloneNodePosition(
-  el: HTMLElement,
-  elIndex: number,
-  appendAfter: boolean,
-  { cloneNode, dragNode, index }: DragDataTransfter
-): void {
-  // Move clone node to new position in DOM
-  if (elIndex === index) {
-    cloneNode.style.display = 'none';
-    el.after(cloneNode);
-  } else {
-    cloneNode.style.display = getComputedStyle(dragNode).display;
-    if (appendAfter && elIndex + 1 !== index) {
-      el.after(cloneNode);
-    } else if (elIndex - 1 !== index) {
-      el.before(cloneNode);
-    }
-  }
-}
-
+/**
+ * This functions starts the drag event on "pointerdown" event
+ * after a timeout if user didn't perform the click
+ * @param node
+ * @param event
+ * @returns
+ */
 async function dragStart(
   node: DraggableNode,
   event: MouseEvent
@@ -165,6 +134,13 @@ async function dragStart(
   });
 }
 
+/**
+ * This function creates "pointermove" event handler
+ * which repositions the drag node on pointer move
+ * @param nodes Draggable nodes
+ * @param dataTransfer Drag data transfer object
+ * @returns "pointermove" event handler
+ */
 function createOnDragMove(
   nodes: DraggableNode[],
   dataTransfer: DragDataTransfter
@@ -186,6 +162,11 @@ function createOnDragMove(
   };
 }
 
+/**
+ * This function creates "pointerup" event handler
+ * @param param0 Drag end params
+ * @returns "pointerup" event handler
+ */
 function createOnDragEnd({
   draggableContainer,
   originalNode,
@@ -217,4 +198,62 @@ function createOnDragEnd({
     callback(prevIndex, nextIndex);
   };
   return pointerup;
+}
+
+// Helper functions for DOM nodes
+
+/**
+ * This function creates drag node which user will drag
+ * @param el Draggable DOM node
+ * @returns Drag DOM node
+ */
+function createDragNode(el: HTMLElement): HTMLElement {
+  const dragNode = el.cloneNode(true) as HTMLElement;
+  dragNode.style.width = `${el.clientWidth}px`;
+  dragNode.style.position = 'fixed';
+  dragNode.style.top = '0px';
+  dragNode.style.left = '0px';
+  dragNode.style.zIndex = '1';
+  return dragNode;
+}
+
+/**
+ * @param dragNode
+ * @param event Mouse event
+ * @param shift Cursor shift inside the node
+ */
+function setDragNodePosition(
+  dragNode: HTMLElement,
+  event: MouseEvent,
+  shift: Rastrr.Point
+): void {
+  dragNode.style.transform = `translate3d(${event.pageX - shift.x}px, ${
+    event.pageY - shift.y
+  }px, 0px)`;
+}
+
+/**
+ * This function updates the clone node position inside the DOM list
+ * @param el Draggable DOM node
+ * @param elIndex Draggable node index
+ * @param appendAfter Should append clone node after the draggable node
+ * @param param3 Drag data transfer
+ */
+function setCloneNodePosition(
+  el: HTMLElement,
+  elIndex: number,
+  appendAfter: boolean,
+  { cloneNode, dragNode, index }: DragDataTransfter
+): void {
+  if (elIndex === index) {
+    cloneNode.style.display = 'none';
+    el.after(cloneNode);
+  } else {
+    cloneNode.style.display = getComputedStyle(dragNode).display;
+    if (appendAfter && elIndex + 1 !== index) {
+      el.after(cloneNode);
+    } else if (elIndex - 1 !== index) {
+      el.before(cloneNode);
+    }
+  }
 }
