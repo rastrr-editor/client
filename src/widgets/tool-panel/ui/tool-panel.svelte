@@ -1,62 +1,69 @@
 <script lang="ts">
   import { ChooseColor } from '~/features/tools/choose-color';
   import { CursorIcon, BrushIcon } from '~/shared/ui/icons';
-  import { Tooltip } from '~/shared/ui/tooltip';
   import { toolStore } from '~/entities/tool';
-  import { BrushTool, brushToolId } from '~/features/tools/brush';
+  import {
+    BrushTool,
+    brushConstants,
+    BrushOptionsTooltip,
+  } from '~/features/tools/brush';
   import { position } from '../model/store';
+  import ToolHelpTooltip from '~/entities/tool/ui/tool-help-tooltip.svelte';
+
+  type ToolTooltip = {
+    show: boolean;
+    trigger: HTMLButtonElement | null;
+  };
 
   const { activeTool } = toolStore;
 
-  let brushTooltipTrigger: HTMLButtonElement;
-  let brushTooltipOpen = false;
+  let placement: 'top' | 'right';
+
+  $: placement = $position === 'bottom' ? 'top' : 'right';
+
+  const brushTooltip: ToolTooltip = {
+    show: false,
+    trigger: null,
+  };
 </script>
 
-<div
-  class="tool-panel"
-  class:bottom={$position === 'bottom'}
-  class:left={$position === 'left'}
->
-  <button on:click={() => activeTool.set(null)}><CursorIcon /></button>
-
-  <button
-    class:active={$activeTool?.id === brushToolId}
-    bind:this={brushTooltipTrigger}
-    on:click={() => activeTool.set(new BrushTool({ size: 10 }))}
-    on:contextmenu|preventDefault={() => (brushTooltipOpen = true)}
+<div>
+  <div
+    class="tool-panel"
+    class:bottom={$position === 'bottom'}
+    class:left={$position === 'left'}
   >
-    <BrushIcon />
-  </button>
+    <button on:click={() => activeTool.set(null)}><CursorIcon /></button>
 
-  <ChooseColor
-    orientation={$position === 'bottom' ? 'horizontal' : 'vertical'}
+    <button
+      class:active={$activeTool?.id === brushConstants.id}
+      class="withOptions"
+      bind:this={brushTooltip.trigger}
+      on:click={() => activeTool.set(new BrushTool())}
+      on:contextmenu|preventDefault={() => (brushTooltip.show = true)}
+    >
+      <BrushIcon />
+    </button>
+
+    <ChooseColor
+      orientation={$position === 'bottom' ? 'horizontal' : 'vertical'}
+    />
+  </div>
+
+  <ToolHelpTooltip
+    name={brushConstants.name}
+    hotkey={brushConstants.hotkey}
+    bind:show={brushTooltip.show}
+    trigger={brushTooltip.trigger}
+    {placement}
+  />
+
+  <BrushOptionsTooltip
+    bind:show={brushTooltip.show}
+    trigger={brushTooltip.trigger}
+    {placement}
   />
 </div>
-
-<Tooltip
-  bind:disabled={brushTooltipOpen}
-  trigger={brushTooltipTrigger}
-  placement={$position === 'bottom' ? 'top' : 'right'}
-  openDelay={400}
-  gap={4}
->
-  <div style="white-space: nowrap;">Hello, world!</div>
-</Tooltip>
-
-<Tooltip
-  bind:open={brushTooltipOpen}
-  trigger={brushTooltipTrigger}
-  placement={$position === 'bottom' ? 'top' : 'right'}
-  gap={4}
-  active
->
-  <div
-    style="white-space:nowrap; min-height: 200px; display: flex; flex-direction: column; align-items: center"
-  >
-    <p>Active tooltip with some interactive shit</p>
-    <input type="text" />
-  </div>
-</Tooltip>
 
 <style lang="scss">
   $border-radius: 8px;
@@ -98,7 +105,7 @@
     @include action-cursor;
     position: relative;
 
-    &::after {
+    &::before {
       box-sizing: content-box;
       content: '';
       z-index: -1;
@@ -111,7 +118,14 @@
       padding: 0.125rem 0.3125rem 0.375rem 0.1875rem;
     }
 
-    &.active::after {
+    &.withOptions {
+      @include triangle {
+        bottom: -0.175rem;
+        right: -0.125rem;
+      }
+    }
+
+    &.active::before {
       background-color: $bg-extra;
     }
 
