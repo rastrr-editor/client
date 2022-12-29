@@ -16,3 +16,9 @@ export interface Tool<TOption, TEvent> {
     options: ToolCreateCommandOptions<TEvent>
   ) => Command | null;
 }
+
+export interface ToolOptionsTooltipProps {
+  show: boolean;
+  trigger: HTMLElement;
+  placement: 'top' | 'right';
+}
