@@ -20,11 +20,11 @@
 
 <style lang="scss">
   .root {
-    display: grid;
-    grid-template-columns: 80% 20%;
+    display: flex;
 
     > div {
       position: relative;
+      flex: 8;
     }
   }
 </style>
