@@ -45,6 +45,10 @@
     align-items: center;
     color: $border-color;
 
+    > :global(svg) {
+      transition: color $animation-time;
+    }
+
     &.disabled {
       @include default-cursor;
     }
