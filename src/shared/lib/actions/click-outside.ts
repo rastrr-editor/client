@@ -10,6 +10,7 @@ const clickOutside: Action = (node: HTMLElement, callback: () => void) => {
   };
 
   document.body.addEventListener('click', handleClick, true);
+  document.body.addEventListener('contextmenu', handleClick, true);
 
   return {
     update(newCallback) {
@@ -17,6 +18,7 @@ const clickOutside: Action = (node: HTMLElement, callback: () => void) => {
     },
     destroy() {
       document.body.removeEventListener('click', handleClick, true);
+      document.body.removeEventListener('contextmenu', handleClick, true);
     },
   };
 };
