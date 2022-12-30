@@ -41,5 +41,9 @@
     &:disabled {
       @include default-cursor;
     }
+
+    > :global(svg) {
+      transition: color $animation-time;
+    }
   }
 </style>
