@@ -5,22 +5,12 @@
 <svg
   width="1em"
   height="1em"
-  viewBox="0 0 24 24"
+  viewBox="0 0 16 16"
   fill="none"
   stroke="currentColor"
   xmlns="http://www.w3.org/2000/svg"
   {...$$restProps}
 >
-  <path
-    d="M12 5v14m-7-7h14"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    stroke-width="1.5"
-  />
+  <path d="M8 3.33334V12.6667" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M3.33334 8H12.6667" stroke-linecap="round" stroke-linejoin="round" />
 </svg>
-
-<style lang="scss">
-  svg * {
-    transition: all $animation-time;
-  }
-</style>

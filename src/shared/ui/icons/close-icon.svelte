@@ -24,9 +24,3 @@
     stroke-linejoin="round"
   />
 </svg>
-
-<style lang="scss">
-  svg * {
-    transition: all $animation-time;
-  }
-</style>
