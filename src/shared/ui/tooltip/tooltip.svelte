@@ -1,5 +1,4 @@
 <script lang="ts">
-  // TODO: handle window resize
   import { tick, onDestroy, afterUpdate, createEventDispatcher } from 'svelte';
   import { noop } from 'svelte/internal';
 
@@ -100,6 +99,8 @@
     }
   });
 </script>
+
+<svelte:window on:resize={updateTooltipPosition} />
 
 <div
   role="tooltip"
