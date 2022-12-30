@@ -18,9 +18,3 @@
   />
   <path d="M14 14L10 10" />
 </svg>
-
-<style lang="scss">
-  svg * {
-    transition: all $animation-time;
-  }
-</style>
