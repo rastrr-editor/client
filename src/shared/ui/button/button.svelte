@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ButtonType } from './button.types';
+  import type { ButtonType } from './types';
 
   interface $$Props extends svelte.JSX.HTMLAttributes<HTMLButtonElement> {
     type?: ButtonType;
@@ -50,9 +50,10 @@
     }
 
     &:disabled {
+      @include default-cursor;
+
       background-color: $button-disabled-bg-color;
       color: $button-disabled-color;
-      cursor: url('/icons/cursor-default.svg'), auto;
     }
   }
 </style>
