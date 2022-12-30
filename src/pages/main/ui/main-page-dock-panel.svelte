@@ -12,6 +12,8 @@
 
 <style lang="scss">
   aside {
+    flex: 2;
+    min-width: 300px;
     border-left: 1px solid $border-color;
     background-color: $bg-extra;
   }
