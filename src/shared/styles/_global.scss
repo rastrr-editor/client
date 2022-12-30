@@ -5,12 +5,13 @@
 }
 
 body {
+  @include default-cursor;
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-family: "PT Root UI", sans-serif;
   font-weight: 400;
   color: $body-color;
-  cursor: url("/icons/cursor-default.svg"), auto;
 }
 
 h1 {
