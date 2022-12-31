@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { Color, LayerFactory, type LayerList } from '@rastrr-editor/core';
+  import { onDestroy } from 'svelte';
+  import {
+    Color,
+    LayerFactory,
+    type Layer,
+    type LayerList,
+  } from '@rastrr-editor/core';
   import { draggable } from '~/shared/lib/actions';
   import { DockPanel } from '~/entities/dock-panel';
   import { IconButton, Search, Range } from '~/shared/ui';
@@ -15,6 +21,26 @@
 
   let search: string = '';
 
+  $: opacity = Math.round((layerList?.activeLayer?.opacity ?? 1) * 100);
+
+  const onActiveChange = (index: number, layer: Layer) => {
+    console.log('active changed');
+    opacity = Math.round(layer.opacity * 100);
+  };
+
+  const onOpacityChange = (layer: Layer) => {
+    console.log('opacity changed');
+    if (layerList?.activeLayer === layer) {
+      opacity = Math.round(layer.opacity * 100);
+    }
+  };
+
+  $: {
+    // NOTE: it would be better to implement custom store
+    layerList?.emitter.on('activeChange', onActiveChange);
+    layerList?.emitter.on('opacityChange', onOpacityChange);
+  }
+
   $: layers = Array.from(layerList?.reverse() ?? []).filter(
     (x) => x.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
   );
@@ -24,6 +50,11 @@
     : undefined;
 
   $: createdCount = (layerList && 0) || 0;
+
+  onDestroy(() => {
+    layerList?.emitter.off('activeChange', onActiveChange);
+    layerList?.emitter.off('opacityChange', onOpacityChange);
+  });
 
   function getIndex(reversedIndex: number): number {
     return (layerList?.length ?? 0) - 1 - reversedIndex;
@@ -68,6 +99,15 @@
     }
   }
 
+  function setOpacity(e: Event) {
+    const opacity = parseInt((e.target as HTMLInputElement).value, 10);
+    if (Number.isSafeInteger(opacity)) {
+      layerList?.activeLayer?.setOpacity(
+        Math.min(Math.max(0, opacity / 100), 1)
+      );
+    }
+  }
+
   const dropCallback = (prevIndex: number, nextIndex: number) => {
     if (layerList && prevIndex !== nextIndex) {
       layerList.changePosition(getIndex(prevIndex), getIndex(nextIndex));
@@ -102,6 +142,8 @@
     <Range
       class="transparency-range"
       units="%"
+      value={opacity}
+      on:change={setOpacity}
       min={0}
       max={100}
       disabled={!layerList}
