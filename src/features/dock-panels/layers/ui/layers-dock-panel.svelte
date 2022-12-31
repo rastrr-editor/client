@@ -79,7 +79,7 @@
   <LayersIcon slot="icon" />
 
   <div slot="actions" class="panel-actions">
-    <Search class="layer-search" disabled={!layerList} />
+    <Search class="layer-search" placeholder="Поиск" disabled={!layerList} />
     <IconButton
       aria-label="Add layer"
       class="add"
@@ -89,7 +89,7 @@
   </div>
 
   <div slot="addons" class="layer-transparency">
-    <span>Прозрачность</span>
+    <span>Непрозрачность</span>
     <Range
       class="transparency-range"
       units="%"
@@ -157,6 +157,7 @@
 
   ul {
     list-style-type: none;
+    margin: spacing(1.5) 0;
     padding: spacing(0.5);
     max-height: spacing(72);
     overflow-y: auto;
@@ -235,7 +236,7 @@
 
       :global(svg) {
         font-size: 0.75rem;
-        color: #fff;
+        color: $body-color;
       }
 
       &.deactivated {
