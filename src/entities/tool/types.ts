@@ -8,7 +8,7 @@ export type ToolCreateCommandOptions<TEvent> = {
 export interface Tool<TOption, TEvent> {
   id: string;
   name: string;
-  hotkey: string;
+  hotkey: string | null;
   getCursor: () => string | null;
   setOptions: (options: TOption) => void;
   createCommand: (
