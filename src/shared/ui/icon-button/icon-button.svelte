@@ -26,13 +26,11 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
     font-size: 1rem;
     color: $border-color;
 
-    &:hover,
-    &:focus {
+    &:not(:disabled):hover,
+    &:not(:disabled):focus-visible {
       color: $body-color;
     }
 
@@ -41,7 +39,11 @@
     }
 
     &:disabled {
-      color: $border-color;
+      @include default-cursor;
+    }
+
+    > :global(svg) {
+      transition: color $animation-time;
     }
   }
 </style>

@@ -1,9 +1,14 @@
 <script lang="ts">
   import { Color, LayerFactory, type LayerList } from '@rastrr-editor/core';
   import { draggable } from '~/shared/lib/actions';
-  import { LayersIcon, AddIcon } from '~/shared/ui/icons';
-  import InvisibleIcon from '~/shared/ui/icons/invisible-icon.svelte';
-  import VisibleIcon from '~/shared/ui/icons/visible-icon.svelte';
+  import { DockPanel } from '~/entities/dock-panel';
+  import { IconButton, Search, Range } from '~/shared/ui';
+  import {
+    LayersIcon,
+    AddIcon,
+    VisibleIcon,
+    InvisibleIcon,
+  } from '~/shared/ui/icons';
 
   export let layerList: LayerList | null = null;
   export let canvasSize: Rastrr.Point = { x: 0, y: 0 };
@@ -70,15 +75,30 @@
   };
 </script>
 
-<!-- TODO: create shared ui for dock panels -->
-<section>
-  <div class="heading">
-    <LayersIcon />
-    <h3>Слои</h3>
-    <button class="add" on:click={addLayer} disabled={!layerList}
-      ><AddIcon /></button
+<DockPanel title="Слои">
+  <LayersIcon slot="icon" />
+
+  <div slot="actions" class="panel-actions">
+    <Search class="layer-search" placeholder="Поиск" disabled={!layerList} />
+    <IconButton
+      aria-label="Add layer"
+      class="add"
+      on:click={addLayer}
+      disabled={!layerList}><AddIcon /></IconButton
     >
   </div>
+
+  <div slot="addons" class="layer-transparency">
+    <span>Непрозрачность</span>
+    <Range
+      class="transparency-range"
+      units="%"
+      min={0}
+      max={100}
+      disabled={!layerList}
+    />
+  </div>
+
   <ul use:draggable={{ draggableSelector: 'li', callback: dropCallback }}>
     {#each layers as layer, reversedIndex (layer.id)}
       <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -103,51 +123,41 @@
       </li>
     {/each}
   </ul>
-</section>
+</DockPanel>
 
 <style lang="scss">
-  .heading {
-    background-color: $bg-main;
-    padding: spacing(1.25) spacing(3) spacing(1.5) spacing(2);
-    line-height: 1;
-    position: relative;
-    /* FIXME: this is a hack */
-    height: 1.75rem;
+  .panel-actions {
+    flex: 1;
+    display: flex;
+    align-items: center;
 
-    h3 {
-      display: inline-block;
-      margin: 0;
-      margin-left: calc(1.25rem + #{spacing(1.5)});
+    :global(.layer-search) {
+      margin-left: auto;
     }
 
-    > :global(svg) {
-      position: absolute;
-      top: spacing(1);
-      left: spacing(2);
-      font-size: 1.25rem;
-      color: $border-color;
+    :global(.add) {
+      margin-left: spacing(3);
     }
   }
 
-  .add {
-    @include reset-button(true);
-    @include action-cursor;
-    position: absolute;
-    top: spacing(1.5);
-    right: spacing(2);
+  .layer-transparency {
+    display: flex;
+    align-items: center;
+    margin-top: spacing(3);
 
-    &:disabled {
-      cursor: url('/icons/cursor-default.svg'), auto;
+    span {
+      @include typography(body3);
     }
 
-    > :global(svg) {
-      font-size: 1rem;
-      color: $border-color;
+    :global(.transparency-range) {
+      width: spacing(44.5);
+      margin-left: auto;
     }
   }
 
   ul {
     list-style-type: none;
+    margin: spacing(1.5) 0;
     padding: spacing(0.5);
     max-height: spacing(72);
     overflow-y: auto;
@@ -226,7 +236,7 @@
 
       :global(svg) {
         font-size: 0.75rem;
-        color: #fff;
+        color: $body-color;
       }
 
       &.deactivated {

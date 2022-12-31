@@ -13,6 +13,8 @@
 }
 
 @mixin style-input-field {
+  @include text-cursor;
+
   box-sizing: content-box;
   width: 100%;
   line-height: 1.2;
@@ -22,14 +24,13 @@
   font-size: 1rem;
   color: $body-color;
   transition: border-color $animation-time;
-  cursor: url("/icons/cursor-text.svg"), auto;
 
   &:focus {
     outline: none;
   }
 
   &:disabled {
-    cursor: url("/icons/cursor-default.svg"), auto;
+    @include default-cursor;
   }
 
   &::placeholder {

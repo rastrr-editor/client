@@ -5,22 +5,17 @@
 <svg
   width="1em"
   height="1em"
-  viewBox="0 0 16 16"
+  viewBox="0 0 24 24"
   fill="none"
   stroke="currentColor"
   stroke-linecap="round"
   stroke-linejoin="round"
+  stroke-width="2"
   xmlns="http://www.w3.org/2000/svg"
   {...$$restProps}
 >
   <path
-    d="M6.66667 11.3333C9.244 11.3333 11.3333 9.244 11.3333 6.66667C11.3333 4.08934 9.244 2 6.66667 2C4.08934 2 2 4.08934 2 6.66667C2 9.244 4.08934 11.3333 6.66667 11.3333Z"
+    d="M10 17C13.866 17 17 13.866 17 10C17 6.134 13.866 3 10 3C6.134 3 3 6.134 3 10C3 13.866 6.134 17 10 17Z"
   />
-  <path d="M14 14L10 10" />
+  <path d="M21 21L15 15" />
 </svg>
-
-<style lang="scss">
-  svg * {
-    transition: all $animation-time;
-  }
-</style>

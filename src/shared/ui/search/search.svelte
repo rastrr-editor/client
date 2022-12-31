@@ -3,12 +3,20 @@
 
   interface $$Props extends svelte.JSX.HTMLAttributes<HTMLInputElement> {
     value?: string;
+    class?: string;
   }
 
+  let className: string = '';
+
   export let value: string = '';
+  export { className as class };
 </script>
 
-<label class="container" class:filled={value.length > 0}>
+<label
+  class={`root ${className}`}
+  class:disabled={$$restProps.disabled}
+  class:filled={value.length > 0}
+>
   <SearchIcon />
 
   <input
@@ -32,17 +40,25 @@
 </label>
 
 <style lang="scss">
-  .container {
+  .root {
     display: flex;
     align-items: center;
     color: $border-color;
 
-    &:hover input {
+    > :global(svg) {
+      transition: color $animation-time;
+    }
+
+    &.disabled {
+      @include default-cursor;
+    }
+
+    &:not(.disabled):hover input {
       border-color: $input-hover-color;
     }
 
-    &.filled,
-    &:focus-within {
+    &:not(.disabled).filled,
+    &:not(.disabled):focus-within {
       color: $body-color;
 
       input {
@@ -52,6 +68,7 @@
   }
 
   input {
+    width: 100%;
     margin-left: spacing(2);
     padding: spacing(1) 0;
     border: none;
@@ -60,6 +77,10 @@
     font-size: 0.875rem;
     color: $body-color;
     transition: border-color $animation-time;
+
+    &:disabled {
+      @include default-cursor;
+    }
 
     &:focus {
       outline: none;

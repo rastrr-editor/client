@@ -1,7 +1,15 @@
+@mixin default-cursor {
+  cursor: url("/icons/cursor-default.svg"), auto;
+}
+
+@mixin text-cursor {
+  cursor: url("/icons/cursor-text.svg"), auto;
+}
+
 @mixin action-cursor {
   cursor: url("/icons/cursor-action.svg") 8 0, auto;
 
   &:active {
-    cursor: url("/icons/cursor-action-active.svg") 8 0, default;
+    cursor: url("/icons/cursor-action-active.svg") 8 1, default;
   }
 }

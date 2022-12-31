@@ -10,7 +10,7 @@ const tabbableElementsSelector = `
   *[contenteditable=true]
 `;
 
-const focusTrap: Action = (node: HTMLElement) => {
+const focusTrap: Action = (node: HTMLElement, active: boolean = true) => {
   const tabbableElements = [
     ...node.querySelectorAll<HTMLElement>(tabbableElementsSelector),
   ];
@@ -31,9 +31,18 @@ const focusTrap: Action = (node: HTMLElement) => {
     event.preventDefault();
   }
 
-  document.addEventListener('keydown', keyboardEventHandler, true);
+  if (active) {
+    document.addEventListener('keydown', keyboardEventHandler, true);
+  }
 
   return {
+    update(newActive: boolean) {
+      if (newActive) {
+        document.addEventListener('keydown', keyboardEventHandler, true);
+      } else {
+        document.removeEventListener('keydown', keyboardEventHandler, true);
+      }
+    },
     destroy() {
       document.removeEventListener('keydown', keyboardEventHandler, true);
     },

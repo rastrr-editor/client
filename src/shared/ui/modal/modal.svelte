@@ -1,7 +1,7 @@
 <script lang="ts">
   import { IconButton } from '~/shared/ui';
   import { CloseIcon } from '~/shared/ui/icons';
-  import focusTrap from './utils';
+  import { focusTrap } from '~/shared/lib/actions';
 
   import type { ModalSize } from './types';
 
@@ -14,7 +14,9 @@
   };
 
   function keyboardEventHandler(event: KeyboardEvent): void {
-    if (event.key === 'Escape') hide();
+    if (event.key === 'Escape' || event.code === 'Escape') {
+      hide();
+    }
   }
 </script>
 
@@ -24,7 +26,7 @@
     aria-modal="true"
     role="dialog"
     tabindex="-1"
-    use:focusTrap
+    use:focusTrap={open}
     on:keydown|preventDefault={keyboardEventHandler}
     on:click={hide}
   >
@@ -34,15 +36,11 @@
       on:click|stopPropagation
       on:keydown|stopPropagation={keyboardEventHandler}
     >
-      <div class="close-button">
-        <IconButton aria-label="Close modal" on:click={hide}>
-          <CloseIcon />
-        </IconButton>
-      </div>
+      <IconButton aria-label="Close modal" class="close-button" on:click={hide}>
+        <CloseIcon />
+      </IconButton>
 
-      <div class="modal-content">
-        <slot />
-      </div>
+      <slot />
     </div>
   </div>
 {/if}
@@ -68,12 +66,13 @@
     border: 1px solid $modal-border-color;
     border-radius: $border-radius;
     background-color: $bg-main;
-  }
 
-  .close-button {
-    position: absolute;
-    top: 16px;
-    right: 16px;
+    :global(.close-button) {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 1.5rem;
+    }
   }
 
   .densed {

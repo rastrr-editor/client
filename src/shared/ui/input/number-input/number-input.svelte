@@ -15,8 +15,11 @@
   export let noBorder: boolean = false;
   export let fitWidth: boolean = false;
 
-  $: width =
-    fitWidth && $$restProps.max ? `${String($$restProps.max).length}ch` : '';
+  function getNumericFieldWidth(): string {
+    return fitWidth && $$restProps.max
+      ? `${String($$restProps.max).length}ch`
+      : '';
+  }
 </script>
 
 <TextInput let:props {...$$restProps} {noBorder}>
@@ -24,7 +27,7 @@
     {...props}
     type="number"
     class:densed
-    style:width
+    style:width={getNumericFieldWidth()}
     bind:value
     on:input
     on:change
@@ -62,11 +65,11 @@
     padding-left: 0;
     font-size: 1rem;
     color: $placeholder-color;
-  }
 
-  .units.densed {
-    padding: spacing(1);
-    padding-left: 0;
-    font-size: 0.75rem;
+    &.densed {
+      padding: spacing(1);
+      padding-left: 0;
+      font-size: 0.75rem;
+    }
   }
 </style>

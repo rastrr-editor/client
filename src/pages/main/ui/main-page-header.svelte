@@ -33,6 +33,7 @@
         <Dropdown bind:open={openFileMenu}>
           <button
             class="menu-item dropdown"
+            class:active={openFileMenu}
             on:click={() => (openFileMenu = true)}>Файл</button
           >
           <DropdownMenu slot="menu">
@@ -60,6 +61,7 @@
         <Dropdown bind:open={openViewMenu}>
           <button
             class="menu-item dropdown"
+            class:active={openViewMenu}
             on:click={() => (openViewMenu = true)}>Вид</button
           >
           <DropdownMenu slot="menu">
@@ -134,6 +136,7 @@
     border-radius: $border-radius;
     transition: background-color $animation-time;
 
+    &.active,
     &:hover,
     &:focus-visible {
       background-color: $bg-extra;

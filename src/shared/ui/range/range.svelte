@@ -3,16 +3,20 @@
 
   interface $$Props extends svelte.JSX.HTMLAttributes<HTMLInputElement> {
     label?: string;
+    class?: string;
     units?: string;
     value?: number;
   }
 
+  let className: string = '';
+
+  export { className as class };
   export let label: string = '';
   export let units: string = '';
   export let value: number = 0;
 </script>
 
-<label class="container">
+<label class={`root ${className}`}>
   {#if label.length > 0}
     <span class="label">{label}</span>
   {/if}
@@ -45,7 +49,7 @@
 </label>
 
 <style lang="scss">
-  .container {
+  .root {
     display: block;
     cursor: inherit;
   }
@@ -72,8 +76,8 @@
     padding: spacing(2) 0;
     background-color: transparent;
 
-    &:hover,
-    &:focus {
+    &:not(:disabled):hover,
+    &:not(:disabled):focus {
       &::-webkit-slider-thumb {
         background-color: $button-hover-color;
       }
@@ -81,6 +85,10 @@
       &::-moz-range-thumb {
         background-color: $button-hover-color;
       }
+    }
+
+    &:disabled {
+      @include default-cursor;
     }
 
     &:focus {

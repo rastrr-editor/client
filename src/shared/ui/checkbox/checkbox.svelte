@@ -90,8 +90,8 @@
       opacity: 1;
     }
 
-    &:hover,
-    &:focus {
+    &:not(:disabled):hover,
+    &:not(:disabled):focus {
       border-color: $input-hover-color;
     }
 
@@ -105,11 +105,7 @@
 
     &,
     &:active {
-      cursor: url('/icons/cursor-default.svg'), auto;
-    }
-
-    input:hover {
-      border-color: $border-color;
+      @include default-cursor;
     }
   }
 </style>

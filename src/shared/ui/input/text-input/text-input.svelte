@@ -3,6 +3,7 @@
 
   interface $$Props extends svelte.JSX.HTMLAttributes<HTMLInputElement> {
     label?: string;
+    class?: string;
     type?: TextFieldType;
     value?: string | number;
     disabled?: boolean;
@@ -10,6 +11,9 @@
     noBorder?: boolean;
   }
 
+  let className: string = '';
+
+  export { className as class };
   export let label: string = '';
   export let type: TextFieldType = 'text';
   export let value: string | number = '';
@@ -25,7 +29,7 @@
   };
 </script>
 
-<label class="container" class:disabled>
+<label class={`root ${className}`} class:disabled>
   {#if label.length > 0}
     <span class="label">{label}</span>
   {/if}
@@ -57,7 +61,7 @@
 </label>
 
 <style lang="scss">
-  .container {
+  .root {
     display: flex;
     flex-direction: column;
     cursor: inherit;
@@ -72,7 +76,6 @@
   .wrapper {
     display: flex;
     align-items: center;
-    width: fit-content;
     border: 1px solid $border-color;
     border-radius: $border-radius;
     background-color: $bg-extra;

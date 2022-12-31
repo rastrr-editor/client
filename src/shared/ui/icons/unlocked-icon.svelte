@@ -5,26 +5,19 @@
 <svg
   width="1em"
   height="1em"
-  viewBox="0 0 8 11"
+  viewBox="0 0 24 24"
   fill="none"
   stroke="currentColor"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  stroke-width="2"
   xmlns="http://www.w3.org/2000/svg"
   {...$$restProps}
 >
   <path
-    d="M6.5 5.5H1.5C0.947715 5.5 0.5 5.94772 0.5 6.5V9.5C0.5 10.0523 0.947715 10.5 1.5 10.5H6.5C7.05228 10.5 7.5 10.0523 7.5 9.5V6.5C7.5 5.94772 7.05228 5.5 6.5 5.5Z"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    d="M17 11H7C5.895 11 5 11.895 5 13V19C5 20.105 5.895 21 7 21H17C18.105 21 19 20.105 19 19V13C19 11.895 18.105 11 17 11Z"
   />
   <path
-    d="M2 5.5V3C2 2.46957 2.21071 1.96086 2.58579 1.58579C2.96086 1.21071 3.46957 1 4 1C4.53043 1 5.03914 1.21071 5.41421 1.58579C5.78929 1.96086 6 2.46957 6 3"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    d="M8 11V6C8 4.939 8.421 3.922 9.172 3.172C9.922 2.421 10.939 2 12 2C13.061 2 14.078 2.421 14.828 3.172C15.579 3.922 16 4.939 16 6"
   />
 </svg>
-
-<style lang="scss">
-  svg * {
-    transition: all $animation-time;
-  }
-</style>
