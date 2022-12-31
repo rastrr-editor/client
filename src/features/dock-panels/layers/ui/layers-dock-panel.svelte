@@ -150,7 +150,7 @@
     }
 
     :global(.transparency-range) {
-      width: 178px;
+      width: spacing(44.5);
       margin-left: auto;
     }
   }
