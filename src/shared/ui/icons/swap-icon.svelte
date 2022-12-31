@@ -8,18 +8,10 @@
   viewBox="0 0 24 24"
   fill="none"
   stroke="currentColor"
+  stroke-linecap="round"
+  stroke-linejoin="round"
   xmlns="http://www.w3.org/2000/svg"
   {...$$restProps}
 >
-  <path
-    d="m17 8 4 4m0 0-4 4m4-4H3m4-4-4 4m0 0 4 4"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
+  <path d="m17 8 4 4m0 0-4 4m4-4H3m4-4-4 4m0 0 4 4" />
 </svg>
-
-<style lang="scss">
-  svg * {
-    transition: all $animation-time;
-  }
-</style>
