@@ -13,7 +13,11 @@
   export let layerList: LayerList | null = null;
   export let canvasSize: Rastrr.Point = { x: 0, y: 0 };
 
-  $: layers = Array.from(layerList?.reverse() ?? []);
+  let search: string = '';
+
+  $: layers = Array.from(layerList?.reverse() ?? []).filter(
+    (x) => x.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
+  );
 
   $: activeIndex = layerList?.activeIndex
     ? getReversedIndex(layerList?.activeIndex)
@@ -79,7 +83,12 @@
   <LayersIcon slot="icon" />
 
   <div slot="actions" class="panel-actions">
-    <Search class="layer-search" placeholder="Поиск" disabled={!layerList} />
+    <Search
+      class="layer-search"
+      placeholder="Поиск"
+      disabled={!layerList}
+      bind:value={search}
+    />
     <IconButton
       aria-label="Add layer"
       class="add"
@@ -133,6 +142,14 @@
 
     :global(.layer-search) {
       margin-left: auto;
+
+      :global(svg) {
+        font-size: 0.875rem;
+      }
+
+      :global(input) {
+        font-size: 0.75rem;
+      }
     }
 
     :global(.add) {
