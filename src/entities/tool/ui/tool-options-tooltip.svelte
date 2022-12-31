@@ -16,7 +16,7 @@
       <div>{title}</div>
       <IconButton
         aria-label="Close tooltip"
-        class="close"
+        class="close-button"
         on:click={() => (show = false)}><CloseIcon /></IconButton
       >
     </div>
@@ -46,8 +46,9 @@
       font-size: 1.25rem;
     }
 
-    > :global(.close) {
+    > :global(.close-button) {
       margin-left: auto;
+      font-size: 1.5rem;
     }
   }
 </style>
