@@ -24,3 +24,4 @@ export { default as ShapeIcon } from './shape-icon.svelte';
 export { default as SwapIcon } from './swap-icon.svelte';
 export { default as UnlockedIcon } from './unlocked-icon.svelte';
 export { default as VisibleIcon } from './visible-icon.svelte';
+export { default as RectIcon } from './rect-icon.svelte';
