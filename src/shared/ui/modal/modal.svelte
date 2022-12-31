@@ -14,7 +14,9 @@
   };
 
   function keyboardEventHandler(event: KeyboardEvent): void {
-    if (event.key === 'Escape') hide();
+    if (event.key === 'Escape' || event.code === 'Escape') {
+      hide();
+    }
   }
 </script>
 
@@ -69,6 +71,7 @@
       position: absolute;
       top: 16px;
       right: 16px;
+      font-size: 1.5rem;
     }
   }
 
