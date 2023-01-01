@@ -20,13 +20,17 @@ export default function createPointerIterable(
           events.onlyEvent('pointerup')
         )
       ),
-      (e) =>
-        !(
-          e.offsetX < coords.left ||
-          e.offsetX > coords.right ||
-          e.offsetY < coords.top ||
-          e.offsetY > coords.bottom
-        )
+      (e) => {
+        // TODO: it's better to use offsetX, offsetY
+        // because it prevents cursor jumps when user reaches the container border,
+        // but there are problems when canvas container has scroll
+        return !(
+          e.pageX < coords.left ||
+          e.pageX > coords.right ||
+          e.pageY < coords.top ||
+          e.pageY > coords.bottom
+        );
+      }
     ),
     (e) => ({
       x: e.offsetX - offset.x,

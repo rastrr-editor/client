@@ -20,11 +20,11 @@
 
 <style lang="scss">
   .root {
-    display: flex;
+    display: grid;
+    grid-template-columns: 80% minmax(#{spacing(75)}, 20%);
 
     > div {
       position: relative;
-      flex: 8;
     }
   }
 </style>

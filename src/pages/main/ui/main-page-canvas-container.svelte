@@ -49,7 +49,7 @@
     if (newProject && container) {
       viewport = new Viewport(container, {
         strategy: 'canvas',
-        minOffset: { x: 16, y: 16 },
+        minOffset: { x: 16, y: 40 },
         canvasSize: { x: newProject.width, y: newProject.height },
         // FIXME: this sometimes works incorrectly
         htmlSizeDelta: { x: 0, y: -6 },
