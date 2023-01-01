@@ -21,17 +21,38 @@
 
   let search: string = '';
 
+  $: layers = Array.from(layerList?.reverse() ?? []).filter(
+    (x) => x.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
+  );
+
+  $: activeLayer = layerList?.activeLayer;
+
+  $: createdCount = (layerList && 0) || 0;
+
   $: opacity = Math.round((layerList?.activeLayer?.opacity ?? 1) * 100);
 
   const onActiveChange = (index: number, layer: Layer) => {
-    console.log('active changed');
     opacity = Math.round(layer.opacity * 100);
+    activeLayer = layer;
   };
 
   const onOpacityChange = (layer: Layer) => {
-    console.log('opacity changed');
     if (layerList?.activeLayer === layer) {
       opacity = Math.round(layer.opacity * 100);
+    }
+  };
+
+  const onAddLayer = () => {
+    layers = getLayers();
+    if (layerList?.activeLayer != null) {
+      activeLayer = layerList.activeLayer;
+    }
+  };
+
+  const onRemoveLayer = () => {
+    layers = getLayers();
+    if (layerList?.activeLayer != null) {
+      activeLayer = layerList.activeLayer;
     }
   };
 
@@ -39,33 +60,25 @@
     // NOTE: it would be better to implement custom store
     layerList?.emitter.on('activeChange', onActiveChange);
     layerList?.emitter.on('opacityChange', onOpacityChange);
+    layerList?.emitter.on('add', onAddLayer);
+    layerList?.emitter.on('remove', onRemoveLayer);
   }
-
-  $: layers = Array.from(layerList?.reverse() ?? []).filter(
-    (x) => x.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
-  );
-
-  $: activeIndex = layerList?.activeIndex
-    ? getReversedIndex(layerList?.activeIndex)
-    : undefined;
-
-  $: createdCount = (layerList && 0) || 0;
 
   onDestroy(() => {
     layerList?.emitter.off('activeChange', onActiveChange);
     layerList?.emitter.off('opacityChange', onOpacityChange);
+    layerList?.emitter.off('add', onAddLayer);
+    layerList?.emitter.off('remove', onRemoveLayer);
   });
 
   function getIndex(reversedIndex: number): number {
     return (layerList?.length ?? 0) - 1 - reversedIndex;
   }
 
-  function getReversedIndex(index: number): number {
-    return (layerList?.length ?? 0) - 1 - index;
-  }
-
   function getLayers() {
-    return Array.from(layerList?.reverse() ?? []);
+    return Array.from(layerList?.reverse() ?? []).filter(
+      (x) => x.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
+    );
   }
 
   function addLayer() {
@@ -80,13 +93,10 @@
     createdCount += 1;
     layerList.add(layer);
     layerList.setActive(layerList.length - 1);
-    activeIndex = getReversedIndex(layerList.length - 1);
-    layers = getLayers();
   }
 
   function setActive(reversedIndex: number) {
     layerList?.setActive(getIndex(reversedIndex));
-    activeIndex = reversedIndex;
   }
 
   function setVisible(reversedIndex: number, visible: boolean) {
@@ -112,8 +122,8 @@
     if (layerList && prevIndex !== nextIndex) {
       layerList.changePosition(getIndex(prevIndex), getIndex(nextIndex));
       layers = getLayers();
-      if (layerList.activeIndex != null) {
-        activeIndex = getReversedIndex(layerList.activeIndex);
+      if (layerList.activeLayer != null) {
+        activeLayer = layerList.activeLayer;
       }
     }
   };
@@ -154,7 +164,7 @@
     {#each layers as layer, reversedIndex (layer.id)}
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <li
-        class:active={reversedIndex === activeIndex}
+        class:active={layer.id === activeLayer?.id}
         on:click={() => setActive(reversedIndex)}
       >
         {layer.name}
