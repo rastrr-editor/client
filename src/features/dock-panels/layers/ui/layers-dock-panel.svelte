@@ -14,6 +14,8 @@
     AddIcon,
     VisibleIcon,
     InvisibleIcon,
+    LockedIcon,
+    UnlockedIcon,
   } from '~/shared/ui/icons';
 
   export let layerList: LayerList | null = null;
@@ -109,6 +111,16 @@
     }
   }
 
+  function setLocked(reversedIndex: number, locked: boolean) {
+    if (!layerList) return;
+
+    const layer = layerList.get(getIndex(reversedIndex));
+    if (layer) {
+      layer.locked = locked;
+      layers[reversedIndex] = layer;
+    }
+  }
+
   function setOpacity(e: Event) {
     const opacity = parseInt((e.target as HTMLInputElement).value, 10);
     if (Number.isSafeInteger(opacity)) {
@@ -169,6 +181,17 @@
       >
         {layer.name}
         <div class="actions" class:active={!layer.visible || layer.locked}>
+          <button
+            on:click|stopPropagation={() =>
+              setLocked(reversedIndex, !layer.locked)}
+            class:deactivated={layer.locked}
+          >
+            {#if layer.locked}
+              <LockedIcon />
+            {:else}
+              <UnlockedIcon />
+            {/if}
+          </button>
           <button
             on:click|stopPropagation={() =>
               setVisible(reversedIndex, !layer.visible)}
@@ -301,7 +324,13 @@
       @include reset-button(false);
       @include action-cursor;
       height: 1.5rem;
-      padding: 0 spacing(2);
+      padding-left: spacing(2);
+      padding-right: spacing(1);
+
+      + button {
+        padding-left: spacing(1);
+        padding-right: spacing(2);
+      }
 
       :global(svg) {
         font-size: 0.75rem;
