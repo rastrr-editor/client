@@ -51,7 +51,10 @@ export default class BrushTool implements Tool<BrushOptions, PointerEvent> {
     viewport: Viewport,
     { triggerEvent, color }: ToolCreateCommandOptions<PointerEvent>
   ): BrushCommand | null {
-    if (viewport.layers.activeLayer == null) {
+    if (
+      viewport.layers.activeLayer == null ||
+      viewport.layers.activeLayer.locked
+    ) {
       return null;
     }
     const iterable = createPointerIterable(
