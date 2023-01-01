@@ -65,6 +65,7 @@
         layer.setOpacity(0);
       }
       viewport.layers.add(layer);
+      viewport.layers.setActive(0);
     }
   });
 </script>
