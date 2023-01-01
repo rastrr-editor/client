@@ -6,8 +6,6 @@
   export let top: number = -9999;
   export let left: number = -9999;
 
-  let contextMenu: HTMLDivElement;
-
   const dispatch = createEventDispatcher();
 
   function hideContextMenu(): void {
@@ -29,7 +27,6 @@
   class:open
   style:top={`${top}px`}
   style:left={`${left}px`}
-  bind:this={contextMenu}
   use:clickOutside={hideContextMenu}
   on:keydown={hideContextMenuByKeydown}
 >
