@@ -8,7 +8,7 @@
   } from '@rastrr-editor/core';
   import { draggable } from '~/shared/lib/actions';
   import { DockPanel } from '~/entities/dock-panel';
-  import { IconButton, Search, Range } from '~/shared/ui';
+  import { IconButton, Search, Range, ContextMenu } from '~/shared/ui';
   import {
     LayersIcon,
     AddIcon,
@@ -22,6 +22,13 @@
   export let canvasSize: Rastrr.Point = { x: 0, y: 0 };
 
   let search: string = '';
+
+  const layerContextMenu = {
+    open: false,
+    layerIndex: -1,
+    top: -9999,
+    left: -9999,
+  };
 
   $: layers = Array.from(layerList?.reverse() ?? []).filter(
     (x) => x.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
@@ -73,6 +80,13 @@
     layerList?.emitter.off('remove', onRemoveLayer);
   });
 
+  function closeLayerContextMenu() {
+    layerContextMenu.open = false;
+    layerContextMenu.top = -9999;
+    layerContextMenu.left = -9999;
+    layerContextMenu.layerIndex = -1;
+  }
+
   function getIndex(reversedIndex: number): number {
     return (layerList?.length ?? 0) - 1 - reversedIndex;
   }
@@ -95,6 +109,12 @@
     createdCount += 1;
     layerList.add(layer);
     layerList.setActive(layerList.length - 1);
+  }
+
+  function removeLayer(index: number) {
+    if (!layerList) return;
+    if (index >= 0) layerList.remove(index);
+    closeLayerContextMenu();
   }
 
   function setActive(reversedIndex: number) {
@@ -128,6 +148,15 @@
         Math.min(Math.max(0, opacity / 100), 1)
       );
     }
+  }
+
+  function createOnLayerContextMenu(reversedIndex: number) {
+    return (e: MouseEvent) => {
+      layerContextMenu.layerIndex = getIndex(reversedIndex);
+      layerContextMenu.top = e.pageY;
+      layerContextMenu.left = e.pageX;
+      layerContextMenu.open = true;
+    };
   }
 
   const dropCallback = (prevIndex: number, nextIndex: number) => {
@@ -178,6 +207,7 @@
       <li
         class:active={layer.id === activeLayer?.id}
         on:click={() => setActive(reversedIndex)}
+        on:contextmenu|preventDefault={createOnLayerContextMenu(reversedIndex)}
       >
         {layer.name}
         <div class="actions" class:active={!layer.visible || layer.locked}>
@@ -207,6 +237,17 @@
       </li>
     {/each}
   </ul>
+
+  <ContextMenu
+    bind:open={layerContextMenu.open}
+    top={layerContextMenu.top}
+    left={layerContextMenu.left}
+  >
+    <button
+      class="context-menu-button"
+      on:click={() => removeLayer(layerContextMenu.layerIndex)}>Удалить</button
+    >
+  </ContextMenu>
 </DockPanel>
 
 <style lang="scss">
@@ -244,6 +285,20 @@
     :global(.transparency-range) {
       width: spacing(44.5);
       margin-left: auto;
+    }
+  }
+
+  .context-menu-button {
+    @include reset-button(false);
+    @include action-cursor;
+
+    width: 100%;
+    padding: spacing(2);
+    border-radius: $border-radius;
+    transition: background-color $animation-time;
+
+    &:hover {
+      background-color: $bg-main;
     }
   }
 
