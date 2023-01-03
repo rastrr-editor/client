@@ -14,8 +14,7 @@ export default class RectTool implements Tool<null, PointerEvent> {
   private static counter: number = 0;
 
   getCursor(): string | null {
-    // TODO: create custom cursor
-    return null;
+    return 'crosshair';
   }
 
   setOptions(options: null): void {}
