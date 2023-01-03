@@ -1,4 +1,4 @@
-import type { LayerList } from '@rastrr-editor/core';
+import type { LayerData, LayerList } from '@rastrr-editor/core';
 import { db, RastrrDexie, type Project } from '~/shared/api';
 import { delay } from '~/shared/lib/decorators';
 import type { ProjectMeta } from '../../types';
@@ -8,6 +8,21 @@ import type {
 } from './project-repository';
 import type ProjectRepository from './project-repository';
 
+// TODO: move to core
+function makeLayerDataArrayFromLayerList(layers?: LayerList): LayerData[] {
+  return Array.from(layers != null ? layers : [], (layer) => ({
+    name: layer.name,
+    locked: layer.locked,
+    id: layer.id,
+    width: layer.width,
+    height: layer.height,
+    opacity: layer.opacity,
+    visible: layer.visible,
+    offset: layer.offset,
+    data: layer.data,
+  }));
+}
+
 export default class IndexedDBProjectRepository implements ProjectRepository {
   readonly db: RastrrDexie = db;
   readonly itemsPerPage = 8;
@@ -15,17 +30,7 @@ export default class IndexedDBProjectRepository implements ProjectRepository {
   async add(meta: ProjectMeta, layers?: LayerList): Promise<Project> {
     const project: Project = {
       ...meta,
-      layers: Array.from(layers != null ? layers : [], (layer) => ({
-        name: layer.name,
-        locked: layer.locked,
-        id: layer.id,
-        width: layer.width,
-        height: layer.height,
-        opacity: layer.opacity,
-        visible: layer.visible,
-        offset: layer.offset,
-        data: layer.data,
-      })),
+      layers: makeLayerDataArrayFromLayerList(layers),
       createdAt: new Date(),
       updatedAt: null,
     };
@@ -39,10 +44,20 @@ export default class IndexedDBProjectRepository implements ProjectRepository {
 
   async update(
     id: number,
-    meta: ProjectMeta,
+    meta: Project | ProjectMeta,
     layers?: LayerList
   ): Promise<Project> {
-    throw new Error('Not implemented');
+    const project: Partial<Project> = {
+      ...meta,
+      layers: makeLayerDataArrayFromLayerList(layers),
+      updatedAt: new Date(),
+    };
+    const newId = await db.projects.update(id, {
+      ...project,
+      normalizedName: meta.name.toLowerCase(),
+    });
+    // FIXME: this is bad
+    return this.get(newId) as Promise<Project>;
   }
 
   async delete(id: number): Promise<boolean> {
