@@ -1,18 +1,18 @@
 <script lang="ts">
   import { get } from 'svelte/store';
-  import { LayerFactory, Viewport } from '@rastrr-editor/core';
   import { onMount } from 'svelte';
+  import type { Viewport } from '@rastrr-editor/core';
   import { projectStore } from '~/entities/project';
   import { toolStore, type Tool } from '~/entities/tool';
   import { viewport as viewportStore } from '../model/store';
   import { chooseColorStore } from '~/features/tools/choose-color';
+  import updateViewport from '../model/updateViewport';
 
   const { toolCursor } = toolStore;
 
-  $: cursor = $toolCursor.match(/^url/) ? `${$toolCursor}, auto` : $toolCursor;
-
   let container: HTMLElement;
-  const CanvasLayerFactory = LayerFactory.setType('canvas');
+
+  $: cursor = $toolCursor.match(/^url/) ? `${$toolCursor}, auto` : $toolCursor;
 
   // NOTE: this is WIP - refactor nedeed
   onMount(() => {
@@ -24,6 +24,11 @@
     const unsubsribeActiveTool = toolStore.activeTool.subscribe((value) => {
       activeTool = value;
     });
+    const unsubscribeProject = projectStore.activeProject.subscribe(
+      (newProject) => {
+        updateViewport(container, newProject, viewportStore);
+      }
+    );
 
     const onPointerDown = (event: MouseEvent) => {
       if (event.button === 0 && activeTool && viewport) {
@@ -41,34 +46,9 @@
     return () => {
       unsubsribeViewport();
       unsubsribeActiveTool();
+      unsubscribeProject();
       container.removeEventListener('pointerdown', onPointerDown);
     };
-  });
-
-  projectStore.activeProject.subscribe((newProject) => {
-    let viewport = get(viewportStore);
-    viewport?.destroy();
-    if (newProject && container) {
-      viewport = new Viewport(container, {
-        strategy: 'canvas',
-        minOffset: { x: 16, y: 40 },
-        canvasSize: { x: newProject.width, y: newProject.height },
-        // FIXME: this sometimes works incorrectly
-        htmlSizeDelta: { x: 0, y: -6 },
-      });
-      // Create new viewport if active project has changed
-      viewportStore.set(viewport);
-      const layer = CanvasLayerFactory.filled(
-        newProject.width,
-        newProject.height
-      );
-      layer.name = 'Фон';
-      if (newProject.hasTransparentBackground) {
-        layer.setOpacity(0);
-      }
-      viewport.layers.add(layer);
-      viewport.layers.setActive(0);
-    }
   });
 </script>
 
