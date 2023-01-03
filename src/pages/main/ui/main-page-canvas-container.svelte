@@ -9,6 +9,8 @@
 
   const { toolCursor } = toolStore;
 
+  $: cursor = $toolCursor.match(/^url/) ? `${$toolCursor}, auto` : $toolCursor;
+
   let container: HTMLElement;
   const CanvasLayerFactory = LayerFactory.setType('canvas');
 
@@ -71,17 +73,13 @@
 </script>
 
 <!-- NOTE: max cursor size is 128 x 128, @see https://developer.mozilla.org/en-US/docs/Web/CSS/cursor#icon_size_limits -->
-<main
-  id="canvas-container"
-  style:--cursor={$toolCursor}
-  bind:this={container}
-/>
+<main id="canvas-container" style:--cursor={cursor} bind:this={container} />
 
 <style lang="scss">
   #canvas-container {
     background-color: $bg-canvas;
     height: calc(100vh - 1.75rem);
     overflow-x: auto;
-    cursor: var(--cursor), auto;
+    cursor: var(--cursor);
   }
 </style>
