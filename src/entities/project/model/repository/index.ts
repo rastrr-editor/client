@@ -1,2 +1,8 @@
-export type { default as ProjectRepository } from './project-repository';
-export { default as IndexedDBProjectRepository } from './indexed-db-project-repository';
+import type ProjectRepository from './project-repository';
+import IndexedDBProjectRepository from './indexed-db-project-repository';
+
+export { type ProjectRepository, IndexedDBProjectRepository };
+
+export function createProjectRepository(): ProjectRepository {
+  return new IndexedDBProjectRepository();
+}
