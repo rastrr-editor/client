@@ -25,3 +25,12 @@ h2 {
 h3 {
   @include typography("h3");
 }
+
+.link-container {
+  color: currentColor;
+  text-decoration: none;
+
+  &:hover {
+    color: unset;
+  }
+}
