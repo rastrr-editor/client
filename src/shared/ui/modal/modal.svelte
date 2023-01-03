@@ -5,9 +5,12 @@
 
   import type { ModalSize } from './types';
 
+  let className: string;
+
   export let open: boolean = false;
   export let densed: boolean = false;
   export let size: ModalSize = 'medium';
+  export { className as class };
 
   const hide = () => {
     open = false;
@@ -31,7 +34,7 @@
     on:click={hide}
   >
     <div
-      class={`modal ${[size]}`}
+      class={`modal ${[size]} ${className}`}
       class:densed
       on:click|stopPropagation
       on:keydown|stopPropagation={keyboardEventHandler}
