@@ -2,19 +2,30 @@
   import { get } from 'svelte/store';
   import { onMount } from 'svelte';
   import type { Viewport } from '@rastrr-editor/core';
-  import { projectStore } from '~/entities/project';
+  import { createProjectRepository, projectStore } from '~/entities/project';
   import { toolStore, type Tool } from '~/entities/tool';
   import { viewport as viewportStore } from '../model/store';
   import { chooseColorStore } from '~/features/tools/choose-color';
   import updateViewport from '../model/updateViewport';
 
+  export let projectId: number = Number.NaN;
+
   const { toolCursor } = toolStore;
+  const projectRepository = createProjectRepository();
 
   let container: HTMLElement;
 
   $: cursor = $toolCursor.match(/^url/) ? `${$toolCursor}, auto` : $toolCursor;
 
   // NOTE: this is WIP - refactor nedeed
+  $: {
+    // Load project
+    if (Number.isFinite(projectId)) {
+      projectRepository.get(projectId).then((project) => {
+        projectStore.activeProject.set(project ?? null);
+      });
+    }
+  }
   onMount(() => {
     let viewport: Viewport | null = null;
     let activeTool: Tool<any, any> | null = null;
