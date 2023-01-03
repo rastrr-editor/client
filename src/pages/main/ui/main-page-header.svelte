@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-
+  import { openProjects } from '../model/store';
   import Dropdown from '~/shared/ui/dropdown/dropdown.svelte';
   import DropdownMenu from '~/shared/ui/dropdown/dropdown-menu.svelte';
   import DropdownMenuItem from '~/shared/ui/dropdown/dropdown-menu-item.svelte';
@@ -81,10 +81,12 @@
           </DropdownMenu>
         </Dropdown>
       </li>
-      <!-- <li>
-        <button class="menu-item">Проекты</button>
-      </li>
       <li>
+        <button class="menu-item" on:click={() => openProjects.set(true)}
+          >Проекты</button
+        >
+      </li>
+      <!-- <li>
         <button class="menu-item">О программе</button>
       </li> -->
     </ul>

@@ -1,6 +1,8 @@
 <script lang="ts">
+  import ProjectList from '~/entities/project/ui/project-list.svelte';
   import { CreateProject } from '~/features/create-project';
   import { ToolPanel } from '~/widgets/tool-panel';
+  import { openProjects } from '../model/store';
   import MainPageCanvasContainer from './main-page-canvas-container.svelte';
   import MainPageDockPanel from './main-page-dock-panel.svelte';
   import MainPageHeader from './main-page-header.svelte';
@@ -17,6 +19,7 @@
   <MainPageDockPanel />
 </div>
 <CreateProject bind:open={showNewProject} />
+<ProjectList bind:open={$openProjects} />
 
 <style lang="scss">
   .root {
