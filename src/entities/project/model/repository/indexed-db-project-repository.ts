@@ -1,5 +1,6 @@
 import type { LayerList } from '@rastrr-editor/core';
 import { db, RastrrDexie, type Project } from '~/shared/api';
+import { delay } from '~/shared/lib/decorators';
 import type { ProjectMeta } from '../../types';
 import type {
   ProjectPaginateFilter,
@@ -56,6 +57,7 @@ export default class IndexedDBProjectRepository implements ProjectRepository {
     return db.projects.get(id);
   }
 
+  @delay(300)
   async paginate(
     filter: ProjectPaginateFilter
   ): Promise<ProjectPaginateResult> {
