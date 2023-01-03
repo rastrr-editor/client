@@ -13,7 +13,7 @@ export default async function createProject(data: FormData): Promise<void> {
     preview: null,
     width: parseInt(data.get('width') as string, 10),
     height: parseInt(data.get('height') as string, 10),
-    isTransparent: data.has('transparent'),
+    hasTransparentBackground: data.has('transparent'),
   };
   const repository = createProjectRepository();
   const project = await repository.add(projectMeta);
