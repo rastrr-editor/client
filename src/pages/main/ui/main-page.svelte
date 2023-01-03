@@ -3,9 +3,19 @@
   import { CreateProject } from '~/features/create-project';
   import { ToolPanel } from '~/widgets/tool-panel';
   import { openProjects } from '../model/store';
+  import type { MainPageRouterParams } from '../types';
   import MainPageCanvasContainer from './main-page-canvas-container.svelte';
   import MainPageDockPanel from './main-page-dock-panel.svelte';
   import MainPageHeader from './main-page-header.svelte';
+
+  export let params: MainPageRouterParams = {};
+
+  $: {
+    // Close project list
+    if (params.projectId) {
+      openProjects.set(false);
+    }
+  }
 
   let showNewProject = false;
 </script>
