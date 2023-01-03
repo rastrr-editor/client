@@ -22,7 +22,22 @@ export default function updateViewport(
     });
     // Restore layers from project
     if (project.layers.length > 0) {
-      // TODO: implement
+      // TODO: move to core
+      for (const layerData of project.layers) {
+        const layer = CanvasLayerFactory.empty(
+          layerData.width,
+          layerData.height,
+          { opacity: layerData.opacity, id: layerData.id }
+        );
+        layer.name = layerData.name;
+        layer.locked = layerData.locked;
+        layer.setVisible(layerData.visible);
+        layer.setOffset(layerData.offset);
+        // TODO: Restore alpha data
+        layer.setData(layerData.data);
+        viewport.layers.add(layer);
+      }
+      viewport.layers.setActive(viewport.layers.length - 1);
       // New project
     } else {
       const layer = CanvasLayerFactory.filled(project.width, project.height);
