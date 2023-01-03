@@ -1,12 +1,15 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import { openProjects } from '../model/store';
+  import { openProjects, viewport as viewportStore } from '../model/store';
   import Dropdown from '~/shared/ui/dropdown/dropdown.svelte';
   import DropdownMenu from '~/shared/ui/dropdown/dropdown-menu.svelte';
   import DropdownMenuItem from '~/shared/ui/dropdown/dropdown-menu-item.svelte';
   import { toolPanelStore } from '~/widgets/tool-panel';
+  import { createProjectRepository, projectStore } from '~/entities/project';
+  import { get } from 'svelte/store';
 
   const { position: toolPanelPosition } = toolPanelStore;
+  const projectRepository = createProjectRepository();
 
   type NavigationEvents = {
     createNewProject: void;
@@ -16,6 +19,19 @@
 
   let openFileMenu: boolean = false;
   let openViewMenu: boolean = false;
+
+  // WIP - refactor
+  function onProjectSave() {
+    const project = get(projectStore.activeProject);
+    const viewport = get(viewportStore);
+    if (project && project.id != null && viewport) {
+      projectRepository
+        .update(project.id, project, viewport.layers)
+        .then(() => {
+          console.log('saved');
+        });
+    }
+  }
 </script>
 
 <header>
@@ -41,11 +57,11 @@
               Создать новый файл
             </DropdownMenuItem>
 
-            <!-- <DropdownMenuItem on:click={() => console.log('Save...')}>
+            <DropdownMenuItem on:click={onProjectSave}>
               Сохранить проект
             </DropdownMenuItem>
 
-            <Dropdown nested hover>
+            <!-- <Dropdown nested hover>
               <DropdownMenuItem nested>Сохранить как</DropdownMenuItem>
 
               <DropdownMenu slot="menu" nested>
