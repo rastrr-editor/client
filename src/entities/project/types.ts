@@ -3,5 +3,5 @@ export interface ProjectMeta {
   preview: Blob | null;
   width: number;
   height: number;
-  isTransparent: boolean;
+  hasTransparentBackground: boolean;
 }

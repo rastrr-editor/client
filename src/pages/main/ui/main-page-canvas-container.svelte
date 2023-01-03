@@ -63,7 +63,7 @@
         newProject.height
       );
       layer.name = 'Фон';
-      if (newProject.isTransparent) {
+      if (newProject.hasTransparentBackground) {
         layer.setOpacity(0);
       }
       viewport.layers.add(layer);

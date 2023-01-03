@@ -6,6 +6,7 @@ export interface Project {
   preview: Blob | null;
   width: number;
   height: number;
+  hasTransparentBackground: boolean;
   createdAt: Date;
   updatedAt: Date | null;
   layers: LayerData[];
