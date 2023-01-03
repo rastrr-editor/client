@@ -2,6 +2,7 @@
   import { Modal } from '~/shared/ui/modal';
   import { DotFlashing } from '~/shared/ui';
   import { createProjectRepository } from '../model';
+  import ProjectCard from './project-card.svelte';
 
   export let open: boolean = false;
 
@@ -11,23 +12,29 @@
   let dataLoading: ReturnType<typeof repository.paginate> | Promise<null> =
     Promise.resolve(null);
 
-  $: dataLoading = open ? repository.paginate({ page }) : Promise.resolve(null);
-
-  dataLoading.then((result) => {
-    if (result && result.total > 0) {
-      center = false;
-    }
-  });
+  $: {
+    center = true;
+    dataLoading = open ? repository.paginate({ page }) : Promise.resolve(null);
+    dataLoading.then((result) => {
+      if (result && result.total > 0) {
+        center = false;
+      }
+    });
+  }
 </script>
 
-<Modal size="extra" class="project-list" bind:open>
+<Modal size="large" class="project-list" bind:open>
   <h2>Проекты</h2>
   <div class="content" class:center>
     {#await dataLoading}
       <DotFlashing />
     {:then result}
       {#if result != null && result.total > 0}
-        <!-- TODO: list projects -->
+        <div class="list">
+          {#each Array.from(result.items) as project (project.id)}
+            <ProjectCard {project} />
+          {/each}
+        </div>
       {:else}
         <div class="empty">
           <p>У вас еще нет проектов</p>
@@ -41,6 +48,7 @@
 <style lang="scss">
   :global(.project-list) {
     padding: spacing(2) !important;
+    max-width: spacing(230) !important;
   }
 
   h2 {
@@ -51,7 +59,8 @@
   .content {
     /* margin: spacing(-4); */
     background-color: $bg-extra;
-    min-height: spacing(125);
+    height: spacing(125);
+    overflow-y: auto;
 
     &.center {
       display: flex;
@@ -72,5 +81,12 @@
         @include typography('h2');
       }
     }
+  }
+
+  .list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: spacing(6);
+    gap: spacing(6);
   }
 </style>
