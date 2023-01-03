@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "@rastrr-editor/core": "^0.15.0",
-    "dexie": "3.2.2"
+    "dexie": "3.2.2",
+    "svelte-spa-router": "3.3.0"
   }
 }
