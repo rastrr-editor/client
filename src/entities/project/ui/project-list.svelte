@@ -6,6 +6,8 @@
   import ProjectCard from './project-card.svelte';
   import type { Project } from '~/shared/api';
   import { activeProject } from '../model/store';
+  import ProjectSort from './project-sort.svelte';
+  import type { ProjectPaginateFilter } from '../model/repository/project-repository';
 
   export let open: boolean = false;
 
@@ -16,6 +18,7 @@
 
   let content: HTMLDivElement;
   let search = '';
+  let sort: ProjectPaginateFilter['sort'] = 'createdAt';
   let searchTimeout: any;
   let page = 1;
   let error = '';
@@ -30,7 +33,7 @@
     center = true;
     page = 1;
     firstLoad = open
-      ? repository.paginate({ page: 1, name: search })
+      ? repository.paginate({ page: 1, name: search, sort })
       : Promise.resolve(null);
     firstLoad.then((result) => {
       if (result && result.total > 0) {
@@ -52,8 +55,9 @@
     ) {
       pageLoading = true;
       repository
-        .paginate({ page: ++page })
+        .paginate({ page: ++page, name: search, sort })
         .then((result) => {
+          console.log(result.items, items);
           error = '';
           items = items.concat(Array.from(result.items));
         })
@@ -88,6 +92,7 @@
       value={search}
       on:input={onSearchInput}
     />
+    <ProjectSort class="project-sort" bind:sort />
   </header>
   <div bind:this={content} on:scroll={loadMore} class="content" class:center>
     {#await firstLoad}
@@ -96,7 +101,10 @@
       {#if items.length > 0}
         <div class="list">
           {#each items as project (project.id)}
-            <ProjectCard {project} />
+            <ProjectCard
+              {project}
+              showDate={sort === 'updatedAt' ? 'updatedAt' : 'createdAt'}
+            />
           {/each}
         </div>
         {#if pageLoading}
@@ -137,7 +145,7 @@
 
     h2 {
       margin: 0;
-      margin-left: spacing(4);
+      margin-left: spacing(3);
     }
 
     :global(.project-search) {
@@ -147,6 +155,11 @@
       :global(svg) {
         font-size: 1.1875rem;
       }
+    }
+
+    :global(.project-sort) {
+      margin-left: auto;
+      margin-right: spacing(13);
     }
   }
 
