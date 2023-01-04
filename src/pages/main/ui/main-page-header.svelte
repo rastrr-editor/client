@@ -25,11 +25,18 @@
     const project = get(projectStore.activeProject);
     const viewport = get(viewportStore);
     if (project && project.id != null && viewport) {
-      projectRepository
-        .update(project.id, project, viewport.layers)
-        .then(() => {
-          console.log('saved');
-        });
+      viewport.toBlob().then((preview) => {
+        const { name, width, height, hasTransparentBackground } = project;
+        projectRepository
+          .update(
+            project.id!,
+            { name, width, height, preview, hasTransparentBackground },
+            viewport.layers
+          )
+          .then(() => {
+            console.log('saved');
+          });
+      });
     }
   }
 </script>
