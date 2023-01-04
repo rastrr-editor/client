@@ -79,11 +79,12 @@ export default class IndexedDBProjectRepository implements ProjectRepository {
     const { page = 1 } = filter;
     const table = db.projects;
     let collection: ReturnType<typeof table.toCollection> | null = null;
+    const searchEnabled = filter.name != null && filter.name.length > 0;
     // Search by name
-    if (filter.name != null) {
+    if (searchEnabled) {
       collection = table
         .where('normalizedName')
-        .startsWith(filter.name.toLowerCase());
+        .startsWith(filter.name!.toLowerCase());
       // Otherwise apply sort
     } else if (filter.sort != null) {
       collection = table.orderBy(filter.sort);
@@ -98,7 +99,7 @@ export default class IndexedDBProjectRepository implements ProjectRepository {
     let items: Iterable<Project>;
     // NOTE: Due to dexie.js API limitatios we can't apply sort and search
     // to the table simultaneously so we have to apply sort afterwards to the collection
-    if (filter.name != null && filter.sort != null) {
+    if (searchEnabled && filter.sort != null) {
       items = await collection.sortBy(filter.sort);
     } else {
       items = await collection.toArray();
