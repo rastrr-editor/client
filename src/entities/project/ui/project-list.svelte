@@ -1,7 +1,7 @@
 <script lang="ts">
   import { push } from 'svelte-spa-router';
   import { get } from 'svelte/store';
-  import { Modal, DotFlashing, Search } from '~/shared/ui';
+  import { Modal, DotFlashing, Search, ContextMenu } from '~/shared/ui';
   import { createProjectRepository } from '../model';
   import ProjectCard from './project-card.svelte';
   import type { Project } from '~/shared/api';
@@ -15,6 +15,12 @@
   const unexpectedError = 'Не удалось загрузить данные, попробуйте ещё раз!';
   const repository = createProjectRepository();
   const scrollToEndDelta = 10;
+  const projectContextMenu = {
+    open: false,
+    projectId: -1,
+    top: -9999,
+    left: -9999,
+  };
 
   let content: HTMLDivElement;
   let search = '';
@@ -44,6 +50,46 @@
         items = [];
       }
     });
+  }
+
+  function createOnProjectContextMenu(project: Project) {
+    return (e: MouseEvent) => {
+      e.preventDefault();
+      projectContextMenu.projectId = project.id!;
+      projectContextMenu.top = e.pageY;
+      projectContextMenu.left = e.pageX;
+      projectContextMenu.open = true;
+    };
+  }
+
+  function closeProjectContextMenu() {
+    projectContextMenu.open = false;
+    projectContextMenu.top = -9999;
+    projectContextMenu.left = -9999;
+    projectContextMenu.projectId = -1;
+  }
+
+  function deleteProject(projectId: number) {
+    if (projectId >= 0) {
+      repository
+        .delete(projectId)
+        .then(() => {
+          const index = items.findIndex(({ id }) => id === projectId);
+          if (index >= 0) {
+            items.splice(index, 1);
+            console.log(items);
+            // NOTE: it triggers firstLoad
+            items = items;
+          }
+        })
+        .catch(() => {
+          // TODO: show custom alert somehow
+          alert('Не удалось удалить проект!');
+        })
+        .finally(() => {
+          closeProjectContextMenu();
+        });
+    }
   }
 
   function loadMore() {
@@ -103,6 +149,7 @@
           {#each items as project (project.id)}
             <ProjectCard
               {project}
+              on:contextmenu={createOnProjectContextMenu(project)}
               showDate={sort === 'updatedAt' ? 'updatedAt' : 'createdAt'}
             />
           {/each}
@@ -130,6 +177,17 @@
       <p>{unexpectedError}</p>
     {/await}
   </div>
+  <ContextMenu
+    bind:open={projectContextMenu.open}
+    top={projectContextMenu.top}
+    left={projectContextMenu.left}
+  >
+    <button
+      class="context-menu-button"
+      on:click={() => deleteProject(projectContextMenu.projectId)}
+      >Удалить</button
+    >
+  </ContextMenu>
 </Modal>
 
 <style lang="scss">
@@ -202,5 +260,9 @@
     grid-template-columns: repeat(4, 1fr);
     padding: spacing(4);
     gap: spacing(2);
+  }
+
+  .context-menu-button {
+    @include menu-button;
   }
 </style>

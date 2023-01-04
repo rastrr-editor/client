@@ -31,12 +31,18 @@
   });
 </script>
 
-<a class="link-container" href={`/projects/${project.id}`} use:link>
+<a
+  class="link-container"
+  href={`/projects/${project.id}`}
+  use:link
+  on:contextmenu
+>
   <div class="image" class:empty={project.preview == null}>
     {#if imageUrl}
       <img src={imageUrl} alt={project.name} on:load={cleanup} />
     {/if}
   </div>
+  <!-- TODO: implement rename -->
   <p>{project.name}</p>
   <p class="date">{date != null ? formatDate(date) : '-/-'}</p>
 </a>
