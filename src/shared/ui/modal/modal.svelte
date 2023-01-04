@@ -1,9 +1,11 @@
 <script lang="ts">
+  import { createEventDispatcher } from 'svelte';
   import { IconButton } from '~/shared/ui';
   import { CloseIcon } from '~/shared/ui/icons';
   import { focusTrap } from '~/shared/lib/actions';
-
   import type { ModalSize } from './types';
+
+  const dispatch = createEventDispatcher<{ hide: void }>();
 
   let className: string;
 
@@ -14,6 +16,7 @@
 
   const hide = () => {
     open = false;
+    dispatch('hide');
   };
 
   function keyboardEventHandler(event: KeyboardEvent): void {
