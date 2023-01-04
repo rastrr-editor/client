@@ -289,17 +289,7 @@
   }
 
   .context-menu-button {
-    @include reset-button(false);
-    @include action-cursor;
-
-    width: 100%;
-    padding: spacing(2);
-    border-radius: $border-radius;
-    transition: background-color $animation-time;
-
-    &:hover {
-      background-color: $bg-main;
-    }
+    @include menu-button;
   }
 
   ul {
