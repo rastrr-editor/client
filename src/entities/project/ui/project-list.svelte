@@ -1,17 +1,20 @@
 <script lang="ts">
   import { Modal } from '~/shared/ui/modal';
-  import { DotFlashing } from '~/shared/ui';
+  import { DotFlashing, Search } from '~/shared/ui';
   import { createProjectRepository } from '../model';
   import ProjectCard from './project-card.svelte';
   import type { Project } from '~/shared/api';
 
   export let open: boolean = false;
 
+  // TODO: refactor
   const unexpectedError = 'Не удалось загрузить данные, попробуйте ещё раз!';
   const repository = createProjectRepository();
   const scrollToEndDelta = 10;
 
   let content: HTMLDivElement;
+  let search = '';
+  let searchTimeout: any;
   let page = 1;
   let error = '';
   let pageLoading = false;
@@ -24,12 +27,16 @@
   $: {
     center = true;
     page = 1;
-    firstLoad = open ? repository.paginate({ page: 1 }) : Promise.resolve(null);
+    firstLoad = open
+      ? repository.paginate({ page: 1, name: search })
+      : Promise.resolve(null);
     firstLoad.then((result) => {
       if (result && result.total > 0) {
         center = false;
         items = Array.from(result.items);
         totalPages = result.total;
+      } else {
+        items = [];
       }
     });
   }
@@ -56,10 +63,25 @@
         });
     }
   }
+
+  function onSearchInput(e: Event) {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+      search = (e.target as HTMLInputElement).value;
+    }, 300);
+  }
 </script>
 
 <Modal size="large" class="project-list" bind:open>
-  <h2>Проекты</h2>
+  <header>
+    <h2>Проекты</h2>
+    <Search
+      class="project-search"
+      placeholder="Поиск"
+      value={search}
+      on:input={onSearchInput}
+    />
+  </header>
   <div bind:this={content} on:scroll={loadMore} class="content" class:center>
     {#await firstLoad}
       <DotFlashing />
@@ -81,8 +103,12 @@
         {/if}
       {:else}
         <div class="empty">
-          <p>У вас еще нет проектов</p>
-          <p>Сохраните свой первый проект и он появится тут</p>
+          {#if search === ''}
+            <p>У вас еще нет проектов</p>
+            <p>Сохраните свой первый проект и он появится тут</p>
+          {:else}
+            <p>Ничего не найдено</p>
+          {/if}
         </div>
       {/if}
     {:catch}
@@ -97,9 +123,24 @@
     max-width: spacing(230) !important;
   }
 
-  h2 {
+  header {
+    display: flex;
+    align-items: center;
     margin: spacing(1) 0 spacing(3);
-    margin-left: spacing(4);
+
+    h2 {
+      margin: 0;
+      margin-left: spacing(4);
+    }
+
+    :global(.project-search) {
+      margin-left: spacing(16);
+      width: spacing(60);
+
+      :global(svg) {
+        font-size: 1.1875rem;
+      }
+    }
   }
 
   .content {
