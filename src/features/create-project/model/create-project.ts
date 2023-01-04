@@ -1,8 +1,5 @@
-import {
-  type ProjectMeta,
-  projectStore,
-  createProjectRepository,
-} from '~/entities/project';
+import { push } from 'svelte-spa-router';
+import { type ProjectMeta, createProjectRepository } from '~/entities/project';
 
 export default async function createProject(data: FormData): Promise<void> {
   if (!data.has('name') || !data.has('width') || !data.has('height')) {
@@ -17,7 +14,6 @@ export default async function createProject(data: FormData): Promise<void> {
   };
   const repository = createProjectRepository();
   const project = await repository.add(projectMeta);
-
   // TODO: check if current active project is saved and perform necessary actions
-  projectStore.activeProject.set(project);
+  push(`/projects/${project.id!}`).catch(() => {});
 }
