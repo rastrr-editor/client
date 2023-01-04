@@ -289,17 +289,7 @@
   }
 
   .context-menu-button {
-    @include reset-button(false);
-    @include action-cursor;
-
-    width: 100%;
-    padding: spacing(2);
-    border-radius: $border-radius;
-    transition: background-color $animation-time;
-
-    &:hover {
-      background-color: $bg-main;
-    }
+    @include menu-button;
   }
 
   ul {
@@ -307,7 +297,8 @@
     margin: spacing(1.5) 0;
     padding: spacing(0.5);
     max-height: spacing(72);
-    overflow-y: auto;
+    @include custom-scroll;
+    overflow-x: hidden;
 
     li {
       position: relative;

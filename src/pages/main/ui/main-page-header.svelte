@@ -1,12 +1,14 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-
-  import Dropdown from '~/shared/ui/dropdown/dropdown.svelte';
-  import DropdownMenu from '~/shared/ui/dropdown/dropdown-menu.svelte';
-  import DropdownMenuItem from '~/shared/ui/dropdown/dropdown-menu-item.svelte';
+  import { link } from 'svelte-spa-router';
+  import { viewport as viewportStore } from '../model/store';
+  import { Dropdown, DropdownMenu, DropdownMenuItem } from '~/shared/ui';
   import { toolPanelStore } from '~/widgets/tool-panel';
+  import { createProjectRepository, projectStore } from '~/entities/project';
+  import { get } from 'svelte/store';
 
   const { position: toolPanelPosition } = toolPanelStore;
+  const projectRepository = createProjectRepository();
 
   type NavigationEvents = {
     createNewProject: void;
@@ -16,6 +18,26 @@
 
   let openFileMenu: boolean = false;
   let openViewMenu: boolean = false;
+
+  // WIP - refactor
+  function onProjectSave() {
+    const project = get(projectStore.activeProject);
+    const viewport = get(viewportStore);
+    if (project && project.id != null && viewport) {
+      viewport.toBlob().then((preview) => {
+        const { name, width, height, hasTransparentBackground } = project;
+        projectRepository
+          .update(
+            project.id!,
+            { name, width, height, preview, hasTransparentBackground },
+            viewport.layers
+          )
+          .then(() => {
+            console.log('saved');
+          });
+      });
+    }
+  }
 </script>
 
 <header>
@@ -41,11 +63,11 @@
               Создать новый файл
             </DropdownMenuItem>
 
-            <!-- <DropdownMenuItem on:click={() => console.log('Save...')}>
+            <DropdownMenuItem on:click={onProjectSave}>
               Сохранить проект
             </DropdownMenuItem>
 
-            <Dropdown nested hover>
+            <!-- <Dropdown nested hover>
               <DropdownMenuItem nested>Сохранить как</DropdownMenuItem>
 
               <DropdownMenu slot="menu" nested>
@@ -81,10 +103,10 @@
           </DropdownMenu>
         </Dropdown>
       </li>
-      <!-- <li>
-        <button class="menu-item">Проекты</button>
-      </li>
       <li>
+        <a href="/projects" class="menu-item" use:link> Проекты </a>
+      </li>
+      <!-- <li>
         <button class="menu-item">О программе</button>
       </li> -->
     </ul>
@@ -129,6 +151,11 @@
   button {
     @include reset-button(false);
     @include action-cursor;
+  }
+
+  a {
+    color: #fff;
+    text-decoration: none;
   }
 
   .menu-item {
