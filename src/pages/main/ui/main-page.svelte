@@ -10,13 +10,6 @@
 
   export let params: MainPageRouterParams = {};
 
-  $: {
-    // Close project list
-    if (params.projectId) {
-      openProjects.set(false);
-    }
-  }
-
   let showNewProject = false;
 </script>
 

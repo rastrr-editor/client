@@ -1,9 +1,8 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import { openProjects, viewport as viewportStore } from '../model/store';
-  import Dropdown from '~/shared/ui/dropdown/dropdown.svelte';
-  import DropdownMenu from '~/shared/ui/dropdown/dropdown-menu.svelte';
-  import DropdownMenuItem from '~/shared/ui/dropdown/dropdown-menu-item.svelte';
+  import { link } from 'svelte-spa-router';
+  import { viewport as viewportStore } from '../model/store';
+  import { Dropdown, DropdownMenu, DropdownMenuItem } from '~/shared/ui';
   import { toolPanelStore } from '~/widgets/tool-panel';
   import { createProjectRepository, projectStore } from '~/entities/project';
   import { get } from 'svelte/store';
@@ -105,9 +104,7 @@
         </Dropdown>
       </li>
       <li>
-        <button class="menu-item" on:click={() => openProjects.set(true)}
-          >Проекты</button
-        >
+        <a href="/projects" class="menu-item" use:link> Проекты </a>
       </li>
       <!-- <li>
         <button class="menu-item">О программе</button>
@@ -154,6 +151,11 @@
   button {
     @include reset-button(false);
     @include action-cursor;
+  }
+
+  a {
+    color: #fff;
+    text-decoration: none;
   }
 
   .menu-item {
