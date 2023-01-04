@@ -10,6 +10,7 @@
 
   export let projectId: number = Number.NaN;
 
+  const { activeProject } = projectStore;
   const { toolCursor } = toolStore;
   const projectRepository = createProjectRepository();
 
@@ -20,9 +21,10 @@
   // NOTE: this is WIP - refactor nedeed
   $: {
     // Load project
-    if (Number.isFinite(projectId)) {
+    // TODO: check if current project is saved
+    if (Number.isFinite(projectId) && $activeProject?.id !== projectId) {
       projectRepository.get(projectId).then((project) => {
-        projectStore.activeProject.set(project ?? null);
+        activeProject.set(project ?? null);
       });
     }
   }
