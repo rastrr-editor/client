@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte';
   import { link } from 'svelte-spa-router';
   import type { Project } from '~/shared/api';
   import formatDate from '../lib/formatDate';
@@ -7,32 +8,51 @@
   export let showDate: Extract<keyof Project, 'createdAt' | 'updatedAt'> =
     'createdAt';
 
+  let imageUrl: string | null = null;
+
   $: date = project[showDate];
-</script>
 
-<div>
-  <a class="link-container" href={`/projects/${project.id}`} use:link>
-    <div class="image" class:empty={project.preview == null}>
-      {#if project.preview}
-        <img src={URL.createObjectURL(project.preview)} alt={project.name} />
-      {/if}
-    </div>
-  </a>
-  <p>{project.name}</p>
-  <p class="date">{date != null ? formatDate(date) : '-/-'}</p>
-</div>
-
-<style lang="scss">
-  img {
-    object-fit: contain;
-    width: 100%;
+  $: {
+    // Clean previous imageUrl
+    cleanup();
+    // Create new image url from preview
+    imageUrl =
+      project.preview != null ? URL.createObjectURL(project.preview) : null;
   }
 
-  div {
-    text-align: center;
+  function cleanup() {
+    if (imageUrl != null) {
+      URL.revokeObjectURL(imageUrl);
+    }
+  }
+
+  onDestroy(() => {
+    cleanup();
+  });
+</script>
+
+<a class="link-container" href={`/projects/${project.id}`} use:link>
+  <div class="image" class:empty={project.preview == null}>
+    {#if imageUrl}
+      <img src={imageUrl} alt={project.name} on:load={cleanup} />
+    {/if}
+  </div>
+  <p>{project.name}</p>
+  <p class="date">{date != null ? formatDate(date) : '-/-'}</p>
+</a>
+
+<style lang="scss">
+  $card-border-radius: 3px;
+
+  img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    border-radius: $card-border-radius;
   }
 
   p {
+    text-align: center;
     margin: spacing(2) 0;
 
     &:first-of-type {
@@ -41,17 +61,29 @@
   }
 
   a {
+    display: block;
     @include action-cursor;
+    padding: spacing(2);
+    border-radius: $card-border-radius;
+
+    &:hover,
+    &:focus {
+      background-color: $bg-main;
+    }
+
+    &:focus {
+      outline: none;
+    }
   }
 
   .image {
     /* TODO: calculate height to get perfect square */
-    height: spacing(49);
+    height: spacing(48);
     max-width: 100%;
-    border: 1px solid transparent;
-    border-radius: 3px;
 
     &.empty {
+      border: 1px solid transparent;
+      border-radius: $card-border-radius;
       border-color: $border-color;
     }
   }

@@ -86,7 +86,7 @@
   .list {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    padding: spacing(6);
-    gap: spacing(6);
+    padding: spacing(4);
+    gap: spacing(2);
   }
 </style>
