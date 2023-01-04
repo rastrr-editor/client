@@ -1,9 +1,11 @@
 <script lang="ts">
-  import { Modal } from '~/shared/ui/modal';
-  import { DotFlashing, Search } from '~/shared/ui';
+  import { push } from 'svelte-spa-router';
+  import { get } from 'svelte/store';
+  import { Modal, DotFlashing, Search } from '~/shared/ui';
   import { createProjectRepository } from '../model';
   import ProjectCard from './project-card.svelte';
   import type { Project } from '~/shared/api';
+  import { activeProject } from '../model/store';
 
   export let open: boolean = false;
 
@@ -70,9 +72,14 @@
       search = (e.target as HTMLInputElement).value;
     }, 300);
   }
+
+  function onHide() {
+    const project = get(activeProject);
+    push(project?.id ? `/projects/${project.id}` : '/');
+  }
 </script>
 
-<Modal size="large" class="project-list" bind:open>
+<Modal size="large" class="project-list" bind:open on:hide={onHide}>
   <header>
     <h2>Проекты</h2>
     <Search
