@@ -80,14 +80,15 @@ export default class IndexedDBProjectRepository implements ProjectRepository {
     const table = db.projects;
     let collection: ReturnType<typeof table.toCollection> | null = null;
     const searchEnabled = filter.name != null && filter.name.length > 0;
+    const sort = filter.sort === 'name' ? 'normalizedName' : filter.sort;
     // Search by name
     if (searchEnabled) {
       collection = table
         .where('normalizedName')
         .startsWith(filter.name!.toLowerCase());
+    } else if (sort != null) {
       // Otherwise apply sort
-    } else if (filter.sort != null) {
-      collection = table.orderBy(filter.sort);
+      collection = table.orderBy(sort);
     }
     // Get total item count
     const totalItems = await (collection != null ? collection : table).count();
@@ -95,12 +96,16 @@ export default class IndexedDBProjectRepository implements ProjectRepository {
     collection = (collection != null ? collection : table)
       .offset(this.itemsPerPage * (page - 1))
       .limit(this.itemsPerPage);
+    // Reverse order for updatedAt
+    if (filter.sort === 'updatedAt') {
+      collection = collection.reverse();
+    }
     // Get collection items
     let items: Iterable<Project>;
     // NOTE: Due to dexie.js API limitatios we can't apply sort and search
     // to the table simultaneously so we have to apply sort afterwards to the collection
-    if (searchEnabled && filter.sort != null) {
-      items = await collection.sortBy(filter.sort);
+    if (searchEnabled && sort != null) {
+      items = await collection.sortBy(sort);
     } else {
       items = await collection.toArray();
     }
