@@ -307,7 +307,8 @@
     margin: spacing(1.5) 0;
     padding: spacing(0.5);
     max-height: spacing(72);
-    overflow-y: auto;
+    @include custom-scroll;
+    overflow-x: hidden;
 
     li {
       position: relative;

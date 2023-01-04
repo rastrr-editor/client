@@ -57,10 +57,10 @@
   }
 
   .content {
-    /* margin: spacing(-4); */
     background-color: $bg-extra;
     height: spacing(125);
-    overflow-y: auto;
+    @include custom-scroll;
+    overflow-x: hidden;
 
     &.center {
       display: flex;

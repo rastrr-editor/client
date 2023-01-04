@@ -72,5 +72,7 @@
     height: calc(100vh - 1.75rem);
     overflow-x: auto;
     cursor: var(--cursor);
+    @include custom-scroll;
+    scrollbar-color: $border-color $bg-canvas;
   }
 </style>
