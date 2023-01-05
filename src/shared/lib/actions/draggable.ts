@@ -47,7 +47,7 @@ const draggable: Action = (
         el.contains(ev.target as HTMLElement)
       );
       let dataTransfer = null;
-      if (draggableNode != null) {
+      if (ev.button === 0 && draggableNode != null) {
         dataTransfer = await dragStart(draggableNode, ev);
       }
       return { ev, nodes, draggableNode, dataTransfer };
