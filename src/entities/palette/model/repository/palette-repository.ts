@@ -9,4 +9,5 @@ export interface PaletteRepository {
   add: (paletteData?: PaletteData) => Promise<Palette>;
   update: (id: string, palette: Palette | PaletteData) => Promise<Palette>;
   delete: (id: string) => Promise<boolean>;
+  updatePosition: (prev: number, next: number) => Promise<Palette[]>;
 }

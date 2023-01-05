@@ -58,4 +58,14 @@ export default class LocalStoragePaletteRepository
 
     return false;
   }
+
+  async updatePosition(prev: number, next: number): Promise<Palette[]> {
+    const storedPalettes = await this.get();
+    const [palette] = storedPalettes.splice(prev, 1);
+    if (palette != null) {
+      storedPalettes.splice(next, 0, palette);
+    }
+    localStorage.setItem(LS_PALETTE_REPO_KEY, JSON.stringify(storedPalettes));
+    return storedPalettes;
+  }
 }
