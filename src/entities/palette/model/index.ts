@@ -1,2 +1,2 @@
-export * as paletteStorage from './store';
+export * as paletteStore from './store';
 export * from './repository';
