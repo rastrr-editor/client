@@ -117,6 +117,12 @@
 
     closePaletteContextMenu();
   }
+
+  function dropCallback(prevIndex: number, nextIndex: number) {
+    if (prevIndex !== nextIndex) {
+      palettesLoading = repository.updatePosition(prevIndex, nextIndex);
+    }
+  }
 </script>
 
 <DockPanel title="Палитра">
@@ -139,7 +145,10 @@
 
   <div
     class="palettes"
-    use:draggable={{ draggableSelector: '.palette-item', callback: () => {} }}>
+    use:draggable={{
+      draggableSelector: '.palette-item',
+      callback: dropCallback,
+    }}>
     {#await palettesLoading then palettes}
       {#if palettes.length === 0}
         <div class="placeholder">
