@@ -1,8 +1,7 @@
 <script lang="ts">
   import { Color, LayerFactory, type LayerList } from '@rastrr-editor/core';
   import { draggable } from '~/shared/lib/actions';
-  import { DockPanel } from '~/entities/dock-panel';
-  import { IconButton, Search, Range } from '~/shared/ui';
+  import { DockPanel, IconButton, Search, Range } from '~/shared/ui';
   import {
     LayersIcon,
     AddIcon,
