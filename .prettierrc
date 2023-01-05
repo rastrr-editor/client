@@ -2,6 +2,7 @@
   "tabWidth": 2,
   "useTabs": false,
   "singleQuote": true,
+  "bracketSameLine": true,
   "overrides": [
     {
       "files": "*.scss",
