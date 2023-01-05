@@ -1,4 +1,5 @@
 <script lang="ts">
+  // TODO Refactoring. Pass trigger element as a prop and do coord calcs here. Handle edge cases to prevent menu cutoffs.
   import { createEventDispatcher } from 'svelte';
   import { clickOutside } from '~/shared/lib/actions';
 
@@ -27,9 +28,8 @@
   class:open
   style:top={`${top}px`}
   style:left={`${left}px`}
-  use:clickOutside={hideContextMenu}
-  on:keydown={hideContextMenuByKeydown}
->
+  use:clickOutside={{ callback: hideContextMenu }}
+  on:keydown={hideContextMenuByKeydown}>
   <slot />
 </div>
 
@@ -37,9 +37,11 @@
   .context-menu {
     @include typography(body2);
 
-    padding: spacing(0.5);
     position: fixed;
     z-index: 100;
+    display: flex;
+    flex-direction: column;
+    padding: spacing(0.5);
     visibility: hidden;
     border: 1px solid $modal-border-color;
     border-radius: $border-radius;

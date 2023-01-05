@@ -1,5 +1,5 @@
 import { asyncIter, events } from '@rastrr-editor/core';
-import getCoords from './getCoords';
+import getCoords from './get-coords';
 
 export default function createPointerIterable(
   initialEvent: PointerEvent,

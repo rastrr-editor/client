@@ -34,14 +34,12 @@
     tabindex="-1"
     use:focusTrap={open}
     on:keydown|preventDefault={keyboardEventHandler}
-    on:click={hide}
-  >
+    on:click={hide}>
     <div
       class={`modal ${[size]} ${className}`}
       class:densed
       on:click|stopPropagation
-      on:keydown|stopPropagation={keyboardEventHandler}
-    >
+      on:keydown|stopPropagation={keyboardEventHandler}>
       <IconButton aria-label="Close modal" class="close-button" on:click={hide}>
         <CloseIcon />
       </IconButton>

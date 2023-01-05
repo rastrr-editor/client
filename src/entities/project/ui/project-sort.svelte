@@ -28,14 +28,11 @@
     </button>
     <DropdownMenu slot="menu">
       <DropdownMenuItem on:click={() => (sort = 'createdAt')}
-        >{sortToText.createdAt}</DropdownMenuItem
-      >
+        >{sortToText.createdAt}</DropdownMenuItem>
       <DropdownMenuItem on:click={() => (sort = 'name')}
-        >{sortToText.name}</DropdownMenuItem
-      >
+        >{sortToText.name}</DropdownMenuItem>
       <DropdownMenuItem on:click={() => (sort = 'updatedAt')}
-        >{sortToText.updatedAt}</DropdownMenuItem
-      >
+        >{sortToText.updatedAt}</DropdownMenuItem>
     </DropdownMenu>
   </Dropdown>
   <div class:arrowUp={open} class:arrowDown={!open} />

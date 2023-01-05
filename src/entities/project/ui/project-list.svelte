@@ -136,8 +136,7 @@
       class="project-search"
       placeholder="Поиск"
       value={search}
-      on:input={onSearchInput}
-    />
+      on:input={onSearchInput} />
     <ProjectSort class="project-sort" bind:sort />
   </header>
   <div bind:this={content} on:scroll={loadMore} class="content" class:center>
@@ -150,8 +149,7 @@
             <ProjectCard
               {project}
               on:contextmenu={createOnProjectContextMenu(project)}
-              showDate={sort === 'updatedAt' ? 'updatedAt' : 'createdAt'}
-            />
+              showDate={sort === 'updatedAt' ? 'updatedAt' : 'createdAt'} />
           {/each}
         </div>
         {#if pageLoading}
@@ -180,13 +178,11 @@
   <ContextMenu
     bind:open={projectContextMenu.open}
     top={projectContextMenu.top}
-    left={projectContextMenu.left}
-  >
+    left={projectContextMenu.left}>
     <button
       class="context-menu-button"
       on:click={() => deleteProject(projectContextMenu.projectId)}
-      >Удалить</button
-    >
+      >Удалить</button>
   </ContextMenu>
 </Modal>
 

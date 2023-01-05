@@ -17,6 +17,8 @@
   width: 100%;
   padding: spacing(2);
   border-radius: $border-radius;
+  text-align: left;
+  white-space: nowrap;
   transition: background-color $animation-time;
 
   &:hover {

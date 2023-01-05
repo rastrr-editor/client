@@ -7,8 +7,13 @@
     type LayerList,
   } from '@rastrr-editor/core';
   import { draggable } from '~/shared/lib/actions';
-  import { DockPanel } from '~/entities/dock-panel';
-  import { IconButton, Search, Range, ContextMenu } from '~/shared/ui';
+  import {
+    DockPanel,
+    IconButton,
+    Search,
+    Range,
+    ContextMenu,
+  } from '~/shared/ui';
   import {
     LayersIcon,
     AddIcon,
@@ -178,14 +183,12 @@
       class="layer-search"
       placeholder="Поиск"
       disabled={!layerList}
-      bind:value={search}
-    />
+      bind:value={search} />
     <IconButton
       aria-label="Add layer"
       class="add"
       on:click={addLayer}
-      disabled={!layerList}><AddIcon /></IconButton
-    >
+      disabled={!layerList}><AddIcon /></IconButton>
   </div>
 
   <div slot="addons" class="layer-transparency">
@@ -197,8 +200,7 @@
       on:change={setOpacity}
       min={0}
       max={100}
-      disabled={!layerList}
-    />
+      disabled={!layerList} />
   </div>
 
   <ul use:draggable={{ draggableSelector: 'li', callback: dropCallback }}>
@@ -207,15 +209,13 @@
       <li
         class:active={layer.id === activeLayer?.id}
         on:click={() => setActive(reversedIndex)}
-        on:contextmenu|preventDefault={createOnLayerContextMenu(reversedIndex)}
-      >
+        on:contextmenu|preventDefault={createOnLayerContextMenu(reversedIndex)}>
         {layer.name}
         <div class="actions" class:active={!layer.visible || layer.locked}>
           <button
             on:click|stopPropagation={() =>
               setLocked(reversedIndex, !layer.locked)}
-            class:deactivated={layer.locked}
-          >
+            class:deactivated={layer.locked}>
             {#if layer.locked}
               <LockedIcon />
             {:else}
@@ -225,8 +225,7 @@
           <button
             on:click|stopPropagation={() =>
               setVisible(reversedIndex, !layer.visible)}
-            class:deactivated={!layer.visible}
-          >
+            class:deactivated={!layer.visible}>
             {#if layer.visible}
               <VisibleIcon />
             {:else}
@@ -241,12 +240,10 @@
   <ContextMenu
     bind:open={layerContextMenu.open}
     top={layerContextMenu.top}
-    left={layerContextMenu.left}
-  >
+    left={layerContextMenu.left}>
     <button
       class="context-menu-button"
-      on:click={() => removeLayer(layerContextMenu.layerIndex)}>Удалить</button
-    >
+      on:click={() => removeLayer(layerContextMenu.layerIndex)}>Удалить</button>
   </ContextMenu>
 </DockPanel>
 

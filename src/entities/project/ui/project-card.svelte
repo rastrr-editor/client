@@ -35,8 +35,7 @@
   class="link-container"
   href={`/projects/${project.id}`}
   use:link
-  on:contextmenu
->
+  on:contextmenu>
   <div class="image" class:empty={project.preview == null}>
     {#if imageUrl}
       <img src={imageUrl} alt={project.name} on:load={cleanup} />

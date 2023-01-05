@@ -108,7 +108,7 @@
   class:open={open && !disabled}
   style:transition={tooltipVisibilityTransition}
   bind:this={tooltip}
-  use:clickOutside={active ? hideTooltip : noop}
+  use:clickOutside={{ callback: active ? hideTooltip : noop }}
   on:keydown={active ? hideTooltipByKeydown : undefined}
 >
   <slot />
