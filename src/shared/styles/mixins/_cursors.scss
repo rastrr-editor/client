@@ -1,5 +1,5 @@
 @mixin default-cursor {
-  cursor: url("/icons/cursor-default.svg"), auto;
+  cursor: url("/icons/cursor-default.svg") 3 0, auto;
 }
 
 @mixin text-cursor {
