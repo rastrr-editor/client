@@ -1,1 +1,1 @@
-export { default as getCoords } from './getCoords';
+export { default as getCoords } from './get-coords';
