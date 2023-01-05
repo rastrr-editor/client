@@ -1,10 +1,26 @@
 import type { Action } from 'svelte/types/runtime/action';
 
-const clickOutside: Action = (node: HTMLElement, callback: () => void) => {
+type СlickOutsideOptions = {
+  excludeSelectors?: string[];
+  callback: () => void;
+};
+
+const clickOutside: Action = (
+  node: HTMLElement,
+  { excludeSelectors = [], callback }: СlickOutsideOptions
+) => {
   const handleClick = (event: MouseEvent): void => {
     const targetElement = event.target as HTMLElement;
 
-    if (!node?.contains(targetElement) && !event.defaultPrevented) {
+    const hasEventOnExcluded = excludeSelectors.some((selector) =>
+      targetElement.closest(selector)
+    );
+
+    if (
+      !node?.contains(targetElement) &&
+      !hasEventOnExcluded &&
+      !event.defaultPrevented
+    ) {
       callback();
     }
   };
@@ -13,7 +29,7 @@ const clickOutside: Action = (node: HTMLElement, callback: () => void) => {
   document.body.addEventListener('contextmenu', handleClick, true);
 
   return {
-    update(newCallback) {
+    update({ callback: newCallback }) {
       callback = newCallback;
     },
     destroy() {

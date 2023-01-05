@@ -25,7 +25,7 @@
 <svelte:element
   this={nested ? 'li' : 'div'}
   class="root"
-  use:clickOutside={!hover ? hideMenu : noop}
+  use:clickOutside={{ callback: !hover ? hideMenu : noop }}
   on:mouseenter={hover ? openMenu : undefined}
   on:mouseleave={hover ? hideMenu : undefined}
   on:focus|capture={hover ? openMenu : undefined}
