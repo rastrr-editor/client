@@ -6,7 +6,7 @@
  * @param defaultName Default name template
  * @returns Generated string based on defaultName with possible numeric postfix
  */
-export default function getDefaultName(
+export default function generateDefaultName(
   existingNames: string[],
   defaultName: string
 ): string {
