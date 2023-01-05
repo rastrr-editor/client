@@ -15,13 +15,12 @@ export default class LocalStoragePaletteRepository
     return palettes;
   }
 
-  async add(): Promise<Palette> {
+  async add(paletteData?: PaletteData): Promise<Palette> {
     const storedPalettes = await this.get();
 
     const palette: Palette = {
+      ...(paletteData ?? { name: '', colors: [] }),
       id: uniqid(),
-      name: '',
-      colors: [],
     };
 
     storedPalettes.unshift(palette);
