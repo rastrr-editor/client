@@ -1,7 +1,13 @@
 <script lang="ts">
-  import { DockPanel } from '~/entities/dock-panel';
-  import { Palette } from '~/entities/palette';
-  import { IconButton, ContextMenu } from '~/shared/ui';
+  import type { Writable } from 'svelte/store';
+  import type { Color } from '@rastrr-editor/core';
+
+  import {
+    Palette,
+    paletteStore,
+    createPaletteRepository,
+  } from '~/entities/palette';
+  import { DockPanel, IconButton, ContextMenu } from '~/shared/ui';
   import {
     PaletteIcon,
     AddIcon,
@@ -9,12 +15,16 @@
     CloseIcon,
   } from '~/shared/ui/icons';
   import { generateDefaultName } from '~/shared/lib/strings';
+  import { draggable } from '~/shared/lib/actions';
 
-  import { paletteStorage, createPaletteRepository } from '~/entities/palette';
+  export let mainColor: Writable<Color>;
+  export let secondaryColor: Writable<Color>;
 
-  const { editablePalette } = paletteStorage;
+  const { editablePalette } = paletteStore;
   const repository = createPaletteRepository();
 
+  const APPLY_BUTTON_ID = 'palette-apply';
+  const CANCEL_BUTTON_ID = 'palette-cancel';
   const paletteContextMenu = {
     open: false,
     top: -9999,
@@ -34,7 +44,7 @@
     };
   }
 
-  function closePaletteContextMenu() {
+  function closePaletteContextMenu(): void {
     paletteContextMenu.open = false;
     paletteContextMenu.top = -9999;
     paletteContextMenu.left = -9999;
@@ -114,20 +124,22 @@
 
   <div slot="actions" class="palette-actions">
     {#if $editablePalette !== null}
-      <IconButton id="palette-apply" on:click={onApply}
-        ><CheckIcon /></IconButton
-      >
-      <IconButton id="palette-cancel" class="cancel" on:click={onCancel}
-        ><CloseIcon /></IconButton
-      >
+      <IconButton id={APPLY_BUTTON_ID} on:click={onApply}>
+        <CheckIcon />
+      </IconButton>
+      <IconButton class="cancel" id={CANCEL_BUTTON_ID} on:click={onCancel}>
+        <CloseIcon />
+      </IconButton>
     {:else}
-      <IconButton aria-label="Add palette" on:click={onAddPalette}
-        ><AddIcon /></IconButton
-      >
+      <IconButton on:click={onAddPalette}>
+        <AddIcon />
+      </IconButton>
     {/if}
   </div>
 
-  <div class="palettes">
+  <div
+    class="palettes"
+    use:draggable={{ draggableSelector: '.palette-item', callback: () => {} }}>
     {#await palettesLoading then palettes}
       {#if palettes.length === 0}
         <div class="placeholder">
@@ -137,11 +149,13 @@
         {#each palettes as palette (palette.id)}
           <Palette
             class="palette-item"
+            triggers={[`#${APPLY_BUTTON_ID}`, `#${CANCEL_BUTTON_ID}`]}
             {palette}
+            {mainColor}
+            {secondaryColor}
             on:cancel={onCancel}
             on:apply={onApply}
-            on:contextmenu={createOpenPaletteContextMenu(palette.id)}
-          />
+            on:contextmenu={createOpenPaletteContextMenu(palette.id)} />
         {/each}
       {/if}
     {/await}
@@ -151,14 +165,14 @@
 <ContextMenu
   bind:open={paletteContextMenu.open}
   top={paletteContextMenu.top}
-  left={paletteContextMenu.left}
->
-  <button class="context-menu-button" on:click={onRenamePalette}
-    >Переименовать палитру</button
-  >
-  <button class="context-menu-button" on:click={onDeletePalette}
-    >Удалить палитру</button
-  >
+  left={paletteContextMenu.left}>
+  <button class="context-menu-button" on:click={onRenamePalette}>
+    Переименовать палитру
+  </button>
+
+  <button class="context-menu-button" on:click={onDeletePalette}>
+    Удалить палитру
+  </button>
 </ContextMenu>
 
 <style lang="scss">
@@ -174,12 +188,22 @@
   }
 
   .palettes {
-    max-height: spacing(56);
+    height: spacing(57.5);
     padding: spacing(2.5) spacing(2);
     overflow-y: auto;
 
-    :global(.palette-item:not(:last-child)) {
-      margin-bottom: spacing(4);
+    > :global(.palette-item ~ .palette-item) {
+      margin-top: spacing(4);
+    }
+
+    > :global(.dragging .color-pick),
+    > :global(.dragging .color) {
+      background-color: #3291ea !important;
+    }
+
+    > :global(.dragging),
+    > :global(.mirror) {
+      opacity: 0.2;
     }
   }
 
