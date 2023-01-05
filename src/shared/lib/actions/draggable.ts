@@ -101,6 +101,10 @@ async function dragStart(
 ): Promise<DragDataTransfter | null> {
   return new Promise((resolve) => {
     const timeout = setTimeout(() => {
+      // Can't drag if there is no parent
+      if (node.el.parentElement == null) {
+        return resolve(null);
+      }
       const { clientX, clientY } = event;
       const shift = {
         x: clientX - node.coords.left,
@@ -114,7 +118,7 @@ async function dragStart(
 
       const dragNode = createDragNode(node.el);
       setDragNodePosition(dragNode, event, shift);
-      node.el.parentElement!.append(dragNode);
+      node.el.parentElement.append(dragNode);
       dragNode.focus();
 
       // Add "dragging" class to original node
