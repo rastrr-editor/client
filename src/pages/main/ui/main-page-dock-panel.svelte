@@ -1,9 +1,12 @@
 <script lang="ts">
+  import { PalettesDockPanel } from '~/features/dock-panels/palettes';
   import { LayersDockPanel } from '~/features/dock-panels/layers';
   import { viewport } from '../model/store';
 </script>
 
 <aside>
+  <PalettesDockPanel />
+
   <LayersDockPanel
     layerList={$viewport?.layers}
     canvasSize={$viewport?.options.canvasSize}
