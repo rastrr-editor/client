@@ -197,9 +197,10 @@
   }
 
   .palettes {
+    @include custom-scroll;
     height: spacing(57.5);
     padding: spacing(2.5) spacing(2);
-    overflow-y: auto;
+    overflow-x: hidden;
 
     > :global(.palette-item ~ .palette-item) {
       margin-top: spacing(4);
