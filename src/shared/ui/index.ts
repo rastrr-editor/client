@@ -9,3 +9,4 @@ export { Tooltip } from './tooltip';
 export { ContextMenu } from './context-menu';
 export { DockPanel } from './dock-panel';
 export { Dropdown, DropdownMenu, DropdownMenuItem } from './dropdown';
+export * from './preloader';

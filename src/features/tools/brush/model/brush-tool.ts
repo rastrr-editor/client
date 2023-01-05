@@ -1,18 +1,11 @@
-import type { ColorRange } from '@rastrr-editor/core';
-import {
-  BrushCommand,
-  Viewport,
-  events,
-  asyncIter,
-  Color,
-} from '@rastrr-editor/core';
+import { BrushCommand, Viewport } from '@rastrr-editor/core';
 import { get } from 'svelte/store';
 import type { Tool, ToolCreateCommandOptions } from '~/entities/tool';
 import { toolStore } from '~/entities/tool';
 import type { BrushOptions } from '../types';
 import { options as defaultOptions } from './store';
 import * as constants from './constants';
-import { getCoords } from '~/shared/lib/dom';
+import { createPointerIterable } from '~/shared/lib/dom';
 
 export default class BrushTool implements Tool<BrushOptions, PointerEvent> {
   #options: BrushOptions;
@@ -58,44 +51,19 @@ export default class BrushTool implements Tool<BrushOptions, PointerEvent> {
     viewport: Viewport,
     { triggerEvent, color }: ToolCreateCommandOptions<PointerEvent>
   ): BrushCommand | null {
-    if (viewport.layers.activeLayer == null) {
+    if (
+      viewport.layers.activeLayer == null ||
+      viewport.layers.activeLayer.locked
+    ) {
       return null;
     }
-    const coords = getCoords(viewport.container);
-    // TODO: refactor using dot notation
-    const iterable = asyncIter.map(
-      asyncIter.every(
-        asyncIter.seq(
-          asyncIter.toAsyncIter([triggerEvent]),
-          asyncIter.until(
-            asyncIter.any(
-              events.on(document.body, 'pointermove'),
-              events.on(document.body, 'pointerup')
-            ),
-            events.onlyEvent('pointerup')
-          )
-        ),
-        (e) =>
-          !(
-            e.offsetX < coords.left ||
-            e.offsetX > coords.right ||
-            e.offsetY < coords.top ||
-            e.offsetY > coords.bottom
-          )
-      ),
-      (e) => ({
-        x: e.offsetX - viewport.offset.x,
-        y: e.offsetY - viewport.offset.y,
-      })
+    const iterable = createPointerIterable(
+      triggerEvent,
+      viewport.container,
+      viewport.offset
     );
     return new BrushCommand(viewport.layers, iterable, {
-      // TODO: reconsider constructor args or add opacity method for color
-      color: new Color(
-        color.r,
-        color.g,
-        color.b,
-        Math.round(Math.min(this.#options.opacity, 1) * 255) as ColorRange
-      ),
+      color: color.clone().setOpacity(this.#options.opacity),
       width: this.#options.size,
     });
   }

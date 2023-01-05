@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ChooseColor } from '~/features/tools/choose-color';
-  import { CursorIcon, BrushIcon } from '~/shared/ui/icons';
+  import { CursorIcon, BrushIcon, RectIcon } from '~/shared/ui/icons';
   import { toolStore } from '~/entities/tool';
   import {
     BrushTool,
@@ -9,6 +9,7 @@
   } from '~/features/tools/brush';
   import { position } from '../model/store';
   import ToolHelpTooltip from '~/entities/tool/ui/tool-help-tooltip.svelte';
+  import { rectConstants, RectTool } from '~/features/tools/rect';
 
   type ToolTooltip = {
     show: boolean;
@@ -25,14 +26,18 @@
     show: false,
     trigger: null,
   };
+
+  const rectTooltip: ToolTooltip = {
+    show: false,
+    trigger: null,
+  };
 </script>
 
 <div>
   <div
     class="tool-panel"
     class:bottom={$position === 'bottom'}
-    class:left={$position === 'left'}
-  >
+    class:left={$position === 'left'}>
     <button on:click={() => activeTool.set(null)}><CursorIcon /></button>
 
     <button
@@ -40,14 +45,20 @@
       class="withOptions"
       bind:this={brushTooltip.trigger}
       on:click={() => activeTool.set(new BrushTool())}
-      on:contextmenu|preventDefault={() => (brushTooltip.show = true)}
-    >
+      on:contextmenu|preventDefault={() => (brushTooltip.show = true)}>
       <BrushIcon />
     </button>
 
+    <button
+      class:active={$activeTool?.id === rectConstants.id}
+      class="withOptions"
+      bind:this={rectTooltip.trigger}
+      on:click={() => activeTool.set(new RectTool())}>
+      <RectIcon />
+    </button>
+
     <ChooseColor
-      orientation={$position === 'bottom' ? 'horizontal' : 'vertical'}
-    />
+      orientation={$position === 'bottom' ? 'horizontal' : 'vertical'} />
   </div>
 
   <ToolHelpTooltip
@@ -55,14 +66,19 @@
     hotkey={brushConstants.hotkey}
     bind:show={brushTooltip.show}
     trigger={brushTooltip.trigger}
-    {placement}
-  />
+    {placement} />
 
   <BrushOptionsTooltip
     bind:show={brushTooltip.show}
     trigger={brushTooltip.trigger}
-    {placement}
-  />
+    {placement} />
+
+  <ToolHelpTooltip
+    name={rectConstants.name}
+    hotkey={rectConstants.hotkey}
+    bind:show={rectTooltip.show}
+    trigger={rectTooltip.trigger}
+    {placement} />
 </div>
 
 <style lang="scss">

@@ -35,3 +35,19 @@
     @content;
   }
 }
+
+@mixin arrow($dir) {
+  border-width: 3.5px;
+  border-style: solid;
+  border-color: transparent;
+
+  @if ($dir == up) {
+    border-top-width: 0;
+    border-bottom-color: rgba(217, 217, 217, 0.3);
+  }
+
+  @if ($dir == down) {
+    border-bottom-width: 0;
+    border-top-color: rgba(217, 217, 217, 0.3);
+  }
+}

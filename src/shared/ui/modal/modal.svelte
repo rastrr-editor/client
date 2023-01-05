@@ -1,16 +1,22 @@
 <script lang="ts">
+  import { createEventDispatcher } from 'svelte';
   import { IconButton } from '~/shared/ui';
   import { CloseIcon } from '~/shared/ui/icons';
   import { focusTrap } from '~/shared/lib/actions';
-
   import type { ModalSize } from './types';
+
+  const dispatch = createEventDispatcher<{ hide: void }>();
+
+  let className: string;
 
   export let open: boolean = false;
   export let densed: boolean = false;
   export let size: ModalSize = 'medium';
+  export { className as class };
 
   const hide = () => {
     open = false;
+    dispatch('hide');
   };
 
   function keyboardEventHandler(event: KeyboardEvent): void {
@@ -28,14 +34,12 @@
     tabindex="-1"
     use:focusTrap={open}
     on:keydown|preventDefault={keyboardEventHandler}
-    on:click={hide}
-  >
+    on:click={hide}>
     <div
-      class={`modal ${[size]}`}
+      class={`modal ${[size]} ${className}`}
       class:densed
       on:click|stopPropagation
-      on:keydown|stopPropagation={keyboardEventHandler}
-    >
+      on:keydown|stopPropagation={keyboardEventHandler}>
       <IconButton aria-label="Close modal" class="close-button" on:click={hide}>
         <CloseIcon />
       </IconButton>

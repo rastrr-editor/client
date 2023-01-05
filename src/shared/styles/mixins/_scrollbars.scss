@@ -8,17 +8,25 @@
 }
 
 @mixin custom-scroll($width: 4px) {
-  overflow-y: auto;
+  overflow: auto;
   /* Firefox */
-  scrollbar-color: $grey $white;
+  scrollbar-color: $border-color $bg-extra;
   scrollbar-width: thin;
   /* Chome */
   &::-webkit-scrollbar {
     width: $width;
+
+    &:horizontal {
+      height: $width;
+    }
   }
 
   &::-webkit-scrollbar-thumb {
-    border-radius: $width / 2;
-    background: $grey;
+    border-radius: $width * 5;
+    background: $border-color;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background-color: transparent;
   }
 }
