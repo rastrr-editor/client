@@ -1,10 +1,10 @@
 <script lang="ts">
   import { afterUpdate, createEventDispatcher } from 'svelte';
+  import type { Writable } from 'svelte/store';
   import { Color } from '@rastrr-editor/core';
 
   import { AddOutlinedIcon } from '~/shared/ui/icons';
   import { ContextMenu } from '~/shared/ui';
-  import { chooseColorStore } from '~/features/tools/choose-color';
   import { clickOutside } from '~/shared/lib/actions';
   import { editablePalette } from '../model/store';
   import type { Palette } from '../model/repository';
@@ -12,9 +12,11 @@
   let className: string = '';
 
   export let palette: Palette;
+  export let triggers: string[];
+  export let mainColor: Writable<Color>;
+  export let secondaryColor: Writable<Color>;
   export { className as class };
 
-  const { mainColor, secondaryColor } = chooseColorStore;
   const dispatch = createEventDispatcher();
 
   const colorContextMenu = {
@@ -106,12 +108,11 @@
       value={palette.name}
       bind:this={nameInput}
       use:clickOutside={{
-        excludeSelectors: ['#palette-apply', '#palette-cancel'],
+        excludeSelectors: triggers,
         callback: () => dispatch('cancel'),
       }}
       on:input={onChangeName}
-      on:keydown={onNameInputKeydown}
-    />
+      on:keydown={onNameInputKeydown} />
   {:else}
     <span class="name">{palette.name}</span>
   {/if}
@@ -125,8 +126,7 @@
         disabled={$editablePalette !== null}
         data-color={color}
         on:click={() => mainColor.set(Color.from(color, 'hex'))}
-        on:contextmenu|preventDefault|stopPropagation={openColorContextMenu}
-      />
+        on:contextmenu|preventDefault|stopPropagation={openColorContextMenu} />
     {/each}
 
     <div class="color-pick">
@@ -136,8 +136,7 @@
         type="color"
         class="color-picker"
         disabled={$editablePalette !== null}
-        on:change={onAddColor}
-      />
+        on:change={onAddColor} />
     </div>
   </div>
 </div>
@@ -145,14 +144,14 @@
 <ContextMenu
   bind:open={colorContextMenu.open}
   top={colorContextMenu.top}
-  left={colorContextMenu.left}
->
-  <button class="context-menu-button" on:click={onSetColorAsSecondary}
-    >Установить как вспомогательный</button
-  >
-  <button class="context-menu-button" on:click={onDeleteColor}
-    >Удалить цвет</button
-  >
+  left={colorContextMenu.left}>
+  <button class="context-menu-button" on:click={onSetColorAsSecondary}>
+    Установить как вспомогательный
+  </button>
+
+  <button class="context-menu-button" on:click={onDeleteColor}>
+    Удалить цвет
+  </button>
 </ContextMenu>
 
 <style lang="scss">
