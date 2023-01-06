@@ -100,11 +100,11 @@
         </Dropdown>
       </li>
       <li>
-        <a href="/projects" class="menu-item" use:link> Проекты </a>
+        <a href="/projects" class="menu-item" use:link>Проекты</a>
       </li>
-      <!-- <li>
-        <button class="menu-item">О программе</button>
-      </li> -->
+      <li>
+        <a href="/about" class="menu-item" use:link>О программе</a>
+      </li>
     </ul>
   </nav>
 </header>

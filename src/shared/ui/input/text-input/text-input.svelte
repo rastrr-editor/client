@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { TextFieldType } from './text-input.types';
+  import type { TextFieldType } from './types';
 
   interface $$Props extends svelte.JSX.HTMLAttributes<HTMLInputElement> {
     label?: string;

@@ -7,17 +7,18 @@
 
   const dispatch = createEventDispatcher<{ hide: void }>();
 
-  let className: string;
+  let className: string = '';
 
   export let open: boolean = false;
   export let densed: boolean = false;
   export let size: ModalSize = 'medium';
   export { className as class };
 
-  const hide = () => {
+  function hide(): void {
     open = false;
+
     dispatch('hide');
-  };
+  }
 
   function keyboardEventHandler(event: KeyboardEvent): void {
     if (event.key === 'Escape' || event.code === 'Escape') {
@@ -88,7 +89,7 @@
   }
 
   .medium {
-    max-width: 500px;
+    max-width: 610px;
   }
 
   .large {
