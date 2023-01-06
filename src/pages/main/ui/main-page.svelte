@@ -2,7 +2,7 @@
   import ProjectList from '~/entities/project/ui/project-list.svelte';
   import { CreateProject } from '~/features/create-project';
   import { ToolPanel } from '~/widgets/tool-panel';
-  import { About } from '~/entities/about';
+  import { About } from '~/widgets/about-modal';
   import { openProjects, openAbout } from '../model/store';
   import type { MainPageRouterParams } from '../types';
   import MainPageCanvasContainer from './main-page-canvas-container.svelte';
