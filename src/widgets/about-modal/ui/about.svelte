@@ -93,15 +93,16 @@
   }
 
   .contributors-grid {
-    display: grid;
-    grid-template-columns: repeat(4, spacing(28.5));
-    column-gap: spacing(6);
+    display: flex;
+    flex-wrap: wrap;
+    gap: spacing(6);
   }
 
   .contributor {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    max-width: spacing(28.5);
 
     > img {
       width: spacing(28.5);
@@ -119,6 +120,7 @@
     .role {
       @include typography(body3);
 
+      flex: 1;
       margin-top: spacing(2);
       color: $placeholder-color;
     }
