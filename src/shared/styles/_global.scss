@@ -26,6 +26,10 @@ h3 {
   @include typography("h3");
 }
 
+a {
+  @include action-cursor;
+}
+
 .link-container {
   color: currentColor;
   text-decoration: none;
