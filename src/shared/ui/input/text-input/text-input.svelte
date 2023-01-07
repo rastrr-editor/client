@@ -54,8 +54,7 @@
         on:mouseover
         on:mouseleave
         on:paste
-        on:copy
-      />
+        on:copy />
     </slot>
   </div>
 </label>
@@ -79,6 +78,7 @@
     border: 1px solid $border-color;
     border-radius: $border-radius;
     background-color: $bg-extra;
+    transition: border-color $animation-time;
 
     &:hover {
       border-color: $input-hover-color;
@@ -96,8 +96,12 @@
   .disabled {
     opacity: 0.5;
 
-    .wrapper {
+    .wrapper:hover {
       border-color: $border-color;
+    }
+
+    .wrapper.noBorder {
+      border-color: transparent;
     }
   }
 

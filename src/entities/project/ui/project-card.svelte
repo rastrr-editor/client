@@ -67,7 +67,6 @@
 
   a {
     display: block;
-    @include action-cursor;
     padding: spacing(2);
     border-radius: $card-border-radius;
 

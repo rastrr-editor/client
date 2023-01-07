@@ -127,7 +127,6 @@
 
     > a {
       @include typography(body3);
-      @include action-cursor;
 
       display: flex;
       margin-top: spacing(3);
@@ -137,7 +136,10 @@
       text-decoration: none;
 
       > img {
+        width: spacing(4);
+        height: spacing(4);
         margin-right: spacing(1);
+        object-fit: cover;
       }
 
       &:hover,
