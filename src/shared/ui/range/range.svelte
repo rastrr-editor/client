@@ -30,8 +30,7 @@
       on:click
       on:keypress
       on:keydown
-      on:keyup
-    />
+      on:keyup />
 
     <div class="numeric">
       <NumberInput
@@ -42,8 +41,7 @@
         on:change
         densed
         noBorder
-        fitWidth
-      />
+        fitWidth />
     </div>
   </div>
 </label>
@@ -65,73 +63,73 @@
     display: flex;
     align-items: center;
     flex: 1;
-  }
 
-  input {
-    @include action-cursor;
+    > input {
+      @include action-cursor;
 
-    -webkit-appearance: none;
-    appearance: none;
-    width: 100%;
-    padding: spacing(2) 0;
-    background-color: transparent;
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      padding: spacing(2) 0;
+      background-color: transparent;
 
-    &:not(:disabled):hover,
-    &:not(:disabled):focus {
+      &:not(:disabled):hover,
+      &:not(:disabled):focus {
+        &::-webkit-slider-thumb {
+          background-color: $button-hover-color;
+        }
+
+        &::-moz-range-thumb {
+          background-color: $button-hover-color;
+        }
+      }
+
+      &:disabled {
+        @include default-cursor;
+      }
+
+      &:focus {
+        outline: none;
+      }
+
+      /* Chrome, Safari, Edge, Opera */
+      &::-webkit-slider-runnable-track {
+        height: 2px;
+        border-radius: 5px;
+        background-color: $bg-extra;
+        transition: background-color $animation-time;
+      }
+
       &::-webkit-slider-thumb {
-        background-color: $button-hover-color;
+        -webkit-appearance: none;
+        appearance: none;
+        position: relative;
+        top: -5px;
+        width: 4px;
+        height: 12px;
+        border-radius: 1px;
+        background-color: $border-color;
+        transition: background-color $animation-time;
+      }
+
+      /* Firefox */
+      &::-moz-range-track {
+        height: 2px;
+        border-radius: 5px;
+        background-color: $bg-extra;
+        transition: background-color $animation-time;
       }
 
       &::-moz-range-thumb {
-        background-color: $button-hover-color;
+        position: relative;
+        top: -5px;
+        width: 4px;
+        height: 12px;
+        border: none;
+        border-radius: 1px;
+        background-color: $border-color;
+        transition: background-color $animation-time;
       }
-    }
-
-    &:disabled {
-      @include default-cursor;
-    }
-
-    &:focus {
-      outline: none;
-    }
-
-    /* Chrome, Safari, Edge, Opera */
-    &::-webkit-slider-runnable-track {
-      height: 2px;
-      border-radius: 5px;
-      background-color: $bg-extra;
-      transition: background-color $animation-time;
-    }
-
-    &::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      position: relative;
-      top: -5px;
-      width: 4px;
-      height: 12px;
-      border-radius: 1px;
-      background-color: $border-color;
-      transition: background-color $animation-time;
-    }
-
-    /* Firefox */
-    &::-moz-range-track {
-      height: 2px;
-      border-radius: 5px;
-      background-color: $bg-extra;
-      transition: background-color $animation-time;
-    }
-
-    &::-moz-range-thumb {
-      position: relative;
-      top: -5px;
-      width: 4px;
-      height: 12px;
-      border: none;
-      border-radius: 1px;
-      background-color: $border-color;
-      transition: background-color $animation-time;
     }
   }
 
