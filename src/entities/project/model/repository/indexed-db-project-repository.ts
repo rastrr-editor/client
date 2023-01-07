@@ -32,7 +32,7 @@ export default class IndexedDBProjectRepository implements ProjectRepository {
       ...meta,
       layers: makeLayerDataArrayFromLayerList(layers),
       createdAt: new Date(),
-      updatedAt: null,
+      updatedAt: new Date(),
     };
     const id = await db.projects.add({
       ...project,
