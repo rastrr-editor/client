@@ -34,7 +34,7 @@
     <span class="label">{label}</span>
   {/if}
 
-  <div class="wrapper" class:noBorder>
+  <div class="wrapper" class:no-border={noBorder}>
     <slot props={{ ...$$restProps, disabled }}>
       <input
         {...$$restProps}
@@ -54,8 +54,7 @@
         on:mouseover
         on:mouseleave
         on:paste
-        on:copy
-      />
+        on:copy />
     </slot>
   </div>
 </label>
@@ -79,8 +78,9 @@
     border: 1px solid $border-color;
     border-radius: $border-radius;
     background-color: $bg-extra;
+    transition: border-color $animation-time;
 
-    &:hover {
+    &:global(:not(:has(:disabled)):hover) {
       border-color: $input-hover-color;
     }
 
@@ -95,17 +95,13 @@
 
   .disabled {
     opacity: 0.5;
-
-    .wrapper {
-      border-color: $border-color;
-    }
   }
 
   .densed {
     padding: spacing(1);
   }
 
-  .noBorder {
+  .no-border {
     border-color: transparent;
   }
 </style>
