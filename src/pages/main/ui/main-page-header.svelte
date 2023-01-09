@@ -6,8 +6,10 @@
   import { toolPanelStore } from '~/widgets/tool-panel';
   import { createProjectRepository, projectStore } from '~/entities/project';
   import { get } from 'svelte/store';
+  import exportImage from '../model/exportImage';
 
   const { position: toolPanelPosition } = toolPanelStore;
+  const { activeProject } = projectStore;
   const projectRepository = createProjectRepository();
 
   type NavigationEvents = {
@@ -65,14 +67,24 @@
               Сохранить проект
             </DropdownMenuItem>
 
-            <!-- <Dropdown nested hover>
+            <Dropdown nested hover>
               <DropdownMenuItem nested>Сохранить как</DropdownMenuItem>
 
               <DropdownMenu slot="menu" nested>
-                <DropdownMenuItem>JPEG</DropdownMenuItem>
-                <DropdownMenuItem>PNG</DropdownMenuItem>
+                <DropdownMenuItem
+                  disabled={$activeProject == null}
+                  on:click={() =>
+                    exportImage($activeProject?.name ?? '', 'jpg')}>
+                  JPEG
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  disabled={$activeProject == null}
+                  on:click={() =>
+                    exportImage($activeProject?.name ?? '', 'png')}>
+                  PNG
+                </DropdownMenuItem>
               </DropdownMenu>
-            </Dropdown> -->
+            </Dropdown>
           </DropdownMenu>
         </Dropdown>
       </li>
