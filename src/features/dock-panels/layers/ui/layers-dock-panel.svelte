@@ -43,6 +43,9 @@
 
   $: opacity = Math.round((layerList?.activeLayer?.opacity ?? 1) * 100);
 
+  const matchesSearch = (layer: Layer): boolean =>
+    layer.name.toLowerCase().indexOf(search.toLowerCase()) !== -1;
+
   const onActiveChange = (index: number, layer: Layer) => {
     opacity = Math.round(layer.opacity * 100);
     activeLayer = layer;
@@ -204,8 +207,7 @@
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <li
         class:active={layer.id === activeLayer?.id}
-        class:dimmed={layer.name.toLowerCase().indexOf(search.toLowerCase()) ===
-          -1}
+        class:dimmed={search && !matchesSearch(layer)}
         on:click={() => setActive(reversedIndex)}
         on:contextmenu|preventDefault={createOnLayerContextMenu(reversedIndex)}>
         {layer.name}
