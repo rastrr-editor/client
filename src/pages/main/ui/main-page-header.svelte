@@ -58,7 +58,7 @@
             on:click={() => (openFileMenu = true)}>Файл</button>
           <DropdownMenu slot="menu">
             <DropdownMenuItem on:click={() => dispatch('createNewProject')}>
-              Создать новый файл
+              Создать проект
             </DropdownMenuItem>
 
             <DropdownMenuItem on:click={onProjectSave}>
