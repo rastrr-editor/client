@@ -252,12 +252,11 @@ function setCloneNodePosition(
   if (elIndex === index) {
     cloneNode.style.display = 'none';
     el.after(cloneNode);
-  } else {
+  } else if (appendAfter && elIndex + 1 !== index) {
     cloneNode.style.display = getComputedStyle(dragNode).display;
-    if (appendAfter && elIndex + 1 !== index) {
-      el.after(cloneNode);
-    } else if (elIndex - 1 !== index) {
-      el.before(cloneNode);
-    }
+    el.after(cloneNode);
+  } else if (elIndex - 1 !== index) {
+    cloneNode.style.display = getComputedStyle(dragNode).display;
+    el.before(cloneNode);
   }
 }
