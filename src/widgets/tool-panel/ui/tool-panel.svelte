@@ -1,12 +1,22 @@
 <script lang="ts">
   import { ChooseColor } from '~/features/tools/choose-color';
-  import { CursorIcon, BrushIcon, RectIcon } from '~/shared/ui/icons';
+  import {
+    CursorIcon,
+    BrushIcon,
+    RectIcon,
+    EraserIcon,
+  } from '~/shared/ui/icons';
   import { toolStore } from '~/entities/tool';
   import {
     BrushTool,
     brushConstants,
     BrushOptionsTooltip,
   } from '~/features/tools/brush';
+  import {
+    EraserTool,
+    eraserConstants,
+    EraserOptionsTooltip,
+  } from '~/features/tools/eraser';
   import { position } from '../model/store';
   import ToolHelpTooltip from '~/entities/tool/ui/tool-help-tooltip.svelte';
   import { rectConstants, RectTool } from '~/features/tools/rect';
@@ -23,6 +33,11 @@
   $: placement = $position === 'bottom' ? 'top' : 'right';
 
   const brushTooltip: ToolTooltip = {
+    show: false,
+    trigger: null,
+  };
+
+  const eraserTooltip: ToolTooltip = {
     show: false,
     trigger: null,
   };
@@ -50,6 +65,15 @@
     </button>
 
     <button
+      class:active={$activeTool?.id === eraserConstants.id}
+      class="withOptions"
+      bind:this={eraserTooltip.trigger}
+      on:click={() => activeTool.set(new EraserTool())}
+      on:contextmenu|preventDefault={() => (eraserTooltip.show = true)}>
+      <EraserIcon />
+    </button>
+
+    <button
       class:active={$activeTool?.id === rectConstants.id}
       class="withOptions"
       bind:this={rectTooltip.trigger}
@@ -71,6 +95,18 @@
   <BrushOptionsTooltip
     bind:show={brushTooltip.show}
     trigger={brushTooltip.trigger}
+    {placement} />
+
+  <ToolHelpTooltip
+    name={eraserConstants.name}
+    hotkey={eraserConstants.hotkey}
+    bind:show={eraserTooltip.show}
+    trigger={eraserTooltip.trigger}
+    {placement} />
+
+  <EraserOptionsTooltip
+    bind:show={eraserTooltip.show}
+    trigger={eraserTooltip.trigger}
     {placement} />
 
   <ToolHelpTooltip
