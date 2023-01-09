@@ -25,7 +25,7 @@
   import { generateDefaultName } from '~/shared/lib/strings';
 
   export let layerList: LayerList | null = null;
-  export let canvasSize: Rastrr.Point = { x: 0, y: 0 };
+  export let imageSize: Rastrr.Point = { x: 0, y: 0 };
 
   let search: string = '';
 
@@ -104,8 +104,8 @@
     if (!layerList) return;
     // TODO: factory should be a global object
     const layer = LayerFactory.setType('canvas').filled(
-      canvasSize.x,
-      canvasSize.y,
+      imageSize.x,
+      imageSize.y,
       new Color(0, 0, 0, 0)
     );
     layer.name = generateDefaultName(

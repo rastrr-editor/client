@@ -12,7 +12,7 @@
 
   <LayersDockPanel
     layerList={$viewport?.layers}
-    canvasSize={$viewport?.options.canvasSize} />
+    imageSize={$viewport?.options.imageSize} />
 </aside>
 
 <style lang="scss">

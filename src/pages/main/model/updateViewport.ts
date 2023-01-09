@@ -22,7 +22,7 @@ export default function updateViewport(
     viewport = new Viewport(container, {
       strategy: 'canvas',
       minOffset: { x: 16, y: 40 },
-      canvasSize: { x: project.width, y: project.height },
+      imageSize: { x: project.width, y: project.height },
       // FIXME: this sometimes works incorrectly
       htmlSizeDelta: { x: 0, y: -6 },
     });
