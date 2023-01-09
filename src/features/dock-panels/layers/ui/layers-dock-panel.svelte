@@ -22,6 +22,7 @@
     LockedIcon,
     UnlockedIcon,
   } from '~/shared/ui/icons';
+  import { generateDefaultName } from '~/shared/lib/strings';
 
   export let layerList: LayerList | null = null;
   export let canvasSize: Rastrr.Point = { x: 0, y: 0 };
@@ -38,8 +39,6 @@
   $: layers = Array.from(layerList?.reverse() ?? []);
 
   $: activeLayer = layerList?.activeLayer;
-
-  $: createdCount = (layerList && 0) || 0;
 
   $: opacity = Math.round((layerList?.activeLayer?.opacity ?? 1) * 100);
 
@@ -109,8 +108,10 @@
       canvasSize.y,
       new Color(0, 0, 0, 0)
     );
-    layer.name = `Новый слой${createdCount > 0 ? ` ${createdCount}` : ''}`;
-    createdCount += 1;
+    layer.name = generateDefaultName(
+      Array.from(layerList).map(({ name }) => name),
+      'Новый слой'
+    );
     layerList.add(layer);
     layerList.setActive(layerList.length - 1);
   }
