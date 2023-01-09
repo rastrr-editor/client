@@ -35,9 +35,7 @@
     left: -9999,
   };
 
-  $: layers = Array.from(layerList?.reverse() ?? []).filter(
-    (x) => x.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
-  );
+  $: layers = Array.from(layerList?.reverse() ?? []);
 
   $: activeLayer = layerList?.activeLayer;
 
@@ -97,9 +95,7 @@
   }
 
   function getLayers() {
-    return Array.from(layerList?.reverse() ?? []).filter(
-      (x) => x.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
-    );
+    return Array.from(layerList?.reverse() ?? []);
   }
 
   function addLayer() {
@@ -208,6 +204,8 @@
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <li
         class:active={layer.id === activeLayer?.id}
+        class:dimmed={layer.name.toLowerCase().indexOf(search.toLowerCase()) ===
+          -1}
         on:click={() => setActive(reversedIndex)}
         on:contextmenu|preventDefault={createOnLayerContextMenu(reversedIndex)}>
         {layer.name}
@@ -322,6 +320,10 @@
 
       &.active {
         border-color: $border-active-color;
+      }
+
+      &.dimmed {
+        opacity: 0.5;
       }
 
       &:global(.dragging),
