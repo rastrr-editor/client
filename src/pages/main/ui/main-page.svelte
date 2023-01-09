@@ -33,7 +33,7 @@
 <style lang="scss">
   .root {
     display: grid;
-    grid-template-columns: 1fr spacing(75);
+    grid-template-columns: calc(100% - #{spacing(75)}) spacing(75);
 
     > div {
       position: relative;
