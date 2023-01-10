@@ -2,7 +2,7 @@
   import { ToolOptionsTooltip } from '~/entities/tool';
   import { Range } from '~/shared/ui';
   import { BrushIcon } from '~/shared/ui/icons';
-  import { options } from '../model/store';
+  import { brushOptionsStore } from '../model/store';
 
   export let show = false;
   export let trigger: HTMLElement;
@@ -11,14 +11,17 @@
   function onSizeChange(e: Event) {
     const size = parseInt((e.target as HTMLInputElement).value, 10);
     if (Number.isSafeInteger(size)) {
-      options.update((value) => ({ ...value, size: Math.max(1, size) }));
+      brushOptionsStore.update((value) => ({
+        ...value,
+        size: Math.max(1, size),
+      }));
     }
   }
 
   function onOpacityChange(e: Event) {
     const opacity = parseInt((e.target as HTMLInputElement).value, 10);
     if (Number.isSafeInteger(opacity)) {
-      options.update((value) => ({
+      brushOptionsStore.update((value) => ({
         ...value,
         opacity: Math.min(Math.max(0, opacity / 100), 1),
       }));
@@ -31,20 +34,18 @@
   <div>
     <Range
       label="Размер"
-      value={Math.round($options.size)}
+      value={Math.round($brushOptionsStore.size)}
       min={1}
       max={125}
       units="px"
-      on:change={onSizeChange}
-    />
+      on:change={onSizeChange} />
     <Range
       label="Непрозрачность"
-      value={Math.round($options.opacity * 100)}
+      value={Math.round($brushOptionsStore.opacity * 100)}
       min={0}
       max={100}
       units="%"
-      on:change={onOpacityChange}
-    />
+      on:change={onOpacityChange} />
   </div>
 </ToolOptionsTooltip>
 
