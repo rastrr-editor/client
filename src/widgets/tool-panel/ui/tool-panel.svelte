@@ -11,11 +11,13 @@
     BrushTool,
     brushConstants,
     BrushOptionsTooltip,
+    brushOptionsStore,
   } from '~/features/tools/brush';
   import {
     EraserTool,
     eraserConstants,
     EraserOptionsTooltip,
+    eraserOptionsStore,
   } from '~/features/tools/eraser';
   import { position } from '../model/store';
   import ToolHelpTooltip from '~/entities/tool/ui/tool-help-tooltip.svelte';
@@ -59,7 +61,7 @@
       class:active={$activeTool?.id === brushConstants.id}
       class="withOptions"
       bind:this={brushTooltip.trigger}
-      on:click={() => activeTool.set(new BrushTool())}
+      on:click={() => activeTool.set(new BrushTool(brushOptionsStore))}
       on:contextmenu|preventDefault={() => (brushTooltip.show = true)}>
       <BrushIcon />
     </button>
@@ -68,7 +70,7 @@
       class:active={$activeTool?.id === eraserConstants.id}
       class="withOptions"
       bind:this={eraserTooltip.trigger}
-      on:click={() => activeTool.set(new EraserTool())}
+      on:click={() => activeTool.set(new EraserTool(eraserOptionsStore))}
       on:contextmenu|preventDefault={() => (eraserTooltip.show = true)}>
       <EraserIcon />
     </button>
