@@ -12,6 +12,9 @@ export default async function createProject(data: FormData): Promise<void> {
     height: parseInt(data.get('height') as string, 10),
     hasTransparentBackground: data.has('transparent'),
   };
+  if (projectMeta.width * projectMeta.height > 2e6) {
+    throw new Error('Максимальный размер холста 2 Мп');
+  }
   const repository = createProjectRepository();
   const project = await repository.add(projectMeta);
   // TODO: check if current active project is saved and perform necessary actions

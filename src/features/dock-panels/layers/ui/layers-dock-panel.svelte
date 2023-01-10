@@ -22,9 +22,10 @@
     LockedIcon,
     UnlockedIcon,
   } from '~/shared/ui/icons';
+  import { generateDefaultName } from '~/shared/lib/strings';
 
   export let layerList: LayerList | null = null;
-  export let canvasSize: Rastrr.Point = { x: 0, y: 0 };
+  export let imageSize: Rastrr.Point = { x: 0, y: 0 };
 
   let search: string = '';
 
@@ -35,15 +36,14 @@
     left: -9999,
   };
 
-  $: layers = Array.from(layerList?.reverse() ?? []).filter(
-    (x) => x.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
-  );
+  $: layers = Array.from(layerList?.reverse() ?? []);
 
   $: activeLayer = layerList?.activeLayer;
 
-  $: createdCount = (layerList && 0) || 0;
-
   $: opacity = Math.round((layerList?.activeLayer?.opacity ?? 1) * 100);
+
+  const matchesSearch = (layer: Layer): boolean =>
+    layer.name.toLowerCase().indexOf(search.toLowerCase()) !== -1;
 
   const onActiveChange = (index: number, layer: Layer) => {
     opacity = Math.round(layer.opacity * 100);
@@ -97,21 +97,21 @@
   }
 
   function getLayers() {
-    return Array.from(layerList?.reverse() ?? []).filter(
-      (x) => x.name.toLowerCase().indexOf(search.toLowerCase()) !== -1
-    );
+    return Array.from(layerList?.reverse() ?? []);
   }
 
   function addLayer() {
     if (!layerList) return;
     // TODO: factory should be a global object
     const layer = LayerFactory.setType('canvas').filled(
-      canvasSize.x,
-      canvasSize.y,
+      imageSize.x,
+      imageSize.y,
       new Color(0, 0, 0, 0)
     );
-    layer.name = `Новый слой${createdCount > 0 ? ` ${createdCount}` : ''}`;
-    createdCount += 1;
+    layer.name = generateDefaultName(
+      Array.from(layerList).map(({ name }) => name),
+      'Новый слой'
+    );
     layerList.add(layer);
     layerList.setActive(layerList.length - 1);
   }
@@ -208,6 +208,7 @@
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <li
         class:active={layer.id === activeLayer?.id}
+        class:dimmed={search && !matchesSearch(layer)}
         on:click={() => setActive(reversedIndex)}
         on:contextmenu|preventDefault={createOnLayerContextMenu(reversedIndex)}>
         {layer.name}
@@ -322,6 +323,10 @@
 
       &.active {
         border-color: $border-active-color;
+      }
+
+      &.dimmed {
+        opacity: 0.5;
       }
 
       &:global(.dragging),

@@ -9,7 +9,7 @@
 
   let disabled = false;
 
-  function onSubmit(e: SubmitEvent) {
+  function onSubmit(e: Event) {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
