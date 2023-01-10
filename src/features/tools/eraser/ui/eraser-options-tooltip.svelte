@@ -3,7 +3,7 @@
   import { ToolOptionsTooltip } from '~/entities/tool';
   import { Range } from '~/shared/ui';
   import { EraserIcon } from '~/shared/ui/icons';
-  import { options } from '../model/store';
+  import { eraserOptionsStore } from '../model/store';
 
   export let show = false;
   export let trigger: HTMLElement;
@@ -12,7 +12,10 @@
   function onSizeChange(e: Event) {
     const size = parseInt((e.target as HTMLInputElement).value, 10);
     if (Number.isSafeInteger(size)) {
-      options.update((value) => ({ ...value, size: Math.max(1, size) }));
+      eraserOptionsStore.update((value) => ({
+        ...value,
+        size: Math.max(1, size),
+      }));
     }
   }
 </script>
@@ -22,7 +25,7 @@
   <div>
     <Range
       label="Размер"
-      value={Math.round($options.size)}
+      value={Math.round($eraserOptionsStore.size)}
       min={1}
       max={125}
       units="px"

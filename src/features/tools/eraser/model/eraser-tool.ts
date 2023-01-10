@@ -1,62 +1,23 @@
-import { EraserCommand, Viewport } from '@rastrr-editor/core';
-import { get } from 'svelte/store';
-import type { Tool, ToolCreateCommandOptions } from '~/entities/tool';
-import { toolStore } from '~/entities/tool';
-import type { EraserOptions } from '../types';
-import { options as defaultOptions } from './store';
-import * as constants from './constants';
-import { createPointerIterable } from '~/shared/lib/dom';
+import { type Viewport, EraserCommand } from '@rastrr-editor/core';
 
-export default class EraserTool implements Tool<EraserOptions, PointerEvent> {
-  #options: EraserOptions;
-  #unsubscribe: () => void = () => {};
+import { type ToolCreateCommandOptions, DrawLineTool } from '~/entities/tool';
+import { createPointerIterable } from '~/shared/lib/dom';
+import type { EraserOptions } from '../types';
+import * as constants from './constants';
+
+export default class EraserTool extends DrawLineTool<EraserOptions> {
   readonly id: string = constants.id;
   readonly name: string = constants.name;
   readonly hotkey: string = constants.hotkey;
-
-  constructor(options?: EraserOptions) {
-    this.#options = options ?? get(defaultOptions);
-    if (options == null) {
-      this.#unsubscribe = defaultOptions.subscribe((value) => {
-        this.#options = value;
-        toolStore.toolCursor.set(this.getCursor());
-      });
-    }
-  }
-
-  getCursor(): string {
-    return `url("data:image/svg+xml;base64,${btoa(
-      `<svg
-        width="${this.#options.size + 2}"
-        height="${this.#options.size + 2}"
-        viewBox="0 0 ${this.#options.size + 2} ${this.#options.size + 2}"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <circle
-          cx="${this.#options.size / 2 + 1}"
-          cy="${this.#options.size / 2 + 1}"
-          r="${this.#options.size / 2}"
-          fill="none"
-          stroke="#c1c1c1"
-        />
-      </svg>`
-    )}") ${this.#options.size / 2 + 1} ${this.#options.size / 2 + 1}`;
-  }
-
-  setOptions(options: EraserOptions): void {
-    this.#options = options;
-  }
 
   createCommand(
     viewport: Viewport,
     { triggerEvent }: ToolCreateCommandOptions<PointerEvent>
   ): EraserCommand | null {
-    if (
-      viewport.layers.activeLayer == null ||
-      viewport.layers.activeLayer.locked
-    ) {
+    if (!this.checkActiveLayerAvailability(viewport)) {
       return null;
     }
+
     const iterable = createPointerIterable(
       triggerEvent,
       viewport.container,
@@ -64,11 +25,7 @@ export default class EraserTool implements Tool<EraserOptions, PointerEvent> {
     );
 
     return new EraserCommand(viewport.layers, iterable, {
-      width: this.#options.size,
+      width: this.options.size,
     });
-  }
-
-  destroy(): void {
-    this.#unsubscribe();
   }
 }
