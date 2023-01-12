@@ -49,10 +49,12 @@
           triggerEvent: event,
           color: get(chooseColorStore.mainColor),
         });
-        command?.execute().then((done) =>
-          // TODO: add to history
-          console.log(`Command '${command.name}' result: ${done}`)
-        );
+        command?.execute().then((done) => {
+          console.log(`Command '${command.name}' result: ${done}`);
+          if (done) {
+            viewport?.history.push(command);
+          }
+        });
       }
     };
     container.addEventListener('pointerdown', onPointerDown);
