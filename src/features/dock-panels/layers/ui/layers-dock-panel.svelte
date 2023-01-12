@@ -294,7 +294,7 @@
     list-style-type: none;
     margin: spacing(1.5) 0;
     padding: spacing(0.5);
-    max-height: spacing(72);
+    height: spacing(50);
     @include custom-scroll;
     overflow-x: hidden;
 
