@@ -1,6 +1,8 @@
 # ![Rastrr](https://rastrr.ru/github/rastrr-title-logo.svg?v=1)
 
-**A simple and free graphic editor for novice artists**
+**A simple and free graphic editor for novice artists** 
+
+[Try it out!](https://rastrr.ru/)
 
 ![Demo UI](https://rastrr.ru/github/demo.png)
 
