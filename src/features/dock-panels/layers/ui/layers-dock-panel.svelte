@@ -21,6 +21,7 @@
 
   export let layerList: LayerList | null = null;
   export let imageSize: Rastrr.Point = { x: 0, y: 0 };
+  export let withBorder = false;
 
   let search: string = '';
   let renameModeEnableForIndex = -1;
@@ -156,7 +157,7 @@
   };
 </script>
 
-<DockPanel title="Слои">
+<DockPanel title="Слои" {withBorder}>
   <LayersIcon slot="icon" />
 
   <div slot="actions" class="panel-actions">
@@ -266,7 +267,8 @@
     list-style-type: none;
     margin: spacing(1.5) 0;
     padding: spacing(0.5);
-    height: spacing(50);
+    /* 100% - header - margin */
+    height: calc(100% - #{spacing(17.5 + 1.5 * 2)});
     @include custom-scroll;
     overflow-x: hidden;
 

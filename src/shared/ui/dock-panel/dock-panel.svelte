@@ -1,9 +1,10 @@
 <script lang="ts">
   export let title: string;
+  export let withBorder = false;
 </script>
 
 <section>
-  <div class="header">
+  <div class="header" class:withBorder>
     <div class="row">
       <slot name="icon" />
       <h3>{title}</h3>
@@ -20,6 +21,10 @@
   .header {
     padding: spacing(1) spacing(2.5) spacing(1) spacing(2);
     background-color: $bg-main;
+
+    &.withBorder {
+      border-top: 1px solid $border-color;
+    }
   }
 
   .row {
@@ -29,7 +34,7 @@
     > :global(svg) {
       font-size: 1.25rem;
       color: $border-color;
-    } 
+    }
 
     h3 {
       display: inline-block;
