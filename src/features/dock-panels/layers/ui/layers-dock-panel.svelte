@@ -14,15 +14,9 @@
     Range,
     ContextMenu,
   } from '~/shared/ui';
-  import {
-    LayersIcon,
-    AddIcon,
-    VisibleIcon,
-    InvisibleIcon,
-    LockedIcon,
-    UnlockedIcon,
-  } from '~/shared/ui/icons';
+  import { LayersIcon, AddIcon } from '~/shared/ui/icons';
   import { generateDefaultName } from '~/shared/lib/strings';
+  import LayerListItem from './layer-list-item.svelte';
 
   export let layerList: LayerList | null = null;
   export let imageSize: Rastrr.Point = { x: 0, y: 0 };
@@ -126,26 +120,6 @@
     layerList?.setActive(getIndex(reversedIndex));
   }
 
-  function setVisible(reversedIndex: number, visible: boolean) {
-    if (!layerList) return;
-
-    const layer = layerList.get(getIndex(reversedIndex));
-    if (layer) {
-      layer.setVisible(visible);
-      layers[reversedIndex] = layer;
-    }
-  }
-
-  function setLocked(reversedIndex: number, locked: boolean) {
-    if (!layerList) return;
-
-    const layer = layerList.get(getIndex(reversedIndex));
-    if (layer) {
-      layer.locked = locked;
-      layers[reversedIndex] = layer;
-    }
-  }
-
   function setOpacity(e: Event) {
     const opacity = parseInt((e.target as HTMLInputElement).value, 10);
     if (Number.isSafeInteger(opacity)) {
@@ -205,36 +179,18 @@
 
   <ul use:draggable={{ draggableSelector: 'li', callback: dropCallback }}>
     {#each layers as layer, reversedIndex (layer.id)}
-      <!-- svelte-ignore a11y-click-events-have-key-events -->
-      <li
-        class:active={layer.id === activeLayer?.id}
-        class:dimmed={search && !matchesSearch(layer)}
+      <LayerListItem
         on:click={() => setActive(reversedIndex)}
-        on:contextmenu|preventDefault={createOnLayerContextMenu(reversedIndex)}>
-        {layer.name}
-        <div class="actions" class:active={!layer.visible || layer.locked}>
-          <button
-            on:click|stopPropagation={() =>
-              setLocked(reversedIndex, !layer.locked)}
-            class:deactivated={layer.locked}>
-            {#if layer.locked}
-              <LockedIcon />
-            {:else}
-              <UnlockedIcon />
-            {/if}
-          </button>
-          <button
-            on:click|stopPropagation={() =>
-              setVisible(reversedIndex, !layer.visible)}
-            class:deactivated={!layer.visible}>
-            {#if layer.visible}
-              <VisibleIcon />
-            {:else}
-              <InvisibleIcon />
-            {/if}
-          </button>
-        </div>
-      </li>
+        on:contextmenu={createOnLayerContextMenu(reversedIndex)}
+        on:lockToggle={() => {
+          layers = layers;
+        }}
+        on:visibleToggle={() => {
+          layers = layers;
+        }}
+        active={layer.id === activeLayer?.id}
+        dimmed={Boolean(search && !matchesSearch(layer))}
+        {layer} />
     {/each}
   </ul>
 
@@ -298,98 +254,8 @@
     @include custom-scroll;
     overflow-x: hidden;
 
-    li {
-      position: relative;
-      /* TODO: create mixin */
-      width: 100%;
-      padding: spacing(1);
-      border-radius: $border-radius;
-      text-align-last: left;
-      transition: background-color $animation-time;
-      background-color: $bg-main;
-      border: 1px solid transparent;
-      user-select: none;
-      @include typography(body2);
-      line-height: 1.2;
-
-      &:hover {
-        background-color: #5f7079;
-
-        > .actions {
-          visibility: visible;
-          opacity: 1;
-        }
-      }
-
-      &.active {
-        border-color: $border-active-color;
-      }
-
-      &.dimmed {
-        opacity: 0.5;
-      }
-
-      &:global(.dragging),
-      &:global(.mirror) {
-        background-color: transparent;
-        opacity: 0.2;
-        color: transparent;
-
-        :global(svg) {
-          color: transparent;
-        }
-      }
-
-      &:global(.dragging) {
-        border-color: $border-active-color;
-      }
-
-      &:global(.mirror) {
-        background-color: $border-active-color;
-      }
-
-      + li {
-        margin-top: spacing(0.5);
-      }
-    }
-  }
-
-  .actions {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity ease-in-out $animation-time, visibility $animation-time;
-
-    &.active {
-      visibility: visible;
-      opacity: 1;
-    }
-
-    > button {
-      @include reset-button(false);
-      @include action-cursor;
-      height: 1.5rem;
-      padding-left: spacing(2);
-      padding-right: spacing(1);
-
-      + button {
-        padding-left: spacing(1);
-        padding-right: spacing(2);
-      }
-
-      :global(svg) {
-        font-size: 0.75rem;
-        color: $body-color;
-      }
-
-      &.deactivated {
-        :global(svg) {
-          opacity: 0.5;
-        }
-      }
+    :global(li) + :global(li) {
+      margin-top: spacing(0.5);
     }
   }
 </style>
