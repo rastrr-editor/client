@@ -50,6 +50,7 @@
   $card-border-radius: 3px;
 
   img {
+    /* TODO: set contain for rect images */
     object-fit: cover;
     width: 100%;
     height: 100%;
