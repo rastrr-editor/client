@@ -4,12 +4,6 @@
   import { Modal } from '~/shared/ui';
   import RastrrIcon from './rastrr-icon.svelte';
 
-  import shiningMindAvatar from '/images/shining-mind.png';
-  import dimelioraAvatar from '/images/dimeliora.png';
-  import yesDezAvatar from '/images/yes_dez.png';
-  import githubLogo from '/icons/logo-github.svg';
-  import telegramLogo from '/icons/logo-telegram.svg';
-
   export let open: boolean = false;
 
   function onHide(): void {
@@ -29,32 +23,32 @@
 
   <div class="contributors-grid">
     <div class="contributor">
-      <img src={shiningMindAvatar} alt="Developer's avatar" />
+      <img src="/images/shining-mind.png" alt="Developer's avatar" />
       <span class="name">Артём</span>
       <span class="role">тимлид</span>
       <a
         href="https://github.com/shining-mind"
         target="_blank"
         rel="noreferrer">
-        <img src={githubLogo} alt="Github" />
+        <img src="/icons/logo-github.svg" alt="Github" />
         @shining-mind
       </a>
     </div>
     <div class="contributor">
-      <img src={dimelioraAvatar} alt="Developer's avatar" />
+      <img src="/images/dimeliora.png" alt="Developer's avatar" />
       <span class="name">Дмитрий</span>
       <span class="role">разработка UI</span>
       <a href="https://github.com/dimeliora" target="_blank" rel="noreferrer">
-        <img src={githubLogo} alt="Github" />
+        <img src="/icons/logo-github.svg" alt="Github" />
         @dimeliora
       </a>
     </div>
     <div class="contributor">
-      <img src={yesDezAvatar} alt="Developer's avatar" />
+      <img src="/images/yes_dez.png" alt="Developer's avatar" />
       <span class="name">Евгений</span>
       <span class="role">UX/UI дизайн</span>
       <a href="https://t.me/yes_dez" target="_blank" rel="noreferrer">
-        <img src={telegramLogo} alt="Telegram" />
+        <img src="/icons/logo-telegram.svg" alt="Telegram" />
         @yes_dez
       </a>
     </div>
