@@ -105,12 +105,12 @@
 <div
   role="tooltip"
   class="tooltip"
+  class:active
   class:open={open && !disabled}
   style:transition={tooltipVisibilityTransition}
   bind:this={tooltip}
   use:clickOutside={{ callback: active ? hideTooltip : noop }}
-  on:keydown={active ? hideTooltipByKeydown : undefined}
->
+  on:keydown={active ? hideTooltipByKeydown : undefined}>
   <slot />
 </div>
 
@@ -119,7 +119,7 @@
     @include typography(body2);
 
     position: fixed;
-    z-index: 100;
+    z-index: 99;
     visibility: hidden;
     padding: spacing(3);
     border: 1px solid $modal-border-color;
@@ -129,5 +129,9 @@
 
   .open {
     visibility: visible;
+  }
+
+  .active {
+    z-index: 200;
   }
 </style>
