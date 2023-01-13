@@ -1,20 +1,13 @@
 import { RectCommand, Viewport } from '@rastrr-editor/core';
-import type { Tool, ToolCreateCommandOptions } from '~/entities/tool';
+
+import { type ToolCreateCommandOptions, ShapeTool } from '~/entities/tool';
 import * as constants from './constants';
 import { createPointerIterable } from '~/shared/lib/dom';
-import { generateDefaultName } from '~/shared/lib/strings';
 
-export default class RectTool implements Tool<null, PointerEvent> {
-  #unsubscribe: () => void = () => {};
+export default class RectTool extends ShapeTool {
   readonly id: string = constants.id;
   readonly name: string = constants.name;
   readonly hotkey: string | null = constants.hotkey;
-
-  getCursor(): string | null {
-    return 'crosshair';
-  }
-
-  setOptions(options: null): void {}
 
   createCommand(
     viewport: Viewport,
@@ -28,16 +21,7 @@ export default class RectTool implements Tool<null, PointerEvent> {
     return new RectCommand(viewport.layers, iterable, {
       color,
       operation: 'fill',
-      // TODO: it should be reused for other shape tools
-      getLayerName: (baseName: string) =>
-        generateDefaultName(
-          Array.from(viewport.layers).map(({ name }) => name),
-          baseName
-        ),
+      getLayerName: this.createGetLayerName(viewport),
     });
-  }
-
-  destroy(): void {
-    this.#unsubscribe();
   }
 }

@@ -8,10 +8,8 @@
   viewBox="0 0 24 24"
   fill="none"
   stroke="currentColor"
+  stroke-width="1"
   xmlns="http://www.w3.org/2000/svg"
-  {...$$restProps}
->
-  <path
-    d="M3.07722 9.10081L12 2.61803L20.9228 9.10081L17.5146 19.5902H6.48542L3.07722 9.10081Z"
-  />
+  {...$$restProps}>
+  <circle cx="12" cy="12" r="8" />
 </svg>

@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { ChooseColor } from '~/features/tools/choose-color';
   import {
     CursorIcon,
     BrushIcon,
-    RectIcon,
     EraserIcon,
+    RectIcon,
+    EllipseIcon,
   } from '~/shared/ui/icons';
-  import { toolStore } from '~/entities/tool';
+  import { ShapeTool, toolStore, ToolHelpTooltip } from '~/entities/tool';
   import {
     BrushTool,
     brushConstants,
@@ -17,20 +17,53 @@
     eraserConstants,
     EraserOptionsTooltip,
   } from '~/features/tools/eraser';
+  import {
+    type ShapeType,
+    options as shapeOptions,
+    rectConstants,
+    RectTool,
+    ellipseConstants,
+    EllipseTool,
+    ShapeOptionsTooltip,
+  } from '~/features/tools/shape';
+  import { ChooseColor } from '~/features/tools/choose-color';
   import { position } from '../model/store';
-  import ToolHelpTooltip from '~/entities/tool/ui/tool-help-tooltip.svelte';
-  import { rectConstants, RectTool } from '~/features/tools/rect';
-
-  type ToolTooltip = {
-    show: boolean;
-    trigger: HTMLButtonElement | null;
-  };
+  import type { ShapeToolData, ToolTooltip } from '../types';
 
   const { activeTool } = toolStore;
 
+  const shapeToolMap: Record<ShapeType, ShapeToolData> = {
+    rect: {
+      icon: RectIcon,
+      tool: RectTool,
+      constants: rectConstants,
+    },
+    ellipse: {
+      icon: EllipseIcon,
+      tool: EllipseTool,
+      constants: ellipseConstants,
+    },
+  };
+
   let placement: 'top' | 'right';
+  let isShapeToolSelected: boolean;
+  let currentShapeToolData: ShapeToolData;
 
   $: placement = $position === 'bottom' ? 'top' : 'right';
+  $: isShapeToolSelected = $activeTool instanceof ShapeTool;
+  $: currentShapeToolData = shapeToolMap[$shapeOptions.type];
+
+  function onShapeToolSelect(): void {
+    const { tool: CurrentShapeTool } = currentShapeToolData;
+    activeTool.set(new CurrentShapeTool());
+  }
+
+  $: if (
+    isShapeToolSelected &&
+    !($activeTool instanceof currentShapeToolData.tool)
+  ) {
+    onShapeToolSelect();
+  }
 
   const brushTooltip: ToolTooltip = {
     show: false,
@@ -42,7 +75,7 @@
     trigger: null,
   };
 
-  const rectTooltip: ToolTooltip = {
+  const shapeTooltip: ToolTooltip = {
     show: false,
     trigger: null,
   };
@@ -74,11 +107,12 @@
     </button>
 
     <button
-      class:active={$activeTool?.id === rectConstants.id}
+      class:active={isShapeToolSelected}
       class="withOptions"
-      bind:this={rectTooltip.trigger}
-      on:click={() => activeTool.set(new RectTool())}>
-      <RectIcon />
+      bind:this={shapeTooltip.trigger}
+      on:click={onShapeToolSelect}
+      on:contextmenu|preventDefault={() => (shapeTooltip.show = true)}>
+      <svelte:component this={currentShapeToolData.icon} />
     </button>
 
     <ChooseColor
@@ -110,10 +144,15 @@
     {placement} />
 
   <ToolHelpTooltip
-    name={rectConstants.name}
-    hotkey={rectConstants.hotkey}
-    bind:show={rectTooltip.show}
-    trigger={rectTooltip.trigger}
+    name={currentShapeToolData.constants.name}
+    hotkey={currentShapeToolData.constants.hotkey}
+    bind:show={shapeTooltip.show}
+    trigger={shapeTooltip.trigger}
+    {placement} />
+
+  <ShapeOptionsTooltip
+    bind:show={shapeTooltip.show}
+    trigger={shapeTooltip.trigger}
     {placement} />
 </div>
 
@@ -183,7 +222,7 @@
 
     > :global(svg) {
       font-size: 1.5rem;
-      color: #fff;
+      color: $body-color;
     }
   }
 </style>
