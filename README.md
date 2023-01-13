@@ -4,7 +4,7 @@
 
 [Try it out!](https://rastrr.ru/)
 
-![Demo UI](https://rastrr.ru/github/demo.png)
+![Demo UI](https://rastrr.ru/github/demo.png?v=1)
 
 ## Features
 
