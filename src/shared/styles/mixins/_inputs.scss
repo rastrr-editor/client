@@ -37,3 +37,10 @@
     color: $placeholder-color;
   }
 }
+
+@mixin invisible-input {
+  outline: none;
+  border: none;
+  background: transparent;
+  padding: 0;
+}
