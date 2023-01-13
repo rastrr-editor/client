@@ -19,6 +19,7 @@
 
   export let mainColor: Writable<Color>;
   export let secondaryColor: Writable<Color>;
+  export let withBorder = false;
 
   const { editablePalette } = paletteStore;
   const repository = createPaletteRepository();
@@ -125,7 +126,7 @@
   }
 </script>
 
-<DockPanel title="Палитра">
+<DockPanel title="Палитра" {withBorder}>
   <PaletteIcon slot="icon" />
 
   <div slot="actions" class="palette-actions">
@@ -198,7 +199,8 @@
 
   .palettes {
     @include custom-scroll;
-    height: spacing(57.5);
+    /* 100% - header */
+    height: calc(100% - #{spacing(7)});
     padding: spacing(2.5) spacing(2);
     overflow-x: hidden;
 

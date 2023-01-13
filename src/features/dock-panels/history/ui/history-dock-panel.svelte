@@ -5,6 +5,7 @@
   import { HistoryIcon } from '~/shared/ui/icons';
 
   export let viewport: Viewport | null = null;
+  export let withBorder = false;
 
   let historyContainer: HTMLElement;
 
@@ -60,7 +61,7 @@
   }
 </script>
 
-<DockPanel title="История">
+<DockPanel title="История" {withBorder}>
   <HistoryIcon slot="icon" />
   <ul bind:this={historyContainer}>
     {#each commands as command, index}
@@ -80,8 +81,8 @@
     list-style-type: none;
     margin: spacing(1.5) 0;
     padding: spacing(0.5);
-    /* FIXME: this is temporary */
-    height: calc(25vh - #{spacing(7)});
+    /* 100% - header - margin - correction for firefox */
+    height: calc(100% - #{spacing(7 + 1.5 * 2 + 0.1)});
     @include custom-scroll;
     overflow-x: hidden;
 
