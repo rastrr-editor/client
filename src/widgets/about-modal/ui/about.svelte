@@ -1,12 +1,13 @@
 <script lang="ts">
   import { push } from 'svelte-spa-router';
-
   import { Modal } from '~/shared/ui';
+  import Contributor from './contributor.svelte';
   import RastrrIcon from './rastrr-icon.svelte';
 
   export let open: boolean = false;
 
   function onHide(): void {
+    // TODO: fix route if project is selected
     push('/');
   }
 </script>
@@ -22,36 +23,38 @@
   <h2>Над проектом работали</h2>
 
   <div class="contributors-grid">
-    <div class="contributor">
-      <img src="/images/shining-mind.png" alt="Developer's avatar" />
-      <span class="name">Артём</span>
-      <span class="role">тимлид</span>
-      <a
-        href="https://github.com/shining-mind"
-        target="_blank"
-        rel="noreferrer">
-        <img src="/icons/logo-github.svg" alt="Github" />
-        @shining-mind
-      </a>
-    </div>
-    <div class="contributor">
-      <img src="/images/dimeliora.png" alt="Developer's avatar" />
-      <span class="name">Дмитрий</span>
-      <span class="role">разработка UI</span>
-      <a href="https://github.com/dimeliora" target="_blank" rel="noreferrer">
-        <img src="/icons/logo-github.svg" alt="Github" />
-        @dimeliora
-      </a>
-    </div>
-    <div class="contributor">
-      <img src="/images/yes_dez.png" alt="Developer's avatar" />
-      <span class="name">Евгений</span>
-      <span class="role">UX/UI дизайн</span>
-      <a href="https://t.me/yes_dez" target="_blank" rel="noreferrer">
-        <img src="/icons/logo-telegram.svg" alt="Telegram" />
-        @yes_dez
-      </a>
-    </div>
+    <Contributor
+      image="/images/shining-mind.png"
+      name="Артём"
+      role="тимлид, разработка движка и клиента"
+      linkHref="https://github.com/shining-mind"
+      linkImage="/icons/logo-github.svg"
+      linkImageAlt="Github"
+      linkTitle="@shining-mind" />
+    <Contributor
+      image="/images/dimeliora.png"
+      name="Дмитрий"
+      role="разработка UI и инструментов"
+      linkHref="https://github.com/dimeliora"
+      linkImage="/icons/logo-github.svg"
+      linkImageAlt="Github"
+      linkTitle="@dimeliora" />
+    <Contributor
+      image="/images/hunteraf87.png"
+      name="Альберт"
+      role="разработка движка"
+      linkHref="https://github.com/hunteraf87"
+      linkImage="/icons/logo-github.svg"
+      linkImageAlt="Github"
+      linkTitle="@hunteraf87" />
+    <Contributor
+      image="/images/yes_dez.png"
+      name="Евгений"
+      role="UX/UI дизайн"
+      linkHref="https://t.me/yes_dez"
+      linkImage="/icons/logo-telegram.svg"
+      linkImageAlt="Telegram"
+      linkTitle="@yes_dez" />
   </div>
 </Modal>
 
@@ -90,60 +93,5 @@
     display: flex;
     flex-wrap: wrap;
     gap: spacing(6);
-  }
-
-  .contributor {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    max-width: spacing(28.5);
-
-    > img {
-      width: spacing(28.5);
-      height: spacing(34.5);
-      object-fit: cover;
-      border: 1px solid $border-color;
-      border-radius: $border-radius;
-    }
-
-    .name {
-      margin-top: spacing(3);
-      font-weight: 500;
-    }
-
-    .role {
-      @include typography(body3);
-
-      flex: 1;
-      margin-top: spacing(2);
-      color: $placeholder-color;
-    }
-
-    > a {
-      @include typography(body3);
-
-      display: flex;
-      margin-top: spacing(3);
-      padding: spacing(1);
-      padding-left: 0;
-      color: $link-color;
-      text-decoration: none;
-
-      > img {
-        width: spacing(4);
-        height: spacing(4);
-        margin-right: spacing(1);
-        object-fit: cover;
-      }
-
-      &:hover,
-      &:focus {
-        text-decoration: underline;
-      }
-
-      &:focus {
-        outline: none;
-      }
-    }
   }
 </style>
