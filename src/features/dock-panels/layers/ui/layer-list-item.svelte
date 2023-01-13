@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Layer } from '@rastrr-editor/core';
-  import { createEventDispatcher } from 'svelte';
+  import { afterUpdate, createEventDispatcher } from 'svelte';
+  import { clickOutside } from '~/shared/lib/actions';
   import {
     InvisibleIcon,
     LockedIcon,
@@ -11,26 +12,69 @@
   export let layer: Layer;
   export let active: boolean = false;
   export let dimmed: boolean = false;
+  export let renameMode = false;
+
+  let inputNode: HTMLInputElement;
+
+  afterUpdate(() => {
+    if (inputNode) {
+      inputNode.focus();
+    }
+  });
 
   const dispatch = createEventDispatcher<{
-    lockToggle: Layer;
-    visibleToggle: Layer;
+    lockToggle: { prev: boolean; next: boolean };
+    visibleToggle: { prev: boolean; next: boolean };
+    renamed: { prev: string; next: string };
   }>();
 
   function toggleLocked(): void {
-    layer.locked = !layer.locked;
-    dispatch('lockToggle', layer);
+    const prev = layer.locked;
+    layer.locked = !prev;
+    dispatch('lockToggle', { prev, next: layer.locked });
   }
 
   function toggleVisible(): void {
+    const prev = layer.visible;
     layer.setVisible(!layer.visible);
-    dispatch('visibleToggle', layer);
+    dispatch('visibleToggle', { prev, next: layer.visible });
+  }
+
+  function renameLayer(e: Event): void {
+    const { value } = e.target as HTMLInputElement;
+    const prev = layer.name;
+    if (value) {
+      layer.name = value;
+      renameMode = false;
+    }
+    dispatch('renamed', { prev, next: layer.name });
   }
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<li class:active class:dimmed on:click on:contextmenu|preventDefault>
-  {layer.name}
+<li
+  class:active
+  class:dimmed
+  on:click
+  on:contextmenu|preventDefault
+  on:dblclick={() => {
+    renameMode = true;
+  }}
+  use:clickOutside={{
+    callback: () => {
+      renameMode = false;
+      dispatch('renamed', { prev: layer.name, next: layer.name });
+    },
+  }}>
+  {#if renameMode}
+    <input
+      bind:this={inputNode}
+      type="text"
+      value={layer.name}
+      on:change={renameLayer} />
+  {:else}
+    {layer.name}
+  {/if}
   <div class="actions" class:active={!layer.visible || layer.locked}>
     <button
       on:click|stopPropagation={toggleLocked}
@@ -54,11 +98,19 @@
 </li>
 
 <style lang="scss">
+  input {
+    @include invisible-input;
+    @include text-cursor;
+    color: $body-color;
+    line-height: 1.2;
+  }
+
   li {
     position: relative;
     /* TODO: create mixin */
     width: 100%;
     padding: spacing(1);
+    padding-right: spacing(12);
     border-radius: $border-radius;
     text-align-last: left;
     transition: background-color $animation-time;

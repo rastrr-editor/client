@@ -1,4 +1,5 @@
 <script lang="ts">
+  // TODO: refactor component
   import { onDestroy } from 'svelte';
   import {
     Color,
@@ -22,6 +23,7 @@
   export let imageSize: Rastrr.Point = { x: 0, y: 0 };
 
   let search: string = '';
+  let renameModeEnableForIndex = -1;
 
   const layerContextMenu = {
     open: false,
@@ -110,6 +112,11 @@
     layerList.setActive(layerList.length - 1);
   }
 
+  function enableRenameMode(index: number) {
+    renameModeEnableForIndex = index;
+    closeLayerContextMenu();
+  }
+
   function removeLayer(index: number) {
     if (!layerList) return;
     if (index >= 0) layerList.remove(index);
@@ -188,8 +195,13 @@
         on:visibleToggle={() => {
           layers = layers;
         }}
+        on:renamed={() => {
+          renameModeEnableForIndex = -1;
+        }}
         active={layer.id === activeLayer?.id}
         dimmed={Boolean(search && !matchesSearch(layer))}
+        renameMode={renameModeEnableForIndex !== -1 &&
+          renameModeEnableForIndex === getIndex(reversedIndex)}
         {layer} />
     {/each}
   </ul>
@@ -198,6 +210,10 @@
     bind:open={layerContextMenu.open}
     top={layerContextMenu.top}
     left={layerContextMenu.left}>
+    <button
+      class="context-menu-button"
+      on:click={() => enableRenameMode(layerContextMenu.layerIndex)}
+      >Переименовать</button>
     <button
       class="context-menu-button"
       on:click={() => removeLayer(layerContextMenu.layerIndex)}>Удалить</button>
