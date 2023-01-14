@@ -21,7 +21,12 @@
   white-space: nowrap;
   transition: background-color $animation-time;
 
-  &:hover {
+  &:hover,
+  &:focus-visible {
     background-color: $bg-main;
+  }
+
+  &:focus {
+    outline: none;
   }
 }

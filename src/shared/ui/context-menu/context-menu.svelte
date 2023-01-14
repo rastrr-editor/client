@@ -1,13 +1,22 @@
 <script lang="ts">
-  // TODO Refactoring. Pass trigger element as a prop and do coord calcs here. Handle edge cases to prevent menu cutoffs.
-  import { createEventDispatcher } from 'svelte';
-  import { clickOutside } from '~/shared/lib/actions';
+  import { createEventDispatcher, afterUpdate } from 'svelte';
+  import { clickOutside, focusTrap } from '~/shared/lib/actions';
+  import { BASE_SPACING } from '~/shared/config';
+  import { calculateLeftPosition, calculateTopPosition } from './utils';
 
   export let open: boolean = false;
   export let top: number = -9999;
   export let left: number = -9999;
 
+  const viewportMenuGap = BASE_SPACING * 2;
   const dispatch = createEventDispatcher();
+
+  let menu: HTMLElement;
+
+  function setMenuPosition(): void {
+    menu.style.left = calculateLeftPosition(menu, left, viewportMenuGap);
+    menu.style.top = calculateTopPosition(menu, top, viewportMenuGap);
+  }
 
   function hideContextMenu(): void {
     open = false;
@@ -17,18 +26,24 @@
 
   function hideContextMenuByKeydown(event: KeyboardEvent): void {
     if (event.key === 'Escape' || event.code === 'Escape') {
-      open = false;
+      hideContextMenu();
     }
   }
+
+  afterUpdate(() => {
+    if (open) {
+      setMenuPosition();
+    }
+  });
 </script>
 
 <div
   role="menu"
   class="context-menu"
   class:open
-  style:top={`${top}px`}
-  style:left={`${left}px`}
+  bind:this={menu}
   use:clickOutside={{ callback: hideContextMenu }}
+  use:focusTrap
   on:keydown={hideContextMenuByKeydown}>
   <slot />
 </div>
