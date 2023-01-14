@@ -26,18 +26,18 @@
     color: '',
   };
 
-  let isEditable = false;
+  let isEditable: boolean = false;
   let nameInput: HTMLInputElement;
 
   $: isEditable = $editablePalette?.id === palette.id;
 
-  function openColorContextMenu(event: MouseEvent) {
-    const paletteColorButton = event.target as HTMLElement;
-
-    colorContextMenu.open = true;
-    colorContextMenu.top = event.pageY;
-    colorContextMenu.left = event.pageX;
-    colorContextMenu.color = paletteColorButton.dataset.color!;
+  function createOpenColorContextMenu(color: string) {
+    return function (event: MouseEvent): void {
+      colorContextMenu.open = true;
+      colorContextMenu.top = event.pageY;
+      colorContextMenu.left = event.pageX;
+      colorContextMenu.color = color;
+    };
   }
 
   function closeColorContextMenu() {
@@ -122,11 +122,13 @@
     {#each palette.colors as color (color)}
       <button
         class="color"
+        class:disabled={$editablePalette !== null}
         style:background-color={color}
         disabled={$editablePalette !== null}
-        data-color={color}
         on:click={() => mainColor.set(Color.from(color, 'hex'))}
-        on:contextmenu|preventDefault|stopPropagation={openColorContextMenu} />
+        on:contextmenu|preventDefault|stopPropagation={createOpenColorContextMenu(
+          color
+        )} />
     {/each}
 
     <div class="color-pick">
@@ -134,7 +136,7 @@
 
       <input
         type="color"
-        class="color-picker"
+        class:disabled={$editablePalette !== null}
         disabled={$editablePalette !== null}
         on:change={onAddColor} />
     </div>
@@ -146,11 +148,11 @@
   top={colorContextMenu.top}
   left={colorContextMenu.left}>
   <button class="context-menu-button" on:click={onSetColorAsSecondary}>
-    Установить как вспомогательный
+    Установить цвет вспомогательным
   </button>
 
   <button class="context-menu-button" on:click={onDeleteColor}>
-    Удалить цвет
+    Удалить цвет из палитры
   </button>
 </ContextMenu>
 
@@ -245,5 +247,9 @@
 
   .context-menu-button {
     @include menu-button;
+  }
+
+  .disabled {
+    pointer-events: none;
   }
 </style>
