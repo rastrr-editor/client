@@ -44,20 +44,21 @@ export default class IndexedDBProjectRepository implements ProjectRepository {
 
   async update(
     id: number,
-    meta: Project | ProjectMeta,
+    meta: Project | Partial<ProjectMeta>,
     layers?: LayerList
-  ): Promise<Project> {
-    const project: Partial<Project> = {
+  ): Promise<Project | undefined> {
+    const changes: Partial<Project & { normalizedName: string }> = {
       ...meta,
-      layers: makeLayerDataArrayFromLayerList(layers),
       updatedAt: new Date(),
     };
-    const newId = await db.projects.update(id, {
-      ...project,
-      normalizedName: meta.name.toLowerCase(),
-    });
-    // FIXME: this is bad
-    return this.get(newId) as Promise<Project>;
+    if (layers != null) {
+      changes.layers = makeLayerDataArrayFromLayerList(layers);
+    }
+    if (meta.name != null) {
+      changes.normalizedName = meta.name.toLowerCase();
+    }
+    await db.projects.update(id, changes);
+    return this.get(id);
   }
 
   async delete(id: number): Promise<boolean> {
@@ -85,6 +86,7 @@ export default class IndexedDBProjectRepository implements ProjectRepository {
     if (searchEnabled) {
       collection = table
         .where('normalizedName')
+        // TODO: matches
         .startsWith(filter.name!.toLowerCase());
     } else if (sort != null) {
       // Otherwise apply sort

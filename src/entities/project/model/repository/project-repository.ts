@@ -17,9 +17,9 @@ export default interface ProjectRepository {
   add: (meta: ProjectMeta, layers?: LayerList) => Promise<Project>;
   update: (
     id: number,
-    meta: ProjectMeta,
+    meta: Partial<ProjectMeta>,
     layers?: LayerList
-  ) => Promise<Project>;
+  ) => Promise<Project | undefined>;
   delete: (id: number) => Promise<boolean>;
   get: (id: number) => Promise<Project | undefined>;
   paginate: (filter: ProjectPaginateFilter) => Promise<ProjectPaginateResult>;
