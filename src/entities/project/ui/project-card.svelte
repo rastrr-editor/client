@@ -1,14 +1,20 @@
 <script lang="ts">
-  import { onDestroy } from 'svelte';
-  import { link } from 'svelte-spa-router';
+  import { createEventDispatcher, onDestroy, afterUpdate } from 'svelte';
+  import { push } from 'svelte-spa-router';
   import type { Project } from '~/shared/api';
+  import { clickOutside } from '~/shared/lib/actions';
   import formatDate from '../lib/formatDate';
 
   export let project: Project;
   export let showDate: Extract<keyof Project, 'createdAt' | 'updatedAt'> =
     'createdAt';
+  export let renameMode = false;
 
+  const dispatch = createEventDispatcher<{
+    renamed: { prev: string; next: string };
+  }>();
   let imageUrl: string | null = null;
+  let inputNode: HTMLInputElement | null = null;
 
   $: date = project[showDate];
 
@@ -20,34 +26,77 @@
       project.preview != null ? URL.createObjectURL(project.preview) : null;
   }
 
+  afterUpdate(() => {
+    if (inputNode) {
+      inputNode.focus();
+    }
+  });
+
+  onDestroy(() => {
+    cleanup();
+  });
+
   function cleanup() {
     if (imageUrl != null) {
       URL.revokeObjectURL(imageUrl);
     }
   }
 
-  onDestroy(() => {
-    cleanup();
-  });
+  function renameProject(e: Event): void {
+    const { value } = e.target as HTMLInputElement;
+    const prev = project.name;
+    if (value) {
+      project.name = value;
+      renameMode = false;
+    }
+    dispatch('renamed', { prev, next: project.name });
+  }
 </script>
 
 <a
   class="link-container"
   href={`/projects/${project.id}`}
-  use:link
+  use:clickOutside={{
+    callback: () => {
+      dispatch('renamed', {
+        prev: project.name,
+        next: inputNode?.value || project.name,
+      });
+      renameMode = false;
+    },
+  }}
+  on:click|preventDefault
+  on:dblclick={() => push(`/projects/${project.id}`)}
   on:contextmenu>
   <div class="image" class:empty={project.preview == null}>
     {#if imageUrl}
       <img src={imageUrl} alt={project.name} on:load={cleanup} />
     {/if}
   </div>
-  <!-- TODO: implement rename -->
-  <p>{project.name}</p>
+  <p>
+    {#if renameMode}
+      <input
+        bind:this={inputNode}
+        type="text"
+        value={project.name}
+        on:change={renameProject} />
+    {:else}
+      {project.name}
+    {/if}
+  </p>
   <p class="date">{date != null ? formatDate(date) : '-/-'}</p>
 </a>
 
 <style lang="scss">
   $card-border-radius: 3px;
+
+  input {
+    @include invisible-input;
+    @include text-cursor;
+    color: $body-color;
+    line-height: 1.2;
+    width: 90%;
+  }
 
   img {
     /* TODO: set contain for rect images */

@@ -34,6 +34,7 @@
   let center = true;
   let firstLoad: ReturnType<typeof repository.paginate> | Promise<null> =
     Promise.resolve(null);
+  let renameModeEnableForId = -1;
 
   $: {
     center = true;
@@ -67,6 +68,24 @@
     projectContextMenu.top = -9999;
     projectContextMenu.left = -9999;
     projectContextMenu.projectId = -1;
+  }
+
+  function enableRenameMode(projectId: number) {
+    renameModeEnableForId = projectId;
+    closeProjectContextMenu();
+  }
+
+  function renameProject(e: CustomEvent<{ prev: string; next: string }>) {
+    const { prev, next } = e.detail;
+    if (renameModeEnableForId >= 0) {
+      if (prev !== next) {
+        repository.update(renameModeEnableForId, { name: next }).catch(() => {
+          // TODO: show custom error
+          alert('Не удалось переименовать проект');
+        });
+      }
+      renameModeEnableForId = -1;
+    }
   }
 
   function deleteProject(projectId: number) {
@@ -148,7 +167,9 @@
           {#each items as project (project.id)}
             <ProjectCard
               {project}
+              renameMode={renameModeEnableForId === project.id}
               on:contextmenu={createOnProjectContextMenu(project)}
+              on:renamed={renameProject}
               showDate={sort === 'updatedAt' ? 'updatedAt' : 'createdAt'} />
           {/each}
         </div>
@@ -179,6 +200,10 @@
     bind:open={projectContextMenu.open}
     top={projectContextMenu.top}
     left={projectContextMenu.left}>
+    <button
+      class="context-menu-button"
+      on:click={() => enableRenameMode(projectContextMenu.projectId)}
+      >Переименовать</button>
     <button
       class="context-menu-button"
       on:click={() => deleteProject(projectContextMenu.projectId)}
