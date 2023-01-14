@@ -6,7 +6,7 @@
   import { toolStore, type Tool } from '~/entities/tool';
   import { viewport as viewportStore } from '../model/store';
   import { chooseColorStore } from '~/features/tools/choose-color';
-  import updateViewport from '../model/updateViewport';
+  import updateViewport from '../model/update-viewport';
 
   export let projectId: number = Number.NaN;
 

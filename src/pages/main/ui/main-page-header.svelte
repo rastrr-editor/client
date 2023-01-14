@@ -6,7 +6,7 @@
   import { toolPanelStore } from '~/widgets/tool-panel';
   import { createProjectRepository, projectStore } from '~/entities/project';
   import { get } from 'svelte/store';
-  import exportImage from '../model/exportImage';
+  import exportImage from '../model/export-image';
 
   const { position: toolPanelPosition } = toolPanelStore;
   const { activeProject } = projectStore;
