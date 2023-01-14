@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher, onDestroy, afterUpdate } from 'svelte';
-  import { push } from 'svelte-spa-router';
+  import { link } from 'svelte-spa-router';
   import type { Project } from '~/shared/api';
   import { clickOutside } from '~/shared/lib/actions';
   import formatDate from '../lib/formatDate';
@@ -65,8 +65,7 @@
       renameMode = false;
     },
   }}
-  on:click|preventDefault
-  on:dblclick={() => push(`/projects/${project.id}`)}
+  use:link
   on:contextmenu>
   <div class="image" class:empty={project.preview == null}>
     {#if imageUrl}
