@@ -1,6 +1,7 @@
-import { LayerFactory, Viewport, type Layer } from '@rastrr-editor/core';
+import { Color, LayerFactory, Viewport, type Layer } from '@rastrr-editor/core';
 import { type Writable, get } from 'svelte/store';
 import type { Project } from '~/shared/api';
+import { TOOL_CURSOR_COLOR } from '~/shared/config';
 
 const CanvasLayerFactory = LayerFactory.setType('canvas');
 
@@ -25,6 +26,9 @@ export default function updateViewport(
       imageSize: { x: project.width, y: project.height },
       // FIXME: this sometimes works incorrectly
       htmlSizeDelta: { x: 0, y: -6 },
+      workingAreaBorderColor: project.hasTransparentBackground
+        ? Color.from(TOOL_CURSOR_COLOR, 'hex')
+        : null,
     });
     viewport.setMeta(project.id);
     // Restore layers from memory
@@ -55,11 +59,10 @@ export default function updateViewport(
       viewport.layers.setActive(viewport.layers.length - 1);
     } else {
       // New project
-      const layer = CanvasLayerFactory.filled(project.width, project.height);
+      const layer = project.hasTransparentBackground
+        ? CanvasLayerFactory.empty(project.width, project.height)
+        : CanvasLayerFactory.filled(project.width, project.height);
       layer.name = 'Фон';
-      if (project.hasTransparentBackground) {
-        layer.setOpacity(0);
-      }
       viewport.layers.add(layer);
       viewport.layers.setActive(0);
     }
