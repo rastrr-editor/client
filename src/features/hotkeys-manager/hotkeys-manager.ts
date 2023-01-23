@@ -4,18 +4,16 @@ import type {
   HotkeysContext,
   HotkeysManagerEventEmitter,
   HotkeysUnregister,
-  IHotkeysManager,
 } from './types';
 import { getCode } from './utils';
 
-class HotkeysManager implements IHotkeysManager {
+class HotkeysManager {
   #context: string = GLOBAL_CONTEXT_NAME;
   #emitter: HotkeysManagerEventEmitter;
-  #activated: string | null = null;
-
-  readonly #contexts = new Set<string>([GLOBAL_CONTEXT_NAME]);
-  readonly #activeKeys = new Set<string>();
-  readonly #hotkeys = new Map<string, Map<string, string>>();
+  #activated: { alias: string; context: string } | null = null;
+  #contexts = new Set<string>([GLOBAL_CONTEXT_NAME]);
+  #activeKeys = new Set<string>();
+  #hotkeys = new Map<string, Map<string, string>>();
 
   constructor() {
     this.#emitter = new EventEmitter() as HotkeysManagerEventEmitter;
@@ -68,11 +66,15 @@ class HotkeysManager implements IHotkeysManager {
   }
 
   #reset(e: KeyboardEvent): void {
-    if (this.#activated === null) {
+    const activated = this.#activated;
+
+    if (activated === null) {
       return;
     }
 
-    this.emitter.emit('deactivated', e, this.#activated);
+    const { alias, context } = activated;
+
+    this.emitter.emit('deactivated', e, alias, context);
     this.#activated = null;
   }
 
@@ -82,17 +84,18 @@ class HotkeysManager implements IHotkeysManager {
     const localAlias = this.#hotkeys.get(hash)?.get(context);
     const globalAlias = this.#hotkeys.get(hash)?.get(GLOBAL_CONTEXT_NAME);
     const alias = localAlias ?? globalAlias;
+    const currentContext = alias === localAlias ? context : GLOBAL_CONTEXT_NAME;
 
     this.#reset(e);
 
     if (alias !== undefined) {
-      this.#activated = alias;
-      this.emitter.emit('activated', e, alias);
+      this.#activated = { alias, context: currentContext };
+      this.emitter.emit('activated', e, alias, currentContext);
     }
   }
 
   isActive(alias: string): boolean {
-    return alias === this.#activated;
+    return alias === this.#activated?.alias;
   }
 
   setContext(name: HotkeysContext): void {
