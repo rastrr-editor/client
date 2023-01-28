@@ -1,6 +1,6 @@
 import type { Viewport, Command } from '@rastrr-editor/core';
 import { type Readable, get } from 'svelte/store';
-
+import { TOOL_CURSOR_COLOR } from '~/shared/config';
 import {
   type Tool,
   type ToolCreateCommandOptions,
@@ -53,7 +53,7 @@ export default abstract class DrawLineTool<TOptions extends DrawLineToolOptions>
           cy="${this.options.size / 2 + 1}"
           r="${this.options.size / 2}"
           fill="none"
-          stroke="#c1c1c1"
+          stroke="${TOOL_CURSOR_COLOR}"
         />
       </svg>`
     )}") ${this.options.size / 2 + 1} ${this.options.size / 2 + 1}`;

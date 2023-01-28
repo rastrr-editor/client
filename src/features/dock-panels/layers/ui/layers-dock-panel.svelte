@@ -132,7 +132,8 @@
     const opacity = parseInt((e.target as HTMLInputElement).value, 10);
     if (Number.isSafeInteger(opacity)) {
       layerList?.activeLayer?.setOpacity(
-        Math.min(Math.max(0, opacity / 100), 1)
+        // FIXME: min value should be 0, this is temporary solution
+        Math.min(Math.max(0.01, opacity / 100), 1)
       );
     }
   }
@@ -180,7 +181,7 @@
       units="%"
       value={opacity}
       on:change={setOpacity}
-      min={0}
+      min={1}
       max={100}
       disabled={!layerList} />
   </div>

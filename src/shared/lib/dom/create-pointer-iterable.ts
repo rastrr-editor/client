@@ -7,10 +7,12 @@ export default function createPointerIterable(
   offset: Rastrr.Point = { x: 0, y: 0 }
 ): AsyncIterable<Rastrr.Point> {
   const coords = getCoords(boundingContainer);
+  const maxYDiff = (coords.bottom - coords.top) * 0.5;
+  const maxXDiff = (coords.right - coords.left) * 0.5;
   // NOTE: it's a hack. It would be better to have points in iterable as pairs [prev, curr]
   let prevPoint: Rastrr.Point | null = null;
   // TODO: refactor using dot notation
-  return asyncIter.filter(
+  return asyncIter.every(
     asyncIter.map(
       asyncIter.every(
         asyncIter.seq(
@@ -41,11 +43,15 @@ export default function createPointerIterable(
       }
     ),
     (point) => {
-      // Ignore fluctuations to prevent cursor jumps when user reaches the container border
-      // NOTE: a * b < 0 means that "a" and "b" have different signs
+      // Ignore fluctuations to prevent cursor jumps when user reaches the container border.
+      // It is a fluctuation if x and y have different signs and difference is more 50% of height or width
+      // NOTE: x * y < 0 means that "x" and "y" have different signs
       if (
         prevPoint != null &&
-        (prevPoint.y * point.y < 0 || prevPoint.x * point.x < 0)
+        ((prevPoint.y * point.y < 0 &&
+          Math.abs(prevPoint.y - point.y) > maxYDiff) ||
+          (prevPoint.x * point.x < 0 &&
+            Math.abs(prevPoint.x - point.x) > maxXDiff))
       ) {
         return false;
       }

@@ -45,7 +45,7 @@
     "*.{css,scss,json,svg,js,cjs,html,md}": "prettier --write --ignore-unknown"
   },
   "dependencies": {
-    "@rastrr-editor/core": "^0.22.3",
+    "@rastrr-editor/core": "^0.24.0",
     "dexie": "3.2.2",
     "eventemitter3": "^5.0.0",
     "svelte-spa-router": "3.3.0",
