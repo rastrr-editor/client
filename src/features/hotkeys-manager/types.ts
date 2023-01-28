@@ -1,12 +1,11 @@
-import type TypedEventEmitter from 'typed-emitter';
+import type { TypedEventEmitterWithContext } from '~/shared/lib/typed-event-emitter';
 
 export type HotkeysManagerEvents = {
-  deactivated: (e: KeyboardEvent, alias: string, context: string) => void;
-  activated: (e: KeyboardEvent, alias: string, context: string) => void;
+  [key: string]: (alias: string, context: string, e: KeyboardEvent) => void;
 };
 
 export type HotkeysManagerEventEmitter =
-  TypedEventEmitter<HotkeysManagerEvents>;
+  TypedEventEmitterWithContext<HotkeysManagerEvents>;
 
 export type HotkeysContext = string | null;
 

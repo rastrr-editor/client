@@ -11,10 +11,17 @@
 
   $: history = viewport?.history;
 
+  $: hostoryIndex = viewport?.history.index;
+
   $: commands = Array.from(viewport?.history ?? []);
 
   const onResize = () => {
     commands = Array.from(viewport?.history ?? []);
+  };
+
+  const onUndoRedo = () => {
+    commands = Array.from(viewport?.history ?? []);
+    hostoryIndex = viewport?.history.index;
   };
 
   const onPush = (index: number, command: Command) => {
@@ -32,6 +39,8 @@
     // NOTE: it would be better to implement custom store
     history?.emitter.on('resize', onResize);
     history?.emitter.on('push', onPush);
+    history?.emitter.on('undo', onUndoRedo);
+    history?.emitter.on('redo', onUndoRedo);
   }
 
   onDestroy(() => {
@@ -67,7 +76,7 @@
     {#each commands as command, index}
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <li
-        class:dimmed={index > (history?.index ?? -1)}
+        class:dimmed={index > (hostoryIndex ?? -1)}
         on:click={() => gotoCommand(index)}>
         {command.name}
       </li>

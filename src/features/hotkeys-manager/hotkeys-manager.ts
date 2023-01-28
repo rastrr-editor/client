@@ -74,7 +74,7 @@ class HotkeysManager {
 
     const { alias, context } = activated;
 
-    this.emitter.emit('deactivated', e, alias, context);
+    this.emitter.emit(`deactivated:${alias}`, alias, context, e);
     this.#activated = null;
   }
 
@@ -90,7 +90,7 @@ class HotkeysManager {
 
     if (alias !== undefined) {
       this.#activated = { alias, context: currentContext };
-      this.emitter.emit('activated', e, alias, currentContext);
+      this.emitter.emit(`activated:${alias}`, alias, currentContext, e);
     }
   }
 
