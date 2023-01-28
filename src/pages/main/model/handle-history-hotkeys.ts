@@ -21,10 +21,7 @@ const handleAction = function handleAction(
     return;
   }
 
-  history[action]()
-    // @ts-expect-error
-    .then(() => history.emitter.emit(action))
-    .catch(() => null);
+  history[action]().catch(() => null);
 };
 
 export const handleHistoryHotkeys = (
