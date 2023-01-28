@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { Viewport, RenderMode, type Command } from '@rastrr-editor/core';
+  import {
+    Viewport,
+    RenderMode,
+    type Command,
+    type History,
+  } from '@rastrr-editor/core';
   import { onDestroy } from 'svelte';
   import { DockPanel } from '~/shared/ui';
   import { HistoryIcon } from '~/shared/ui/icons';
@@ -8,13 +13,19 @@
   export let withBorder = false;
 
   let historyContainer: HTMLElement;
+  let prevViewport: Viewport | null = null;
+  let history: History | null = null;
 
-  $: history = viewport?.history;
+  // Update history only if new viewport differs from previous
+  $: if (prevViewport !== viewport) {
+    history = viewport?.history ?? null;
+    prevViewport = viewport;
+  }
 
-  $: commands = Array.from(viewport?.history ?? []);
+  $: commands = Array.from(history ?? []);
 
   const onResize = () => {
-    commands = Array.from(viewport?.history ?? []);
+    commands = Array.from(history ?? []);
   };
 
   const onPush = (index: number, command: Command) => {
@@ -28,15 +39,20 @@
     });
   };
 
+  const historyUnsubscribe = () => {
+    history?.emitter.off('resize', onResize);
+    history?.emitter.off('push', onPush);
+  };
+
   $: {
+    historyUnsubscribe();
     // NOTE: it would be better to implement custom store
     history?.emitter.on('resize', onResize);
     history?.emitter.on('push', onPush);
   }
 
   onDestroy(() => {
-    history?.emitter.off('resize', onResize);
-    history?.emitter.off('push', onPush);
+    historyUnsubscribe();
   });
 
   function gotoCommand(index: number) {
