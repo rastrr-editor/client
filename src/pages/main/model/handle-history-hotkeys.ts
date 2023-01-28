@@ -2,7 +2,7 @@ import type { Unsubscriber } from 'svelte/store';
 import type { Viewport } from '@rastrr-editor/core';
 import { hotkeys } from '~/features/hotkeys-manager';
 
-enum Events {
+export enum HistoryEvents {
   UNDO = 'undo',
   REDO = 'redo',
 }
@@ -15,7 +15,7 @@ const handleAction = function handleAction(
     history,
     history: { isLocked },
   } = this;
-  const [action] = alias.split(':').slice(-1) as Events[];
+  const [action] = alias.split(':').slice(-1) as HistoryEvents[];
 
   if (isLocked) {
     return;
@@ -31,11 +31,11 @@ export const handleHistoryHotkeys = (
     return;
   }
 
-  hotkeys.emitter.on(`activated:${Events.UNDO}`, handleAction, value);
-  hotkeys.emitter.on(`activated:${Events.REDO}`, handleAction, value);
+  hotkeys.emitter.on(`activated:${HistoryEvents.UNDO}`, handleAction, value);
+  hotkeys.emitter.on(`activated:${HistoryEvents.REDO}`, handleAction, value);
 
   return () => {
-    hotkeys.emitter.off(`activated:${Events.UNDO}`, handleAction);
-    hotkeys.emitter.off(`activated:${Events.REDO}`, handleAction);
+    hotkeys.emitter.off(`activated:${HistoryEvents.UNDO}`, handleAction);
+    hotkeys.emitter.off(`activated:${HistoryEvents.REDO}`, handleAction);
   };
 };
