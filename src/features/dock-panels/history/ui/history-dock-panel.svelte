@@ -11,7 +11,7 @@
 
   $: history = viewport?.history;
 
-  $: hostoryIndex = viewport?.history.index;
+  $: historyIndex = viewport?.history.index;
 
   $: commands = Array.from(viewport?.history ?? []);
 
@@ -21,7 +21,7 @@
 
   const onUndoRedo = () => {
     commands = Array.from(viewport?.history ?? []);
-    hostoryIndex = viewport?.history.index;
+    historyIndex = viewport?.history.index;
   };
 
   const onPush = (index: number, command: Command) => {
@@ -76,7 +76,7 @@
     {#each commands as command, index}
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <li
-        class:dimmed={index > (hostoryIndex ?? -1)}
+        class:dimmed={index > (historyIndex ?? -1)}
         on:click={() => gotoCommand(index)}>
         {command.name}
       </li>
