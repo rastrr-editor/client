@@ -5,9 +5,8 @@
   import { createProjectRepository } from '../model';
   import ProjectCard from './project-card.svelte';
   import type { Project } from '~/shared/api';
-  import { activeProject } from '../model/store';
+  import { activeProject, sortBy } from '../model/store';
   import ProjectSort from './project-sort.svelte';
-  import type { ProjectPaginateFilter } from '../model/repository/project-repository';
 
   export let open: boolean = false;
 
@@ -24,7 +23,6 @@
 
   let content: HTMLDivElement;
   let search = '';
-  let sort: ProjectPaginateFilter['sort'] = 'createdAt';
   let searchTimeout: any;
   let page = 1;
   let error = '';
@@ -40,7 +38,7 @@
     center = true;
     page = 1;
     firstLoad = open
-      ? repository.paginate({ page: 1, name: search, sort })
+      ? repository.paginate({ page: 1, name: search, sort: $sortBy })
       : Promise.resolve(null);
     firstLoad.then((result) => {
       if (result && result.total > 0) {
@@ -120,7 +118,7 @@
     ) {
       pageLoading = true;
       repository
-        .paginate({ page: ++page, name: search, sort })
+        .paginate({ page: ++page, name: search, sort: $sortBy })
         .then((result) => {
           console.log(result.items, items);
           error = '';
@@ -156,7 +154,7 @@
       placeholder="Поиск"
       value={search}
       on:input={onSearchInput} />
-    <ProjectSort class="project-sort" bind:sort />
+    <ProjectSort class="project-sort" />
   </header>
   <div bind:this={content} on:scroll={loadMore} class="content" class:center>
     {#await firstLoad}
@@ -170,7 +168,7 @@
               renameMode={renameModeEnableForId === project.id}
               on:contextmenu={createOnProjectContextMenu(project)}
               on:renamed={renameProject}
-              showDate={sort === 'updatedAt' ? 'updatedAt' : 'createdAt'} />
+              showDate={$sortBy === 'updatedAt' ? 'updatedAt' : 'createdAt'} />
           {/each}
         </div>
         {#if pageLoading}

@@ -1,11 +1,10 @@
 <script lang="ts">
   import { Dropdown, DropdownMenu, DropdownMenuItem } from '~/shared/ui';
   import type { ProjectPaginateFilter } from '../model/repository/project-repository';
+  import { sortBy } from '../model/store';
 
   let className: string;
 
-  export let sort: Exclude<ProjectPaginateFilter['sort'], undefined> =
-    'createdAt';
   export { className as class };
 
   const sortToText: Record<
@@ -24,14 +23,14 @@
   <span>Сортировка</span>
   <Dropdown bind:open>
     <button on:click={() => (open = true)}>
-      {sortToText[sort]}
+      {sortToText[$sortBy]}
     </button>
     <DropdownMenu slot="menu">
-      <DropdownMenuItem on:click={() => (sort = 'createdAt')}
+      <DropdownMenuItem on:click={() => ($sortBy = 'createdAt')}
         >{sortToText.createdAt}</DropdownMenuItem>
-      <DropdownMenuItem on:click={() => (sort = 'name')}
+      <DropdownMenuItem on:click={() => ($sortBy = 'name')}
         >{sortToText.name}</DropdownMenuItem>
-      <DropdownMenuItem on:click={() => (sort = 'updatedAt')}
+      <DropdownMenuItem on:click={() => ($sortBy = 'updatedAt')}
         >{sortToText.updatedAt}</DropdownMenuItem>
     </DropdownMenu>
   </Dropdown>

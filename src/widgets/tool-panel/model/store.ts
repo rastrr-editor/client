@@ -1,3 +1,6 @@
-import { writable } from 'svelte/store';
+import { persistent } from '~/shared/lib/persistent-store';
 
-export const position = writable<'left' | 'bottom'>('bottom');
+export const position = persistent<'left' | 'bottom'>(
+  'tool-panel-position',
+  'bottom'
+);
