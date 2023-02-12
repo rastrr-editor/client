@@ -1,22 +1,23 @@
 import { Color } from '@rastrr-editor/core';
 import { persistent } from '~/shared/lib/persistent-store';
 
-const parseColorFromJSON = (key: string, value: Color): Color | unknown => {
-  if (key === '') {
-    const { r, g, b, a } = value;
-    return new Color(r, g, b, a);
-  }
+const stringifyColorToJSON = (key: string, color: Color): string =>
+  color.toString('hex');
+const parseColorFromJSON = (key: string, color: string): Color =>
+  Color.from(color, 'hex');
 
-  return value;
+const JSONOptions = {
+  reviver: parseColorFromJSON,
+  replacer: stringifyColorToJSON,
 };
 
 export const mainColor = persistent<Color>(
   'choose-color-main',
   new Color(0, 0, 0),
-  { reviver: parseColorFromJSON }
+  JSONOptions
 );
 export const secondaryColor = persistent<Color>(
   'choose-color-secondary',
   new Color(255, 255, 255),
-  { reviver: parseColorFromJSON }
+  JSONOptions
 );
