@@ -60,25 +60,7 @@
 
     li {
       position: relative;
-      /* TODO: create mixin */
-      width: 100%;
-      padding: spacing(1);
-      border-radius: $border-radius;
-      text-align-last: left;
-      transition: background-color $animation-time;
-      background-color: $bg-main;
-      border: 1px solid transparent;
-      user-select: none;
-      @include typography(body2);
-      line-height: 1.2;
-
-      &:hover {
-        background-color: #5f7079;
-      }
-
-      &.dimmed {
-        opacity: 0.5;
-      }
+      @include clickable-list-item;
 
       + li {
         margin-top: spacing(0.5);
