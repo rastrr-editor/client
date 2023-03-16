@@ -80,8 +80,10 @@ export default function createHistoryStore(
       subscription(value);
 
       return () => {
-        historyUnsubscribe();
         subscriptions.delete(subscription);
+        if (subscriptions.size === 0) {
+          historyUnsubscribe();
+        }
       };
     },
   };
