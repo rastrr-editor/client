@@ -31,6 +31,7 @@
   };
 
   const onUndoRedo = () => {
+    console.log('undo redo');
     commands = Array.from(viewport?.history ?? []);
     historyIndex = viewport?.history.index;
   };
@@ -49,6 +50,8 @@
   const historyUnsubscribe = () => {
     history?.emitter.off('resize', onResize);
     history?.emitter.off('push', onPush);
+    history?.emitter.off('undo', onUndoRedo);
+    history?.emitter.off('redo', onUndoRedo);
   };
 
   $: {
