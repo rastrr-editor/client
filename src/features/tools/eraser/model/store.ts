@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { persistent } from '~/shared/lib/persistent-store';
 import type { EraserOptions } from '../types';
 
-export const options = writable<EraserOptions>({ size: 10 });
+export const options = persistent<EraserOptions>('eraser', { size: 10 });

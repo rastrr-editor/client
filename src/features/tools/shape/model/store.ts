@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { persistent } from '~/shared/lib/persistent-store';
 import type { ShapeOptions } from '../types';
 
-export const options = writable<ShapeOptions>({ type: 'rect' });
+export const options = persistent<ShapeOptions>('shape', { type: 'rect' });
