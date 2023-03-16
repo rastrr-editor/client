@@ -1,101 +1,45 @@
 <script lang="ts">
-  import {
-    Viewport,
-    RenderMode,
-    type Command,
-    type History,
-  } from '@rastrr-editor/core';
-  import { onDestroy } from 'svelte';
+  import type { Viewport } from '@rastrr-editor/core';
   import { DockPanel } from '~/shared/ui';
   import { HistoryIcon } from '~/shared/ui/icons';
+  import {
+    createHistoryStore,
+    createGotoCommand,
+    type HistoryStore,
+  } from '../model';
 
   export let viewport: Viewport | null = null;
   export let withBorder = false;
 
   let historyContainer: HTMLElement;
   let prevViewport: Viewport | null = null;
-  let history: History | null = null;
 
-  // Update history only if new viewport differs from previous
-  $: if (prevViewport !== viewport) {
-    history = viewport?.history ?? null;
-    prevViewport = viewport;
-  }
-
-  $: historyIndex = history?.index;
-
-  $: commands = Array.from(history ?? []);
-
-  const onResize = () => {
-    commands = Array.from(history ?? []);
-  };
-
-  const onUndoRedo = () => {
-    console.log('undo redo');
-    commands = Array.from(viewport?.history ?? []);
-    historyIndex = viewport?.history.index;
-  };
-
-  const onPush = (index: number, command: Command) => {
-    commands.push(command);
-    commands = commands;
+  const updateScrollPosition = () =>
     requestAnimationFrame(() => {
       const activeNode = historyContainer.querySelector(
-        `li:nth-child(${(history?.index ?? 0) + 1})`
+        `li:nth-child(${(viewport?.history?.index ?? 0) + 1})`
       ) as HTMLElement;
       historyContainer.scrollTop = activeNode.offsetTop;
     });
-  };
 
-  const historyUnsubscribe = () => {
-    history?.emitter.off('resize', onResize);
-    history?.emitter.off('push', onPush);
-    history?.emitter.off('undo', onUndoRedo);
-    history?.emitter.off('redo', onUndoRedo);
-  };
+  let store: HistoryStore = createHistoryStore(null, updateScrollPosition);
 
-  $: {
-    historyUnsubscribe();
-    // NOTE: it would be better to implement custom store
-    history?.emitter.on('resize', onResize);
-    history?.emitter.on('push', onPush);
-    history?.emitter.on('undo', onUndoRedo);
-    history?.emitter.on('redo', onUndoRedo);
+  // Update history store only if new viewport differs from previous
+  $: if (prevViewport !== viewport) {
+    prevViewport = viewport;
+    store = createHistoryStore(viewport?.history ?? null, updateScrollPosition);
   }
 
-  onDestroy(() => {
-    historyUnsubscribe();
-  });
-
-  function gotoCommand(index: number) {
-    if (history?.isLocked) {
-      return;
-    }
-    viewport?.setRenderMode(RenderMode.BATCH);
-    history
-      ?.goto(index)
-      .then((resultingIndex) => {
-        if (resultingIndex !== index) {
-          // TODO: show custom alert
-          alert(
-            `Не удалось вернуться к операции: ${index}, текущая операция: ${resultingIndex}`
-          );
-        }
-        commands = commands;
-      })
-      .finally(() => {
-        viewport?.setRenderMode(RenderMode.IMMEDIATE);
-      });
-  }
+  $: gotoCommand = viewport ? createGotoCommand(viewport) : () => {};
 </script>
 
 <DockPanel title="История" {withBorder}>
   <HistoryIcon slot="icon" />
   <ul bind:this={historyContainer}>
-    {#each commands as command, index}
+    {#each $store.commands as command, index}
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <li
-        class:dimmed={index > (historyIndex ?? -1)}
+        class:dimmed={index > $store.historyIndex}
         on:click={() => gotoCommand(index)}>
         {command.name}
       </li>
