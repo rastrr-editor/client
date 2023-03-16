@@ -1,5 +1,3 @@
-// store = { subscribe: (subscription: (value: any) => void) => (() => void), set?: (value: any) => void }
-
 import type { Command, History } from '@rastrr-editor/core';
 
 type HistoryStoreValue = {
@@ -13,8 +11,6 @@ export default function createHistoryStore(
   history: History | null,
   updateScrollPosition: () => void
 ): HistoryStore {
-  console.log('created new history store');
-
   const subscriptions = new Set<(value: HistoryStoreValue) => void>();
 
   const notifySubscribers = (): void => {
@@ -67,7 +63,6 @@ export default function createHistoryStore(
   };
 
   const historyUnsubscribe = (): void => {
-    console.log('unsubscribed from history');
     history?.emitter.off('resize', onResize);
     history?.emitter.off('push', onPush);
     history?.emitter.off('undo', onUndo);
@@ -83,7 +78,6 @@ export default function createHistoryStore(
     subscribe: (subscription) => {
       subscriptions.add(subscription);
       subscription(value);
-      console.log('subscription count', subscriptions.size);
 
       return () => {
         historyUnsubscribe();
