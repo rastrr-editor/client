@@ -107,34 +107,16 @@
 
   li {
     position: relative;
-    /* TODO: create mixin */
-    width: 100%;
-    padding: spacing(1);
-    padding-right: spacing(12);
-    border-radius: $border-radius;
-    text-align-last: left;
-    transition: background-color $animation-time;
-    background-color: $bg-main;
-    border: 1px solid transparent;
-    user-select: none;
-    @include typography(body2);
-    line-height: 1.2;
+
+    @include clickable-list-item {
+      padding-right: spacing(12);
+    }
 
     &:hover {
-      background-color: #5f7079;
-
       > .actions {
         visibility: visible;
         opacity: 1;
       }
-    }
-
-    &.active {
-      border-color: $border-active-color;
-    }
-
-    &.dimmed {
-      opacity: 0.5;
     }
 
     &:global(.dragging),
