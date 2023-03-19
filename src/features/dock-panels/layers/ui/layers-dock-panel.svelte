@@ -1,31 +1,21 @@
 <script lang="ts">
-  import {
-    Color,
-    LayerFactory,
-    type Layer,
-    type LayerList,
-  } from '@rastrr-editor/core';
+  import type { Layer, LayerList } from '@rastrr-editor/core';
   import { draggable } from '~/shared/lib/actions';
-  import {
-    DockPanel,
-    IconButton,
-    Search,
-    Range,
-    ContextMenu,
-  } from '~/shared/ui';
-  import { LayersIcon, AddIcon } from '~/shared/ui/icons';
-  import { generateDefaultName } from '~/shared/lib/strings';
+  import { DockPanel, ContextMenu } from '~/shared/ui';
+  import { LayersIcon } from '~/shared/ui/icons';
   import { createLayersStore } from '../model';
   import LayerListItem from './layer-list-item.svelte';
+  import LayersDockPanelActions from './layers-dock-panel-actions.svelte';
+  import LayersDockPanelAddons from './layers-dock-panel-addons.svelte';
 
   export let layerList: LayerList | null = null;
   export let imageSize: Rastrr.Point = { x: 0, y: 0 };
   export let withBorder = false;
 
-  let search: string = '';
   let renameModeEnableForIndex = -1;
   let prevLayerList: LayerList | null = null;
   let layerStore = createLayersStore(null);
+  let search: string = '';
 
   $: if (prevLayerList !== layerList) {
     layerStore = createLayersStore(layerList);
@@ -55,22 +45,6 @@
     return (layerList?.length ?? 0) - 1 - reversedIndex;
   }
 
-  function addLayer() {
-    if (!layerList) return;
-    // TODO: factory should be a global object
-    const layer = LayerFactory.setType('canvas').filled(
-      imageSize.x,
-      imageSize.y,
-      new Color(0, 0, 0, 0)
-    );
-    layer.name = generateDefaultName(
-      Array.from(layerList).map(({ name }) => name),
-      'Новый слой'
-    );
-    layerList.add(layer);
-    layerList.setActive(layerList.length - 1);
-  }
-
   function enableRenameMode(index: number) {
     renameModeEnableForIndex = index;
     closeLayerContextMenu();
@@ -84,16 +58,6 @@
 
   function setActive(reversedIndex: number) {
     layerList?.setActive(getIndex(reversedIndex));
-  }
-
-  function setOpacity(e: Event) {
-    const opacity = parseInt((e.target as HTMLInputElement).value, 10);
-    if (Number.isSafeInteger(opacity)) {
-      layerList?.activeLayer?.setOpacity(
-        // FIXME: min value should be 0, this is temporary solution
-        Math.min(Math.max(0.01, opacity / 100), 1)
-      );
-    }
   }
 
   function createOnLayerContextMenu(reversedIndex: number) {
@@ -114,31 +78,11 @@
 
 <DockPanel title="Слои" {withBorder}>
   <LayersIcon slot="icon" />
-
-  <div slot="actions" class="panel-actions">
-    <Search
-      class="layer-search"
-      placeholder="Поиск"
-      disabled={!layerList}
-      bind:value={search} />
-    <IconButton
-      aria-label="Add layer"
-      class="add"
-      on:click={addLayer}
-      disabled={!layerList}><AddIcon /></IconButton>
-  </div>
-
-  <div slot="addons" class="layer-transparency">
-    <span>Непрозрачность</span>
-    <Range
-      class="transparency-range"
-      units="%"
-      value={$layerStore.opacity}
-      on:change={setOpacity}
-      min={1}
-      max={100}
-      disabled={!layerList} />
-  </div>
+  <LayersDockPanelActions slot="actions" {imageSize} {layerList} bind:search />
+  <LayersDockPanelAddons
+    slot="addons"
+    {layerList}
+    opacity={$layerStore.opacity} />
 
   <ul use:draggable={{ draggableSelector: 'li', callback: dropCallback }}>
     {#each layers as layer, reversedIndex (layer.id)}
@@ -177,43 +121,6 @@
 </DockPanel>
 
 <style lang="scss">
-  .panel-actions {
-    flex: 1;
-    display: flex;
-    align-items: center;
-
-    :global(.layer-search) {
-      margin-left: auto;
-
-      :global(svg) {
-        font-size: 0.875rem;
-      }
-
-      :global(input) {
-        font-size: 0.75rem;
-      }
-    }
-
-    :global(.add) {
-      margin-left: spacing(3);
-    }
-  }
-
-  .layer-transparency {
-    display: flex;
-    align-items: center;
-    margin-top: spacing(3);
-
-    span {
-      @include typography(body3);
-    }
-
-    :global(.transparency-range) {
-      width: spacing(44.5);
-      margin-left: auto;
-    }
-  }
-
   .context-menu-button {
     @include menu-button;
   }
