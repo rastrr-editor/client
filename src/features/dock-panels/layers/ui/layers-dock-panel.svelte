@@ -1,6 +1,4 @@
 <script lang="ts">
-  // TODO: refactor component
-  import { onDestroy } from 'svelte';
   import {
     Color,
     LayerFactory,
@@ -17,6 +15,7 @@
   } from '~/shared/ui';
   import { LayersIcon, AddIcon } from '~/shared/ui/icons';
   import { generateDefaultName } from '~/shared/lib/strings';
+  import { createLayersStore } from '../model';
   import LayerListItem from './layer-list-item.svelte';
 
   export let layerList: LayerList | null = null;
@@ -25,6 +24,15 @@
 
   let search: string = '';
   let renameModeEnableForIndex = -1;
+  let prevLayerList: LayerList | null = null;
+  let layerStore = createLayersStore(null);
+
+  $: if (prevLayerList !== layerList) {
+    layerStore = createLayersStore(layerList);
+    prevLayerList = layerList;
+  }
+
+  $: layers = $layerStore.layers;
 
   const layerContextMenu = {
     open: false,
@@ -33,54 +41,8 @@
     left: -9999,
   };
 
-  $: layers = Array.from(layerList?.reverse() ?? []);
-
-  $: activeLayer = layerList?.activeLayer;
-
-  $: opacity = Math.round((layerList?.activeLayer?.opacity ?? 1) * 100);
-
   const matchesSearch = (layer: Layer): boolean =>
     layer.name.toLowerCase().indexOf(search.toLowerCase()) !== -1;
-
-  const onActiveChange = (index: number, layer: Layer) => {
-    opacity = Math.round(layer.opacity * 100);
-    activeLayer = layer;
-  };
-
-  const onOpacityChange = (layer: Layer) => {
-    if (layerList?.activeLayer === layer) {
-      opacity = Math.round(layer.opacity * 100);
-    }
-  };
-
-  const onAddLayer = () => {
-    layers = getLayers();
-    if (layerList?.activeLayer != null) {
-      activeLayer = layerList.activeLayer;
-    }
-  };
-
-  const onRemoveLayer = () => {
-    layers = getLayers();
-    if (layerList?.activeLayer != null) {
-      activeLayer = layerList.activeLayer;
-    }
-  };
-
-  $: {
-    // NOTE: it would be better to implement custom store
-    layerList?.emitter.on('activeChange', onActiveChange);
-    layerList?.emitter.on('opacityChange', onOpacityChange);
-    layerList?.emitter.on('add', onAddLayer);
-    layerList?.emitter.on('remove', onRemoveLayer);
-  }
-
-  onDestroy(() => {
-    layerList?.emitter.off('activeChange', onActiveChange);
-    layerList?.emitter.off('opacityChange', onOpacityChange);
-    layerList?.emitter.off('add', onAddLayer);
-    layerList?.emitter.off('remove', onRemoveLayer);
-  });
 
   function closeLayerContextMenu() {
     layerContextMenu.open = false;
@@ -91,10 +53,6 @@
 
   function getIndex(reversedIndex: number): number {
     return (layerList?.length ?? 0) - 1 - reversedIndex;
-  }
-
-  function getLayers() {
-    return Array.from(layerList?.reverse() ?? []);
   }
 
   function addLayer() {
@@ -150,10 +108,6 @@
   const dropCallback = (prevIndex: number, nextIndex: number) => {
     if (layerList && prevIndex !== nextIndex) {
       layerList.changePosition(getIndex(prevIndex), getIndex(nextIndex));
-      layers = getLayers();
-      if (layerList.activeLayer != null) {
-        activeLayer = layerList.activeLayer;
-      }
     }
   };
 </script>
@@ -179,7 +133,7 @@
     <Range
       class="transparency-range"
       units="%"
-      value={opacity}
+      value={$layerStore.opacity}
       on:change={setOpacity}
       min={1}
       max={100}
@@ -200,7 +154,7 @@
         on:renamed={() => {
           renameModeEnableForIndex = -1;
         }}
-        active={layer.id === activeLayer?.id}
+        active={layer.id === $layerStore.activeLayer?.id}
         dimmed={Boolean(search && !matchesSearch(layer))}
         renameMode={renameModeEnableForIndex !== -1 &&
           renameModeEnableForIndex === getIndex(reversedIndex)}
