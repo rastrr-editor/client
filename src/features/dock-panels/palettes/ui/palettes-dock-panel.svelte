@@ -7,7 +7,12 @@
     paletteStore,
     createPaletteRepository,
   } from '~/entities/palette';
-  import { DockPanel, IconButton, ContextMenu } from '~/shared/ui';
+  import {
+    DockPanel,
+    IconButton,
+    ContextMenu,
+    createContextMenuStore,
+  } from '~/shared/ui';
   import {
     PaletteIcon,
     AddIcon,
@@ -26,31 +31,10 @@
 
   const APPLY_BUTTON_ID = 'palette-apply';
   const CANCEL_BUTTON_ID = 'palette-cancel';
-  const paletteContextMenu = {
-    open: false,
-    top: -9999,
-    left: -9999,
-    paletteId: '',
-  };
+  const contextMenuStore = createContextMenuStore({ paletteId: '' });
 
   let palettesLoading = repository.get();
   let isAddingPalette = false;
-
-  function createOpenPaletteContextMenu(paletteId: string) {
-    return (event: MouseEvent) => {
-      paletteContextMenu.open = true;
-      paletteContextMenu.top = event.pageY;
-      paletteContextMenu.left = event.pageX;
-      paletteContextMenu.paletteId = paletteId;
-    };
-  }
-
-  function closePaletteContextMenu(): void {
-    paletteContextMenu.open = false;
-    paletteContextMenu.top = -9999;
-    paletteContextMenu.left = -9999;
-    paletteContextMenu.paletteId = '';
-  }
 
   async function onAddPalette(): Promise<void> {
     isAddingPalette = true;
@@ -100,23 +84,23 @@
   }
 
   async function onDeletePalette(): Promise<void> {
-    await repository.delete(paletteContextMenu.paletteId);
+    await repository.delete($contextMenuStore.paletteId);
 
     palettesLoading = repository.get();
 
-    closePaletteContextMenu();
+    contextMenuStore.close();
   }
 
   async function onRenamePalette(): Promise<void> {
     const palettes = await palettesLoading;
 
     const paletteToRename = palettes.find(
-      ({ id }) => id === paletteContextMenu.paletteId
+      ({ id }) => id === $contextMenuStore.paletteId
     )!;
 
     editablePalette.set(paletteToRename);
 
-    closePaletteContextMenu();
+    contextMenuStore.close();
   }
 
   function dropCallback(prevIndex: number, nextIndex: number) {
@@ -165,17 +149,16 @@
             {secondaryColor}
             on:cancel={onCancel}
             on:apply={onApply}
-            on:contextmenu={createOpenPaletteContextMenu(palette.id)} />
+            on:contextmenu={contextMenuStore.createOnContextMenu({
+              paletteId: palette.id,
+            })} />
         {/each}
       {/if}
     {/await}
   </div>
 </DockPanel>
 
-<ContextMenu
-  bind:open={paletteContextMenu.open}
-  top={paletteContextMenu.top}
-  left={paletteContextMenu.left}>
+<ContextMenu store={contextMenuStore}>
   <button class="context-menu-button" on:click={onRenamePalette}>
     Переименовать палитру
   </button>

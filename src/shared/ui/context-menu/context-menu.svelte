@@ -3,10 +3,9 @@
   import { clickOutside, focusTrap } from '~/shared/lib/actions';
   import { BASE_SPACING } from '~/shared/config';
   import { calculateLeftPosition, calculateTopPosition } from './utils';
+  import type { ContextMenuStore } from './model';
 
-  export let open: boolean = false;
-  export let top: number = -9999;
-  export let left: number = -9999;
+  export let store: ContextMenuStore<any>;
 
   const viewportMenuGap = BASE_SPACING * 2;
   const dispatch = createEventDispatcher();
@@ -14,12 +13,12 @@
   let menu: HTMLElement;
 
   function setMenuPosition(): void {
-    menu.style.left = calculateLeftPosition(menu, left, viewportMenuGap);
-    menu.style.top = calculateTopPosition(menu, top, viewportMenuGap);
+    menu.style.left = calculateLeftPosition(menu, $store.left, viewportMenuGap);
+    menu.style.top = calculateTopPosition(menu, $store.top, viewportMenuGap);
   }
 
   function hideContextMenu(): void {
-    open = false;
+    store.close();
 
     dispatch('hide');
   }
@@ -31,7 +30,7 @@
   }
 
   afterUpdate(() => {
-    if (open) {
+    if ($store.open) {
       setMenuPosition();
     }
   });
@@ -40,7 +39,7 @@
 <div
   role="menu"
   class="context-menu"
-  class:open
+  class:open={$store.open}
   bind:this={menu}
   use:clickOutside={{ callback: hideContextMenu }}
   use:focusTrap
