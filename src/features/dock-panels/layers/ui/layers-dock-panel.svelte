@@ -13,15 +13,10 @@
   export let withBorder = false;
 
   let renameModeEnableForIndex = -1;
-  let prevLayerList: LayerList | null = null;
   let layerStore = createLayersStore(null);
   let search: string = '';
 
-  $: if (prevLayerList !== layerList) {
-    layerStore = createLayersStore(layerList);
-    prevLayerList = layerList;
-  }
-
+  $: layerStore = createLayersStore(layerList);
   $: layers = $layerStore.layers;
 
   const layerContextMenu = {
