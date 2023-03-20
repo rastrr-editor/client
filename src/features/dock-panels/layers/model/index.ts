@@ -1,4 +1,4 @@
 export {
   default as createLayersStore,
   type LayersStore,
-} from './createLayersStore';
+} from './create-layers-store';
