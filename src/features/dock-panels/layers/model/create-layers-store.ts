@@ -27,6 +27,11 @@ export default function createLayersStore(
     opacity: Math.round((layerList?.activeLayer?.opacity ?? 1) * 100),
   };
 
+  const onMove = (): void => {
+    value.layers = getLayers();
+    notifySubscribers();
+  };
+
   const onActiveChange = (index: number, layer: Layer): void => {
     value.opacity = Math.round(layer.opacity * 100);
     value.activeLayer = layer;
@@ -61,12 +66,14 @@ export default function createLayersStore(
     layerList?.emitter.off('opacityChange', onOpacityChange);
     layerList?.emitter.off('add', onAddLayer);
     layerList?.emitter.off('remove', onRemoveLayer);
+    layerList?.emitter.off('move', onMove);
   };
 
   layerList?.emitter.on('activeChange', onActiveChange);
   layerList?.emitter.on('opacityChange', onOpacityChange);
   layerList?.emitter.on('add', onAddLayer);
   layerList?.emitter.on('remove', onRemoveLayer);
+  layerList?.emitter.on('move', onMove);
 
   return {
     subscribe: (subscription) => {
