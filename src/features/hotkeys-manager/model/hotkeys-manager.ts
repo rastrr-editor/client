@@ -7,7 +7,7 @@ import type {
 } from '../types';
 import { getCode } from '../lib';
 
-class HotkeysManager {
+export default class HotkeysManager {
   #context: string = GLOBAL_CONTEXT_NAME;
   #emitter: HotkeysManagerEventEmitter;
   #activated: { alias: string; context: string } | null = null;
@@ -121,5 +121,3 @@ class HotkeysManager {
     };
   }
 }
-
-export default new HotkeysManager();
