@@ -1,1 +1,1 @@
-export { default as hotkeys } from './hotkeys-manager';
+export { default as hotkeys } from './model/hotkeys-manager';

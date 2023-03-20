@@ -1,11 +1,11 @@
 import EventEmitter from 'eventemitter3';
-import { GLOBAL_CONTEXT_NAME, KEY_SEPARATOR } from './constants';
+import { GLOBAL_CONTEXT_NAME, KEY_SEPARATOR } from '../config';
 import type {
   HotkeysContext,
   HotkeysManagerEventEmitter,
   HotkeysUnregister,
-} from './types';
-import { getCode } from './utils';
+} from '../types';
+import { getCode } from '../lib';
 
 class HotkeysManager {
   #context: string = GLOBAL_CONTEXT_NAME;
