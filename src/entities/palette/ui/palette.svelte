@@ -120,17 +120,17 @@
         on:change={onAddColor} />
     </div>
   </div>
+
+  <ContextMenu store={contextMenuStore}>
+    <button class="context-menu-button" on:click={onSetColorAsSecondary}>
+      Установить цвет вспомогательным
+    </button>
+
+    <button class="context-menu-button" on:click={onDeleteColor}>
+      Удалить цвет из палитры
+    </button>
+  </ContextMenu>
 </div>
-
-<ContextMenu store={contextMenuStore}>
-  <button class="context-menu-button" on:click={onSetColorAsSecondary}>
-    Установить цвет вспомогательным
-  </button>
-
-  <button class="context-menu-button" on:click={onDeleteColor}>
-    Удалить цвет из палитры
-  </button>
-</ContextMenu>
 
 <style lang="scss">
   .name-input {
