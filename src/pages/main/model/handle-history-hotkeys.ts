@@ -21,6 +21,7 @@ const handleAction = function handleAction(
     return;
   }
 
+  // TODO: show alert
   history[action]().catch(() => null);
 };
 
