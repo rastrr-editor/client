@@ -44,7 +44,7 @@ export default function createPointerIterable(
     ),
     (point) => {
       // Ignore fluctuations to prevent cursor jumps when user reaches the container border.
-      // It is a fluctuation if x and y have different signs and difference is more 50% of height or width
+      // It is a fluctuation if x and y have different signs and difference is more than 50% of height or width
       // NOTE: x * y < 0 means that "x" and "y" have different signs
       if (
         prevPoint != null &&
