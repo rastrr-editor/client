@@ -110,6 +110,10 @@
 
     @include clickable-list-item {
       padding-right: spacing(12);
+
+      &.active {
+        border-color: $border-active-color;
+      }
     }
 
     &:hover {
