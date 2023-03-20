@@ -37,9 +37,9 @@ There is a single main page.
 
 ### Entities
 
-- [project](./src/entities/project/README.md)
-- [tool](./src/entities/tool/README.md)
-- [palette](./src/entities/palette/README.md)
+- [project](./src/entities/project)
+- [tool](./src/entities/tool)
+- [palette](./src/entities/palette)
 
 ### Shared
 
