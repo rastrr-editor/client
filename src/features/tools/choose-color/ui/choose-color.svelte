@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Color, type ColorRange } from '@rastrr-editor/core';
+  import { Color } from '@rastrr-editor/core';
   import { get, type Writable } from 'svelte/store';
   import { SwapIcon } from '~/shared/ui/icons';
   import { mainColor, secondaryColor } from '../model/store';
@@ -12,21 +12,12 @@
     secondaryColor.set(tmp);
   }
 
-  // FIXME: add static .from method to Color class
-  const hexToColor = (hex: string) => {
-    return new Color(
-      parseInt(hex.substring(1, 3), 16) as ColorRange,
-      parseInt(hex.substring(3, 5), 16) as ColorRange,
-      parseInt(hex.substring(5, 7), 16) as ColorRange
-    );
-  };
-
   const createUpdateColor =
     (color: Writable<Color>): svelte.JSX.FormEventHandler<HTMLInputElement> =>
     (e) => {
       const input = e.target as HTMLInputElement;
       if (input.value) {
-        color.set(hexToColor(input.value));
+        color.set(Color.from(input.value, 'hex'));
       }
     };
 </script>
@@ -34,26 +25,22 @@
 <div
   class="root"
   class:horizontal={orientation === 'horizontal'}
-  class:vertical={orientation === 'vertical'}
->
+  class:vertical={orientation === 'vertical'}>
   <div style={`background-color: ${$mainColor.toString('hex')};`} class="main">
     <input
       type="color"
       value={$mainColor.toString('hex')}
-      on:input={createUpdateColor(mainColor)}
-    />
+      on:input={createUpdateColor(mainColor)} />
   </div>
   <button on:click={swapColors}>
     <SwapIcon
-      transform={`rotate(${orientation === 'vertical' ? '90' : '0'})`}
-    />
+      transform={`rotate(${orientation === 'vertical' ? '90' : '0'})`} />
   </button>
   <div style={`background-color: ${$secondaryColor.toString('hex')};`}>
     <input
       type="color"
       value={$secondaryColor.toString('hex')}
-      on:input={createUpdateColor(secondaryColor)}
-    />
+      on:input={createUpdateColor(secondaryColor)} />
   </div>
 </div>
 
