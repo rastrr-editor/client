@@ -4,7 +4,7 @@
   import { Color } from '@rastrr-editor/core';
 
   import { AddOutlinedIcon } from '~/shared/ui/icons';
-  import { ContextMenu } from '~/shared/ui';
+  import { ContextMenu, createContextMenuStore } from '~/shared/ui';
   import { clickOutside } from '~/shared/lib/actions';
   import { editablePalette } from '../model/store';
   import type { Palette } from '../model/repository';
@@ -19,33 +19,12 @@
 
   const dispatch = createEventDispatcher();
 
-  const colorContextMenu = {
-    open: false,
-    top: -9999,
-    left: -9999,
-    color: '',
-  };
+  const contextMenuStore = createContextMenuStore({ color: '' });
 
   let isEditable: boolean = false;
   let nameInput: HTMLInputElement;
 
   $: isEditable = $editablePalette?.id === palette.id;
-
-  function createOpenColorContextMenu(color: string) {
-    return function (event: MouseEvent): void {
-      colorContextMenu.open = true;
-      colorContextMenu.top = event.pageY;
-      colorContextMenu.left = event.pageX;
-      colorContextMenu.color = color;
-    };
-  }
-
-  function closeColorContextMenu() {
-    colorContextMenu.open = false;
-    colorContextMenu.top = -9999;
-    colorContextMenu.left = -9999;
-    colorContextMenu.color = '';
-  }
 
   function onChangeName(event: Event): void {
     const { value } = event.target as HTMLInputElement;
@@ -76,7 +55,7 @@
 
   function onDeleteColor(): void {
     const updatedPaletteColors = palette.colors.filter(
-      (color) => color !== colorContextMenu.color
+      (color) => color !== $contextMenuStore.color
     );
     const updatedPalette = { ...palette, colors: updatedPaletteColors };
 
@@ -84,13 +63,13 @@
 
     dispatch('apply');
 
-    closeColorContextMenu();
+    contextMenuStore.close();
   }
 
   function onSetColorAsSecondary(): void {
-    secondaryColor.set(Color.from(colorContextMenu.color, 'hex'));
+    secondaryColor.set(Color.from($contextMenuStore.color, 'hex'));
 
-    closeColorContextMenu();
+    contextMenuStore.close();
   }
 
   afterUpdate(() => {
@@ -126,8 +105,8 @@
         style:background-color={color}
         disabled={$editablePalette !== null}
         on:click={() => mainColor.set(Color.from(color, 'hex'))}
-        on:contextmenu|preventDefault|stopPropagation={createOpenColorContextMenu(
-          color
+        on:contextmenu|preventDefault|stopPropagation={contextMenuStore.createOnContextMenu(
+          { color }
         )} />
     {/each}
 
@@ -141,20 +120,17 @@
         on:change={onAddColor} />
     </div>
   </div>
+
+  <ContextMenu store={contextMenuStore}>
+    <button class="context-menu-button" on:click={onSetColorAsSecondary}>
+      Установить цвет вспомогательным
+    </button>
+
+    <button class="context-menu-button" on:click={onDeleteColor}>
+      Удалить цвет из палитры
+    </button>
+  </ContextMenu>
 </div>
-
-<ContextMenu
-  bind:open={colorContextMenu.open}
-  top={colorContextMenu.top}
-  left={colorContextMenu.left}>
-  <button class="context-menu-button" on:click={onSetColorAsSecondary}>
-    Установить цвет вспомогательным
-  </button>
-
-  <button class="context-menu-button" on:click={onDeleteColor}>
-    Удалить цвет из палитры
-  </button>
-</ContextMenu>
 
 <style lang="scss">
   .name-input {

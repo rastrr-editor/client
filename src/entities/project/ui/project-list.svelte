@@ -1,7 +1,13 @@
 <script lang="ts">
   import { push } from 'svelte-spa-router';
   import { get } from 'svelte/store';
-  import { Modal, DotFlashing, Search, ContextMenu } from '~/shared/ui';
+  import {
+    Modal,
+    DotFlashing,
+    Search,
+    ContextMenu,
+    createContextMenuStore,
+  } from '~/shared/ui';
   import { createProjectRepository } from '../model';
   import ProjectCard from './project-card.svelte';
   import type { Project } from '~/shared/api';
@@ -14,12 +20,7 @@
   const unexpectedError = 'Не удалось загрузить данные, попробуйте ещё раз!';
   const repository = createProjectRepository();
   const scrollToEndDelta = 10;
-  const projectContextMenu = {
-    open: false,
-    projectId: -1,
-    top: -9999,
-    left: -9999,
-  };
+  const contextMenuStore = createContextMenuStore({ projectId: -1 });
 
   let content: HTMLDivElement;
   let search = '';
@@ -51,26 +52,9 @@
     });
   }
 
-  function createOnProjectContextMenu(project: Project) {
-    return (e: MouseEvent) => {
-      e.preventDefault();
-      projectContextMenu.projectId = project.id!;
-      projectContextMenu.top = e.pageY;
-      projectContextMenu.left = e.pageX;
-      projectContextMenu.open = true;
-    };
-  }
-
-  function closeProjectContextMenu() {
-    projectContextMenu.open = false;
-    projectContextMenu.top = -9999;
-    projectContextMenu.left = -9999;
-    projectContextMenu.projectId = -1;
-  }
-
   function enableRenameMode(projectId: number) {
     renameModeEnableForId = projectId;
-    closeProjectContextMenu();
+    contextMenuStore.close();
   }
 
   function renameProject(e: CustomEvent<{ prev: string; next: string }>) {
@@ -104,7 +88,7 @@
           alert('Не удалось удалить проект!');
         })
         .finally(() => {
-          closeProjectContextMenu();
+          contextMenuStore.close();
         });
     }
   }
@@ -166,7 +150,9 @@
             <ProjectCard
               {project}
               renameMode={renameModeEnableForId === project.id}
-              on:contextmenu={createOnProjectContextMenu(project)}
+              on:contextmenu={contextMenuStore.createOnContextMenu({
+                projectId: project.id ?? -1,
+              })}
               on:renamed={renameProject}
               showDate={$sortBy === 'updatedAt' ? 'updatedAt' : 'createdAt'} />
           {/each}
@@ -194,17 +180,14 @@
       <p>{unexpectedError}</p>
     {/await}
   </div>
-  <ContextMenu
-    bind:open={projectContextMenu.open}
-    top={projectContextMenu.top}
-    left={projectContextMenu.left}>
+  <ContextMenu store={contextMenuStore}>
     <button
       class="context-menu-button"
-      on:click={() => enableRenameMode(projectContextMenu.projectId)}
+      on:click={() => enableRenameMode($contextMenuStore.projectId)}
       >Переименовать</button>
     <button
       class="context-menu-button"
-      on:click={() => deleteProject(projectContextMenu.projectId)}
+      on:click={() => deleteProject($contextMenuStore.projectId)}
       >Удалить</button>
   </ContextMenu>
 </Modal>

@@ -1,1 +1,3 @@
-export { default as hotkeys } from './hotkeys-manager';
+import HotkeysManager from './model/hotkeys-manager';
+
+export const hotkeys = new HotkeysManager();

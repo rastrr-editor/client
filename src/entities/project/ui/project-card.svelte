@@ -3,7 +3,7 @@
   import { link } from 'svelte-spa-router';
   import type { Project } from '~/shared/api';
   import { clickOutside } from '~/shared/lib/actions';
-  import formatDate from '../lib/formatDate';
+  import formatDate from '../lib/format-date';
 
   export let project: Project;
   export let showDate: Extract<keyof Project, 'createdAt' | 'updatedAt'> =

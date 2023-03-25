@@ -1,6 +1,6 @@
 # ![Rastrr](https://rastrr.ru/github/rastrr-title-logo.svg?v=1)
 
-**A simple and free graphic editor for novice artists** 
+**A simple and free graphic editor for novice artists**
 
 [Try it out!](https://rastrr.ru/)
 
@@ -14,6 +14,46 @@
 - Customizable color palettes
 - Tools: brush, eraser, shapes
 - Image export
+
+## Architecture
+
+This project is implemented following the [Feature-Sliced Design](https://feature-sliced.design/) methodology.
+
+### Pages
+
+There is a single main page.
+
+### Widgets
+
+- tool panel
+- about modal
+
+### Features
+
+- create project
+- dock panels
+- hotkeys manager
+- tools
+
+### Entities
+
+- [project](./src/entities/project)
+- [tool](./src/entities/tool)
+- [palette](./src/entities/palette)
+
+### Shared
+
+- api - indexed db adapter
+- lib
+  - actions - svelte actions
+  - decorators
+  - dom - dom helpers
+  - persistent store - svelte persistent store implementation
+  - strings
+  - typed event emitter - types for event emitter with context support
+  - url - url helpers
+- styles - sass theme, mixins, functions, etc.
+- ui - ui-kit components
 
 ## For developers
 

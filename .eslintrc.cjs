@@ -11,7 +11,7 @@ module.exports = {
     project: 'tsconfig.json',
     extraFileExtensions: ['.svelte'],
   },
-  plugins: ['svelte3', '@typescript-eslint'],
+  plugins: ['svelte3', '@typescript-eslint', 'filename-rules'],
   extends: ['standard-with-typescript', 'prettier'],
   globals: {
     Rastrr: true,
@@ -33,6 +33,7 @@ module.exports = {
     'svelte3/ignore-styles': () => true,
   },
   rules: {
+    'filename-rules/match': [2, 'kebabcase'],
     '@typescript-eslint/triple-slash-reference': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/consistent-type-definitions': 'off',

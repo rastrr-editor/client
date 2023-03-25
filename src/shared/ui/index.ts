@@ -6,7 +6,7 @@ export { Range } from './range';
 export { Search } from './search';
 export { Modal } from './modal';
 export { Tooltip } from './tooltip';
-export { ContextMenu } from './context-menu';
+export { ContextMenu, createContextMenuStore } from './context-menu';
 export { DockPanel } from './dock-panel';
 export { Dropdown, DropdownMenu, DropdownMenuItem } from './dropdown';
 export * from './preloader';
