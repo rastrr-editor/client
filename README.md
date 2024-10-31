@@ -19,6 +19,8 @@
 
 This project is implemented following the [Feature-Sliced Design](https://feature-sliced.design/) methodology.
 
+**Disclaimer:** the project was originally implemented using Svelte 3 without SvelteKit, you should check [the initial version of the source code](https://github.com/rastrr-editor/client/tree/svelte-spa).
+
 ### Pages
 
 There is a single main page.
