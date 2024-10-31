@@ -1,11 +1,13 @@
 <script lang="ts">
+  import type { Snippet } from 'svelte';
+
   interface Props {
     title: string;
     withBorder?: boolean;
-    icon?: import('svelte').Snippet;
-    actions?: import('svelte').Snippet;
-    addons?: import('svelte').Snippet;
-    children?: import('svelte').Snippet;
+    icon?: Snippet;
+    actions?: Snippet;
+    addons?: Snippet;
+    children?: Snippet;
   }
 
   let {

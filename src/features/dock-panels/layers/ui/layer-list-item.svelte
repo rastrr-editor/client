@@ -10,9 +10,9 @@
 
   interface Props {
     layer: Layer;
-    onlockToggle: (params: { prev: boolean; next: boolean }) => void;
-    onvisibleToggle: (params: { prev: boolean; next: boolean }) => void;
-    onrenamed: (params: { prev: string; next: string }) => void;
+    onlockToggle?: (params: { prev: boolean; next: boolean }) => void;
+    onvisibleToggle?: (params: { prev: boolean; next: boolean }) => void;
+    onrenamed?: (params: { prev: string; next: string }) => void;
     onclick: (e: MouseEvent) => void;
     oncontextmenu: (e: MouseEvent) => void;
     active?: boolean;
@@ -32,7 +32,10 @@
     renameMode = false,
   }: Props = $props();
 
+  let self: HTMLLIElement | undefined = $state();
   let inputNode: HTMLInputElement | undefined = $state();
+  let visible = $state(layer.visible);
+  let locked = $state(layer.locked);
 
   $effect(() => {
     if (inputNode) {
@@ -42,14 +45,14 @@
 
   function toggleLocked(): void {
     const prev = layer.locked;
-    layer.locked = !prev;
-    onlockToggle({ prev, next: layer.locked });
+    locked = layer.locked = !prev;
+    onlockToggle?.({ prev, next: layer.locked });
   }
 
   function toggleVisible(): void {
     const prev = layer.visible;
-    layer.setVisible(!layer.visible);
-    onvisibleToggle({ prev, next: layer.visible });
+    layer.setVisible(visible = !layer.visible);
+    onvisibleToggle?.({ prev, next: layer.visible });
   }
 
   function renameLayer(e: Event): void {
@@ -59,24 +62,27 @@
       layer.name = value;
       renameMode = false;
     }
-    onrenamed({ prev, next: layer.name });
+    onrenamed?.({ prev, next: layer.name });
   }
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <li
+  bind:this={self}
   class:active
   class:dimmed
   onclick={onclick}
   oncontextmenu={(e: MouseEvent) => (e.preventDefault(), oncontextmenu(e))}
-  ondblclick={() => {
-    renameMode = true;
+  ondblclick={(e: MouseEvent) => {
+    if (e.target == self) {
+      renameMode = true;
+    }
   }}
   use:clickOutside={{
     callback: () => {
       renameMode = false;
-      onrenamed({ prev: layer.name, next: layer.name });
+      onrenamed?.({ prev: layer.name, next: layer.name });
     },
   }}>
   {#if renameMode}
@@ -88,24 +94,18 @@
   {:else}
     {layer.name}
   {/if}
-  <div class="actions" class:active={!layer.visible || layer.locked}>
+  <div class="actions" class:active={!visible || locked}>
     <button
-      onclick={(e) => {
-        e.stopPropagation();
-        toggleLocked();
-      }}
-      class:deactivated={layer.locked}>
-      {#if layer.locked}
+      onclick={toggleLocked}
+      class:deactivated={locked}>
+      {#if locked}
         <LockedIcon />
       {:else}
         <UnlockedIcon />
       {/if}
     </button>
     <button
-      onclick={(e) => {
-        e.stopPropagation();
-        toggleVisible();
-      }}
+      onclick={toggleVisible}
       class:deactivated={!layer.visible}>
       {#if layer.visible}
         <VisibleIcon />

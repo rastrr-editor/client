@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import type { LayerList } from '@rastrr-editor/core';
   import { DockPanel } from '~/shared/ui';
   import { LayersIcon } from '~/shared/ui/icons';
@@ -17,12 +15,8 @@
 
   let { layerList = null, imageSize = { x: 0, y: 0 }, withBorder = false }: Props = $props();
 
-  let layersStore = $state(createLayersStore(null));
+  let layersStore = $derived(createLayersStore(layerList));
   let search: string = $state('');
-
-  run(() => {
-    layersStore = createLayersStore(layerList);
-  });
 </script>
 
 <DockPanel title="Слои" {withBorder}>

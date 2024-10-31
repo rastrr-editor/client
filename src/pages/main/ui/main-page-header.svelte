@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
   import { link } from 'svelte-spa-router';
   import { viewport as viewportStore } from '../model/store';
   import { Dropdown, DropdownMenu, DropdownMenuItem } from '~/shared/ui';
@@ -12,11 +11,13 @@
   const { activeProject } = projectStore;
   const projectRepository = createProjectRepository();
 
-  type NavigationEvents = {
-    createNewProject: void;
-  };
+  interface Props {
+    oncreateNewProject: () => void;
+  }
 
-  const dispatch = createEventDispatcher<NavigationEvents>();
+  let {
+    oncreateNewProject
+  }: Props = $props();
 
   let openFileMenu: boolean = $state(false);
   let openViewMenu: boolean = $state(false);
@@ -60,11 +61,11 @@
             onclick={() => (openFileMenu = true)}>Файл</button>
           {#snippet menu()}
                     <DropdownMenu >
-              <DropdownMenuItem on:click={() => dispatch('createNewProject')}>
+              <DropdownMenuItem onclick={oncreateNewProject}>
                 Создать проект
               </DropdownMenuItem>
 
-              <DropdownMenuItem on:click={onProjectSave}>
+              <DropdownMenuItem onclick={onProjectSave}>
                 Сохранить проект
               </DropdownMenuItem>
 
@@ -75,13 +76,13 @@
                             <DropdownMenu  nested>
                     <DropdownMenuItem
                       disabled={$activeProject == null}
-                      on:click={() =>
+                      onclick={() =>
                         exportImage($activeProject?.name ?? '', 'jpg')}>
                       JPEG
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       disabled={$activeProject == null}
-                      on:click={() =>
+                      onclick={() =>
                         exportImage($activeProject?.name ?? '', 'png')}>
                       PNG
                     </DropdownMenuItem>
@@ -105,7 +106,7 @@
                 Скрыть линейки
               </DropdownMenuItem> -->
               <DropdownMenuItem
-                on:click={() =>
+                onclick={() =>
                   toolPanelStore.position.set(
                     $toolPanelPosition === 'bottom' ? 'left' : 'bottom'
                   )}>

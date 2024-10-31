@@ -26,7 +26,7 @@
     class="transparency-range"
     units="%"
     value={opacity}
-    on:change={setOpacity}
+    onchange={setOpacity}
     min={1}
     max={100}
     disabled={!layerList} />

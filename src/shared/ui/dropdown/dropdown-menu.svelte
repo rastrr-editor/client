@@ -1,9 +1,10 @@
 <script lang="ts">
+  import type { Snippet } from 'svelte';
   import { BASE_SPACING } from '~/shared/config';
 
   interface Props {
     nested?: boolean;
-    children?: import('svelte').Snippet;
+    children?: Snippet;
   }
 
   let { nested = false, children }: Props = $props();

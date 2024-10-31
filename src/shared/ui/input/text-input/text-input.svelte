@@ -1,28 +1,18 @@
 <script lang="ts">
-  import { createBubbler } from 'svelte/legacy';
+  import type { Snippet } from 'svelte';
+  import type { HTMLInputAttributes } from 'svelte/elements';
 
-  const bubble = createBubbler();
-  import type { TextFieldType } from './types';
-
-  
-
-
-  
-  interface Props {
+  interface Props extends Omit<HTMLInputAttributes, 'children'> { 
     label?: string;
-    class?: string;
-    type?: TextFieldType;
     value?: string | number;
-    disabled?: boolean;
     densed?: boolean;
     noBorder?: boolean;
-    children?: import('svelte').Snippet<[any]>;
-    [key: string]: any
+    children?: Snippet<[{props: HTMLInputAttributes}]>;
   }
 
   let {
     label = '',
-    class = '',
+    class: className = '',
     type = 'text',
     value = $bindable(''),
     disabled = false,
@@ -34,9 +24,9 @@
 
   const defineInputType = (
     node: HTMLInputElement,
-    inputType: TextFieldType
+    inputType: HTMLInputAttributes['type']
   ) => {
-    node.type = inputType;
+    node.type = inputType ?? 'text';
   };
 </script>
 
@@ -46,26 +36,16 @@
   {/if}
 
   <div class="wrapper" class:noBorder>
-    {#if children}{@render children({ props: { ...rest, disabled }, })}{:else}
+    {#if children}
+      {@render children({ props: { ...rest, disabled }, })}
+    {:else}
       <input
         {...rest}
         {disabled}
         class:densed
         use:defineInputType={type}
         bind:value
-        oninput={bubble('input')}
-        onchange={bubble('change')}
-        onfocus={bubble('focus')}
-        onblur={bubble('blur')}
-        onkeydown={bubble('keydown')}
-        onkeyup={bubble('keyup')}
-        onkeypress={bubble('keypress')}
-        onclick={bubble('click')}
-        onmouseenter={bubble('mouseenter')}
-        onmouseover={bubble('mouseover')}
-        onmouseleave={bubble('mouseleave')}
-        onpaste={bubble('paste')}
-        oncopy={bubble('copy')} />
+      />
     {/if}
   </div>
 </label>

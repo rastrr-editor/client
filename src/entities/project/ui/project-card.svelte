@@ -25,26 +25,25 @@
   let inputNode: HTMLInputElement | null = $state(null);
 
   const date = $derived(project[showDate]);
-  const imageUrl = $derived.by(() => {
-    cleanup();
-    return project.preview != null ? URL.createObjectURL(project.preview) : null
-  });
+  const imageUrl = $derived(project.preview != null ? URL.createObjectURL(project.preview) : null);
+  
+  const cleanup = () => {
+    if (imageUrl != null) {
+      URL.revokeObjectURL(imageUrl);
+    }
+  };
 
   $effect(() => {
     if (inputNode) {
       inputNode.focus();
     }
+
+    return cleanup;
   });
 
   onDestroy(() => {
     cleanup();
   });
-
-  function cleanup() {
-    if (imageUrl != null) {
-      URL.revokeObjectURL(imageUrl);
-    }
-  }
 
   function renameProject(e: Event): void {
     const { value } = e.target as HTMLInputElement;

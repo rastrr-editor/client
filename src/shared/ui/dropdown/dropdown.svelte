@@ -1,14 +1,13 @@
 <script lang="ts">
-  import { noop } from 'svelte/internal';
-
+  import type { Snippet } from 'svelte';
   import { clickOutside } from '~/shared/lib/actions';
 
   interface Props {
     open?: boolean;
     hover?: boolean;
     nested?: boolean;
-    children?: import('svelte').Snippet;
-    menu?: import('svelte').Snippet;
+    children?: Snippet;
+    menu?: Snippet;
   }
 
   let {
@@ -18,6 +17,8 @@
     children,
     menu
   }: Props = $props();
+
+  const noop = () => {};
 
   function openMenu(): void {
     open = true;
@@ -34,6 +35,7 @@
   }
 </script>
 
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <svelte:element
   this={nested ? 'li' : 'div'}
   class="root"

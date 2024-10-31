@@ -1,16 +1,19 @@
 <script lang="ts">
-  import { createBubbler, handlers, preventDefault } from 'svelte/legacy';
+  import type { HTMLBaseAttributes } from 'svelte/elements';
+  import { cast } from '~/shared/lib/ts';
 
-  const bubble = createBubbler();
-  
-
-  interface Props {
+  interface Props extends HTMLBaseAttributes {
     nested?: boolean;
-    children?: import('svelte').Snippet;
-    [key: string]: any
+    disabled?: boolean;
   }
 
-  let { nested = false, children, ...rest }: Props = $props();
+  let { 
+    nested = false,
+    children,
+    onclick,
+    oncontextmenu,
+    ...rest
+  }: Props = $props();
 
   function preventNestedPropagation(event: Event): void {
     if (nested) {
@@ -26,15 +29,19 @@
 </script>
 
 <svelte:element this={nested ? 'div' : 'li'} class="list-item" class:nested>
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
   <svelte:element
     this={rest.href ? 'a' : 'button'}
     {...rest}
     onmousedown={preventNestedFocus}
-    onclick={handlers(preventNestedPropagation, bubble('click'))}
-    oncontextmenu={preventDefault(bubble('contextmenu'))}
-    onkeydown={bubble('keydown')}
-    onkeyup={bubble('keyup')}
-    onkeypress={bubble('keypress')}
+    onclick={(e: MouseEvent) => {
+      preventNestedPropagation(e);
+      onclick?.(cast(e));
+    }}
+    oncontextmenu={(e: MouseEvent) => {
+      e.preventDefault();
+      oncontextmenu?.(cast(e));
+    }}
   >
     {@render children?.()}
   </svelte:element>

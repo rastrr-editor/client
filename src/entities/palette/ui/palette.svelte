@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { preventDefault, stopPropagation } from 'svelte/legacy';
+  import type { ComponentProps } from 'svelte';
 
   import type { Writable } from 'svelte/store';
   import { Color } from '@rastrr-editor/core';
@@ -30,7 +30,7 @@
     oncancel,
     oncontextmenu = () => {},
     class: className = '',
-  }: Props = $props(); 
+  }: Props = $props();
 
   const contextMenuStore = createContextMenuStore({ color: '' });
 
@@ -67,7 +67,7 @@
 
   function onDeleteColor(): void {
     const updatedPaletteColors = palette.colors.filter(
-      (color) => color !== $contextMenuStore.color
+      (color) => color !== $contextMenuStore.color,
     );
     const updatedPalette = { ...palette, colors: updatedPaletteColors };
 
@@ -92,7 +92,9 @@
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class={className} oncontextmenu={(e) => (e.preventDefault(), oncontextmenu(e))}>
+<div
+  class={className}
+  oncontextmenu={(e) => (e.preventDefault(), oncontextmenu(e))}>
   {#if isEditable}
     <input
       class="name-input"
@@ -119,9 +121,11 @@
         style:background-color={color}
         disabled={$editablePalette !== null}
         onclick={() => mainColor.set(Color.from(color, 'hex'))}
-        oncontextmenu={stopPropagation(preventDefault((e) => contextMenuStore.createOnContextMenu(
-          { color }
-        )(e as MouseEvent)))}></button>
+        oncontextmenu={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          contextMenuStore.createOnContextMenu({ color })(e);
+        }}></button>
     {/each}
 
     <div class="color-pick">
@@ -135,7 +139,7 @@
     </div>
   </div>
 
-  <ContextMenu store={contextMenuStore}>
+  <ContextMenu store={contextMenuStore as ComponentProps<ContextMenu>['store']}>
     <button class="context-menu-button" onclick={onSetColorAsSecondary}>
       Установить цвет вспомогательным
     </button>

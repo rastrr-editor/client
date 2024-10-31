@@ -1,22 +1,18 @@
 <script lang="ts">
-  import { preventDefault, createBubbler, stopPropagation } from 'svelte/legacy';
-
-  const bubble = createBubbler();
-  import { createEventDispatcher } from 'svelte';
+  import { type Snippet } from 'svelte';
   import { IconButton } from '~/shared/ui';
   import { CloseIcon } from '~/shared/ui/icons';
   import { focusTrap } from '~/shared/lib/actions';
   import type { ModalSize } from './types';
 
-  const dispatch = createEventDispatcher<{ hide: void }>();
-
-
   interface Props {
+    onhide?: () => void;
+    onclick?: (e: MouseEvent) => void;
     class?: string;
     open?: boolean;
     densed?: boolean;
     size?: ModalSize;
-    children?: import('svelte').Snippet;
+    children?: Snippet;
   }
 
   let {
@@ -24,14 +20,16 @@
     open = $bindable(false),
     densed = false,
     size = 'medium',
-    children
+    children,
+    onhide,
+    onclick,
   }: Props = $props();
   
 
   function hide(): void {
     open = false;
 
-    dispatch('hide');
+    onhide?.();
   }
 
   function keyboardEventHandler(event: KeyboardEvent): void {
@@ -42,20 +40,31 @@
 </script>
 
 {#if open}
+  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
   <div
     class="backdrop"
     aria-modal="true"
     role="dialog"
     tabindex="-1"
     use:focusTrap={open}
-    onkeydown={preventDefault(keyboardEventHandler)}
+    onkeydown={(e: KeyboardEvent) => {
+      e.preventDefault();
+      keyboardEventHandler(e);
+    }}
     onclick={hide}>
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
       class={`modal ${[size]} ${className}`}
       class:densed
-      onclick={stopPropagation(bubble('click'))}
-      onkeydown={stopPropagation(keyboardEventHandler)}>
-      <IconButton aria-label="Close modal" class="close-button" on:click={hide}>
+      onclick={(e: MouseEvent) => {
+        e.stopPropagation();
+        onclick?.(e);
+      }}
+      onkeydown={(e: KeyboardEvent) => {
+        e.stopPropagation();
+        keyboardEventHandler(e);
+      }}>
+      <IconButton aria-label="Close modal" class="close-button" onclick={hide}>
         <CloseIcon />
       </IconButton>
 

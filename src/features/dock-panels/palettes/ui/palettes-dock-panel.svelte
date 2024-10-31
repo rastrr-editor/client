@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { ComponentProps } from 'svelte';
   import type { Writable } from 'svelte/store';
   import type { Color } from '@rastrr-editor/core';
 
@@ -122,14 +123,14 @@
   {#snippet actions()}
     <div  class="palette-actions">
       {#if $editablePalette !== null}
-        <IconButton id={APPLY_BUTTON_ID} on:click={onApply}>
+        <IconButton id={APPLY_BUTTON_ID} onclick={onApply}>
           <CheckIcon />
         </IconButton>
-        <IconButton class="cancel" id={CANCEL_BUTTON_ID} on:click={onCancel}>
+        <IconButton class="cancel" id={CANCEL_BUTTON_ID} onclick={onCancel}>
           <CloseIcon />
         </IconButton>
       {:else}
-        <IconButton on:click={onAddPalette}>
+        <IconButton onclick={onAddPalette}>
           <AddIcon />
         </IconButton>
       {/if}
@@ -166,7 +167,8 @@
   </div>
 </DockPanel>
 
-<ContextMenu store={contextMenuStore}>
+<!-- FIXME: infer prop type -->
+<ContextMenu store={contextMenuStore as ComponentProps<ContextMenu>['store']}>
   <button class="context-menu-button" onclick={onRenamePalette}>
     Переименовать палитру
   </button>

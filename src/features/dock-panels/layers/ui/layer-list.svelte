@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
+  import type { ComponentProps } from 'svelte';
   import LayerListItem from './layer-list-item.svelte';
   import { draggable } from '~/shared/lib/actions';
   import { ContextMenu, createContextMenuStore } from '~/shared/ui';
@@ -18,10 +17,7 @@
   const contextMenuStore = createContextMenuStore({ layerIndex: -1 });
   let renameModeEnableForIndex = $state(-1);
 
-  let layers;
-  run(() => {
-    layers = $layersStore.layers;
-  });
+  let layers = $derived($layersStore.layers);
 
   function getIndex(reversedIndex: number): number {
     return (layers?.length ?? 0) - 1 - reversedIndex;
@@ -55,17 +51,11 @@
 <ul use:draggable={{ draggableSelector: 'li', callback: dropCallback }}>
   {#each layers as layer, reversedIndex (layer.id)}
     <LayerListItem
-      on:click={() => setActive(reversedIndex)}
-      on:contextmenu={contextMenuStore.createOnContextMenu({
+      onclick={() => setActive(reversedIndex)}
+      oncontextmenu={contextMenuStore.createOnContextMenu({
         layerIndex: getIndex(reversedIndex),
       })}
-      on:lockToggle={() => {
-        layers = layers;
-      }}
-      on:visibleToggle={() => {
-        layers = layers;
-      }}
-      on:renamed={() => {
+      onrenamed={() => {
         renameModeEnableForIndex = -1;
       }}
       active={layer.id === $layersStore.activeLayer?.id}
@@ -76,7 +66,7 @@
   {/each}
 </ul>
 
-<ContextMenu store={contextMenuStore}>
+<ContextMenu store={contextMenuStore as ComponentProps<ContextMenu>['store']}>
   <button
     class="context-menu-button"
     onclick={() => enableRenameMode($contextMenuStore.layerIndex)}

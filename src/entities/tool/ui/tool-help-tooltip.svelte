@@ -11,7 +11,7 @@
 
   let {
     name,
-    hotkey = null,
+    // hotkey = null,
     show = $bindable(false),
     trigger,
     placement = 'top'

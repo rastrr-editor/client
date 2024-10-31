@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import type { Viewport } from '@rastrr-editor/core';
+  
   import { DockPanel } from '~/shared/ui';
   import { HistoryIcon } from '~/shared/ui/icons';
   import {
@@ -17,21 +16,24 @@
 
   let { viewport = null, withBorder = false }: Props = $props();
 
-  let historyContainer: HTMLElement = $state();
+  let historyContainer: HTMLElement | undefined = $state();
   let prevViewport: Viewport | null = $state(null);
 
   const updateScrollPosition = () =>
     requestAnimationFrame(() => {
-      const activeNode = historyContainer.querySelector(
-        `li:nth-child(${(viewport?.history?.index ?? 0) + 1})`
-      ) as HTMLElement;
-      historyContainer.scrollTop = activeNode.offsetTop;
+      if (historyContainer != null) {
+        const activeNode = historyContainer.querySelector(
+          `li:nth-child(${(viewport?.history?.index ?? 0) + 1})`
+        ) as HTMLElement;
+
+        historyContainer.scrollTop = activeNode.offsetTop;
+      }
     });
 
   let store: HistoryStore = $state(createHistoryStore(null, updateScrollPosition));
 
   // Update history store only if new viewport differs from previous
-  run(() => {
+  $effect(() => {
     if (prevViewport !== viewport) {
       prevViewport = viewport;
       store = createHistoryStore(viewport?.history ?? null, updateScrollPosition);
@@ -47,6 +49,7 @@
   {/snippet}
   <ul bind:this={historyContainer}>
     {#each $store.commands as command, index}
+      <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
       <!-- svelte-ignore a11y_click_events_have_key_events -->
       <li
         class:dimmed={index > $store.historyIndex}

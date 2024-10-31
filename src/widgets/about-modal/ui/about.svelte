@@ -16,7 +16,7 @@
   }
 </script>
 
-<Modal bind:open on:hide={onHide}>
+<Modal bind:open onhide={onHide}>
   <div class="header">
     <RastrrIcon class="logo" />
     <p>

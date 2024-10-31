@@ -1,4 +1,4 @@
-import type { SvelteComponent } from 'svelte';
+import type { Component } from 'svelte';
 
 import type { ShapeTool } from '~/entities/tool';
 
@@ -11,7 +11,7 @@ type ToolConstants = {
 };
 
 export type ShapeToolData = {
-  icon: typeof SvelteComponent<any>;
+  icon: Component;
   tool: ShapeToolConstructor;
   constants: ToolConstants;
 };

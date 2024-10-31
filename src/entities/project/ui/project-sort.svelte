@@ -29,11 +29,11 @@
     </button>
     {#snippet menu()}
         <DropdownMenu >
-        <DropdownMenuItem on:click={() => ($sortBy = 'createdAt')}
+        <DropdownMenuItem onclick={() => ($sortBy = 'createdAt')}
           >{sortToText.createdAt}</DropdownMenuItem>
-        <DropdownMenuItem on:click={() => ($sortBy = 'name')}
+        <DropdownMenuItem onclick={() => ($sortBy = 'name')}
           >{sortToText.name}</DropdownMenuItem>
-        <DropdownMenuItem on:click={() => ($sortBy = 'updatedAt')}
+        <DropdownMenuItem onclick={() => ($sortBy = 'updatedAt')}
           >{sortToText.updatedAt}</DropdownMenuItem>
       </DropdownMenu>
       {/snippet}

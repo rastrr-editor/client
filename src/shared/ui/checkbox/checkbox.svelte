@@ -5,8 +5,6 @@
   interface Props extends HTMLInputAttributes {
     value?: string | number;
     group?: (string | number)[];
-    checked?: boolean;
-    disabled?: boolean;
   }
 
   let {

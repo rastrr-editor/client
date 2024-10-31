@@ -31,7 +31,7 @@
       <IconButton
         aria-label="Close tooltip"
         class="close-button"
-        on:click={() => (show = false)}><CloseIcon /></IconButton
+        onclick={() => (show = false)}><CloseIcon /></IconButton
       >
     </div>
 

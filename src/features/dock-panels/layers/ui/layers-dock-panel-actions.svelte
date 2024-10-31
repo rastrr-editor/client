@@ -39,7 +39,7 @@
   <IconButton
     aria-label="Add layer"
     class="add"
-    on:click={addLayer}
+    onclick={addLayer}
     disabled={!layerList}><AddIcon /></IconButton>
 </div>
 

@@ -1,9 +1,14 @@
 {
+  "plugins": ["prettier-plugin-svelte"],
   "tabWidth": 2,
   "useTabs": false,
   "singleQuote": true,
   "bracketSameLine": true,
   "overrides": [
+    {
+      "files": "*.svelte",
+      "options": { "parser": "svelte" }
+    },
     {
       "files": "*.scss",
       "options": {

@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run, preventDefault } from 'svelte/legacy';
-
   import {
     CursorIcon,
     BrushIcon,
@@ -48,23 +46,15 @@
   };
 
   let placement: 'top' | 'right' = $derived($position === 'bottom' ? 'top' : 'right');
-  let isShapeToolSelected: boolean = $state();
-  let currentShapeToolData: ShapeToolData = $state();
-
-  
-  run(() => {
-    isShapeToolSelected = $activeTool instanceof ShapeTool;
-  });
-  run(() => {
-    currentShapeToolData = shapeToolMap[$shapeOptions.type];
-  });
+  let isShapeToolSelected: boolean = $derived($activeTool instanceof ShapeTool);
+  let currentShapeToolData: ShapeToolData = $derived(shapeToolMap[$shapeOptions.type]);
 
   function onShapeToolSelect(): void {
     const { tool: CurrentShapeTool } = currentShapeToolData;
     activeTool.set(new CurrentShapeTool());
   }
 
-  run(() => {
+  $effect(() => {
     if (
       isShapeToolSelected &&
       !($activeTool instanceof currentShapeToolData.tool)
@@ -101,7 +91,10 @@
       class="withOptions"
       bind:this={brushTooltip.trigger}
       onclick={() => activeTool.set(new BrushTool())}
-      oncontextmenu={preventDefault(() => (brushTooltip.show = true))}>
+      oncontextmenu={(e) => {
+        e.preventDefault();
+        brushTooltip.show = true;
+      }}>
       <BrushIcon />
     </button>
 
@@ -110,7 +103,10 @@
       class="withOptions"
       bind:this={eraserTooltip.trigger}
       onclick={() => activeTool.set(new EraserTool())}
-      oncontextmenu={preventDefault(() => (eraserTooltip.show = true))}>
+      oncontextmenu={(e) => {
+        e.preventDefault();
+        eraserTooltip.show = true;
+      }}>
       <EraserIcon />
     </button>
 
@@ -119,7 +115,10 @@
       class="withOptions"
       bind:this={shapeTooltip.trigger}
       onclick={onShapeToolSelect}
-      oncontextmenu={preventDefault(() => (shapeTooltip.show = true))}>
+      oncontextmenu={(e) => {
+        e.preventDefault();
+        shapeTooltip.show = true;
+      }}>
       <currentShapeToolData.icon />
     </button>
 

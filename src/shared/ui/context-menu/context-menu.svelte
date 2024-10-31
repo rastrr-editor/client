@@ -5,7 +5,12 @@
   import { calculateLeftPosition, calculateTopPosition } from './utils';
   import type { ContextMenuStore } from './model';
 
-  let { children, store}: {children: Snippet, store: ContextMenuStore<any>} = $props();
+  interface Props {
+    children: Snippet;
+    store: ContextMenuStore<unknown>;
+  }
+
+  let { children, store }: Props = $props();
 
   const viewportMenuGap = BASE_SPACING * 2;
   const dispatch = createEventDispatcher();

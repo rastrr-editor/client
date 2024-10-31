@@ -20,7 +20,7 @@
 
 <div class="root">
   <div>
-    <MainPageHeader on:createNewProject={() => (showNewProject = true)} />
+    <MainPageHeader oncreateNewProject={() => (showNewProject = true)} />
     <MainPageCanvasContainer projectId={parseInt(params.projectId ?? '', 10)} />
     <ToolPanel />
   </div>

@@ -1,23 +1,19 @@
 <script lang="ts">
-  import { createBubbler } from 'svelte/legacy';
-
-  const bubble = createBubbler();
+  import type { HTMLInputAttributes } from 'svelte/elements';
   import { TextInput } from '~/shared/ui/input/';
 
-  
-
-  interface Props {
+  interface Props extends HTMLInputAttributes { 
+    label?: string;
     units?: string;
     value?: number;
     densed?: boolean;
     noBorder?: boolean;
     fitWidth?: boolean;
-    [key: string]: any
   }
 
   let {
     units = '',
-    value = $bindable(null),
+    value = $bindable(undefined),
     densed = false,
     noBorder = false,
     fitWidth = false,
@@ -31,7 +27,7 @@
   }
 </script>
 
-<TextInput  {...rest} {noBorder}>
+<TextInput {...rest} {noBorder}>
   {#snippet children({ props })}
     <input
       {...props}
@@ -39,19 +35,6 @@
       class:densed
       style:width={getNumericFieldWidth()}
       bind:value
-      oninput={bubble('input')}
-      onchange={bubble('change')}
-      onfocus={bubble('focus')}
-      onblur={bubble('blur')}
-      onkeydown={bubble('keydown')}
-      onkeyup={bubble('keyup')}
-      onkeypress={bubble('keypress')}
-      onclick={bubble('click')}
-      onmouseenter={bubble('mouseenter')}
-      onmouseover={bubble('mouseover')}
-      onmouseleave={bubble('mouseleave')}
-      onpaste={bubble('paste')}
-      oncopy={bubble('copy')}
     />
 
     {#if units}

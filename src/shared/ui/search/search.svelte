@@ -1,20 +1,12 @@
 <script lang="ts">
-  import { createBubbler } from 'svelte/legacy';
-
-  const bubble = createBubbler();
+  import type { HTMLInputAttributes } from 'svelte/elements';
   import SearchIcon from './search-icon.svelte';
 
-  
-
-
-  interface Props {
+  interface Props extends HTMLInputAttributes {
     value?: string;
-    class?: string;
-    [key: string]: any
   }
 
-  let { value = $bindable(''), class = '', ...rest }: Props = $props();
-  
+  let { value = $bindable(''), class: className = '', ...rest }: Props = $props();
 </script>
 
 <label
@@ -28,19 +20,6 @@
     type="search"
     {...rest}
     bind:value
-    oninput={bubble('input')}
-    onchange={bubble('change')}
-    onfocus={bubble('focus')}
-    onblur={bubble('blur')}
-    onkeydown={bubble('keydown')}
-    onkeyup={bubble('keyup')}
-    onkeypress={bubble('keypress')}
-    onclick={bubble('click')}
-    onmouseenter={bubble('mouseenter')}
-    onmouseover={bubble('mouseover')}
-    onmouseleave={bubble('mouseleave')}
-    onpaste={bubble('paste')}
-    oncopy={bubble('copy')}
   />
 </label>
 
