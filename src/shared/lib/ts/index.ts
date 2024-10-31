@@ -2,7 +2,7 @@
 
 /**
  * Cast value type to T
- * @param value 
+ * @param value
  */
 export function cast<T = unknown>(value: any): T {
   return value;

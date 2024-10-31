@@ -20,9 +20,11 @@
   const { toolCursor } = toolStore;
   const projectRepository = createProjectRepository();
 
-  let container: HTMLElement = $state();
+  let container: HTMLElement | undefined = $state();
 
-  let cursor = $derived($toolCursor.match(/^url/) ? `${$toolCursor}, auto` : $toolCursor);
+  let cursor = $derived(
+    $toolCursor.match(/^url/) ? `${$toolCursor}, auto` : $toolCursor,
+  );
 
   // NOTE: this is WIP - refactor nedeed
   run(() => {
@@ -45,8 +47,8 @@
     });
     const unsubscribeProject = projectStore.activeProject.subscribe(
       (newProject) => {
-        updateViewport(container, newProject, viewportStore);
-      }
+        if (container) updateViewport(container, newProject, viewportStore);
+      },
     );
 
     const onPointerDown = (event: MouseEvent) => {
@@ -74,7 +76,8 @@
 </script>
 
 <!-- NOTE: max cursor size is 128 x 128, @see https://developer.mozilla.org/en-US/docs/Web/CSS/cursor#icon_size_limits -->
-<main id="canvas-container" style:--cursor={cursor} bind:this={container}></main>
+<main id="canvas-container" style:--cursor={cursor} bind:this={container}>
+</main>
 
 <style lang="scss">
   #canvas-container {

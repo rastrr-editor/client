@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { HTMLInputAttributes } from 'svelte/elements';
   import { NumberInput } from '~/shared/ui/input/';
-  
+
   interface Props extends HTMLInputAttributes {
     label?: string;
     units?: string;
@@ -24,11 +24,7 @@
   {/if}
 
   <div class="wrapper">
-    <input
-      {...rest}
-      type="range"
-      bind:value
-    />
+    <input {...rest} type="range" bind:value />
 
     <div class="numeric">
       <NumberInput
@@ -36,7 +32,7 @@
         {units}
         max={rest.max ?? 100}
         bind:value
-        onchange={onchange}
+        {onchange}
         densed
         noBorder
         fitWidth />

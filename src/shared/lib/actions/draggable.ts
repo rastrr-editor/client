@@ -34,24 +34,24 @@ type DragDataTransfter = {
 
 const draggable: Action = (
   draggableContainer,
-  { draggableSelector, callback }: DraggableOptions
+  { draggableSelector, callback }: DraggableOptions,
 ) => {
   const pointerdownEventsWithNodes = asyncIter.map(
     events.on(draggableContainer, 'pointerdown'),
     async (ev) => {
       const nodes = Array.from<HTMLElement, DraggableNode>(
         draggableContainer.querySelectorAll<HTMLElement>(draggableSelector),
-        (el, index) => ({ el, coords: getCoords(el), index })
+        (el, index) => ({ el, coords: getCoords(el), index }),
       );
       const draggableNode = nodes.find(({ el }) =>
-        el.contains(ev.target as HTMLElement)
+        el.contains(ev.target as HTMLElement),
       );
       let dataTransfer = null;
       if (ev.button === 0 && draggableNode != null) {
         dataTransfer = await dragStart(draggableNode, ev);
       }
       return { ev, nodes, draggableNode, dataTransfer };
-    }
+    },
   );
 
   void (async () => {
@@ -71,7 +71,7 @@ const draggable: Action = (
             dataTransfer,
             onDragMove,
             callback,
-          })
+          }),
         );
       }
     }
@@ -97,7 +97,7 @@ export default draggable;
  */
 async function dragStart(
   node: DraggableNode,
-  event: MouseEvent
+  event: MouseEvent,
 ): Promise<DragDataTransfter | null> {
   return new Promise((resolve) => {
     const timeout = setTimeout(() => {
@@ -133,7 +133,7 @@ async function dragStart(
         clearTimeout(timeout);
         resolve(null);
       },
-      { once: true }
+      { once: true },
     );
   });
 }
@@ -147,7 +147,7 @@ async function dragStart(
  */
 function createOnDragMove(
   nodes: DraggableNode[],
-  dataTransfer: DragDataTransfter
+  dataTransfer: DragDataTransfter,
 ): (event: MouseEvent) => void {
   const { dragNode, shift } = dataTransfer;
   return (event) => {
@@ -192,7 +192,7 @@ function createOnDragEnd({
     // Remove clone node
     cloneNode.remove();
     const nextIndex = Array.from(draggableContainer.children).indexOf(
-      originalNode
+      originalNode,
     );
     originalNode.classList.remove('dragging');
     // Cleanup
@@ -229,7 +229,7 @@ function createDragNode(el: HTMLElement): HTMLElement {
 function setDragNodePosition(
   dragNode: HTMLElement,
   event: MouseEvent,
-  shift: Rastrr.Point
+  shift: Rastrr.Point,
 ): void {
   dragNode.style.transform = `translate3d(${event.pageX - shift.x}px, ${
     event.pageY - shift.y
@@ -247,7 +247,7 @@ function setCloneNodePosition(
   el: HTMLElement,
   elIndex: number,
   appendAfter: boolean,
-  { cloneNode, dragNode, index }: DragDataTransfter
+  { cloneNode, dragNode, index }: DragDataTransfter,
 ): void {
   if (elIndex === index) {
     cloneNode.style.display = 'none';

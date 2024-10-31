@@ -7,13 +7,13 @@ type СlickOutsideOptions = {
 
 const clickOutside: Action = (
   node: HTMLElement,
-  { excludeSelectors = [], callback }: СlickOutsideOptions
+  { excludeSelectors = [], callback }: СlickOutsideOptions,
 ) => {
   const handleClick = (event: MouseEvent): void => {
     const targetElement = event.target as HTMLElement;
 
     const hasEventOnExcluded = excludeSelectors.some((selector) =>
-      targetElement.closest(selector)
+      targetElement.closest(selector),
     );
 
     if (

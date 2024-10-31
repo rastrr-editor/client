@@ -51,7 +51,7 @@
 
   function toggleVisible(): void {
     const prev = layer.visible;
-    layer.setVisible(visible = !layer.visible);
+    layer.setVisible((visible = !layer.visible));
     onvisibleToggle?.({ prev, next: layer.visible });
   }
 
@@ -72,7 +72,7 @@
   bind:this={self}
   class:active
   class:dimmed
-  onclick={onclick}
+  {onclick}
   oncontextmenu={(e: MouseEvent) => (e.preventDefault(), oncontextmenu(e))}
   ondblclick={(e: MouseEvent) => {
     if (e.target == self) {
@@ -95,18 +95,14 @@
     {layer.name}
   {/if}
   <div class="actions" class:active={!visible || locked}>
-    <button
-      onclick={toggleLocked}
-      class:deactivated={locked}>
+    <button onclick={toggleLocked} class:deactivated={locked}>
       {#if locked}
         <LockedIcon />
       {:else}
         <UnlockedIcon />
       {/if}
     </button>
-    <button
-      onclick={toggleVisible}
-      class:deactivated={!layer.visible}>
+    <button onclick={toggleVisible} class:deactivated={!layer.visible}>
       {#if layer.visible}
         <VisibleIcon />
       {:else}
@@ -169,7 +165,9 @@
     transform: translateY(-50%);
     opacity: 0;
     visibility: hidden;
-    transition: opacity ease-in-out $animation-time, visibility $animation-time;
+    transition:
+      opacity ease-in-out $animation-time,
+      visibility $animation-time;
 
     &.active {
       visibility: visible;

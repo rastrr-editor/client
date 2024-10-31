@@ -8,7 +8,7 @@ const stores: Record<string, Writable<any>> = {};
 export const persistent = <T>(
   rawKey: string,
   initial: T,
-  options?: PersistentOptions
+  options?: PersistentOptions,
 ): Writable<T> => {
   const key = `${STORAGE_PREFIX}-${rawKey}`;
   const { storageType = 'local', reviver, replacer } = options ?? {};

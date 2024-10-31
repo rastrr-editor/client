@@ -16,7 +16,7 @@
     icon,
     actions,
     addons,
-    children
+    children,
   }: Props = $props();
 </script>
 

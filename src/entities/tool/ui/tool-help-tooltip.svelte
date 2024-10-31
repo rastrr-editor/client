@@ -14,7 +14,7 @@
     // hotkey = null,
     show = $bindable(false),
     trigger,
-    placement = 'top'
+    placement = 'top',
   }: Props = $props();
 </script>
 

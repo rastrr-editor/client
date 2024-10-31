@@ -26,7 +26,7 @@
 
 <ToolOptionsTooltip title="Ластики" bind:show {trigger} {placement}>
   {#snippet icon()}
-    <EraserIcon  />
+    <EraserIcon />
   {/snippet}
   <div>
     <Range
@@ -35,7 +35,7 @@
       min={1}
       max={125}
       units="px"
-      on:change={onSizeChange} />
+      onchange={onSizeChange} />
   </div>
 </ToolOptionsTooltip>
 

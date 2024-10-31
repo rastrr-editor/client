@@ -10,7 +10,7 @@
     project: Project;
     showDate: Extract<keyof Project, 'createdAt' | 'updatedAt'>;
     renameMode: boolean;
-    onrenamed: (params: { prev: string; next: string }) => void; 
+    onrenamed: (params: { prev: string; next: string }) => void;
     oncontextmenu: (e: MouseEvent) => void;
   }
 
@@ -19,14 +19,16 @@
     showDate = 'createdAt',
     renameMode = false,
     onrenamed,
-    oncontextmenu
+    oncontextmenu,
   }: Props = $props();
-  
+
   let inputNode: HTMLInputElement | null = $state(null);
 
   const date = $derived(project[showDate]);
-  const imageUrl = $derived(project.preview != null ? URL.createObjectURL(project.preview) : null);
-  
+  const imageUrl = $derived(
+    project.preview != null ? URL.createObjectURL(project.preview) : null,
+  );
+
   const cleanup = () => {
     if (imageUrl != null) {
       URL.revokeObjectURL(imageUrl);
@@ -69,7 +71,7 @@
     },
   }}
   use:link
-  oncontextmenu={oncontextmenu}>
+  {oncontextmenu}>
   <div class="image" class:empty={project.preview == null}>
     {#if imageUrl}
       <img src={imageUrl} alt={project.name} onload={cleanup} />

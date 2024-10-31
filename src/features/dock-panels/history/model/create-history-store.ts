@@ -9,7 +9,7 @@ export type HistoryStore = SvelteStore<HistoryStoreValue>;
 
 export default function createHistoryStore(
   history: History | null,
-  updateScrollPosition: () => void
+  updateScrollPosition: () => void,
 ): HistoryStore {
   const subscriptions = new Set<(value: HistoryStoreValue) => void>();
 

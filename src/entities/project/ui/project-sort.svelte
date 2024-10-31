@@ -28,7 +28,7 @@
       {sortToText[$sortBy]}
     </button>
     {#snippet menu()}
-        <DropdownMenu >
+      <DropdownMenu>
         <DropdownMenuItem onclick={() => ($sortBy = 'createdAt')}
           >{sortToText.createdAt}</DropdownMenuItem>
         <DropdownMenuItem onclick={() => ($sortBy = 'name')}
@@ -36,7 +36,7 @@
         <DropdownMenuItem onclick={() => ($sortBy = 'updatedAt')}
           >{sortToText.updatedAt}</DropdownMenuItem>
       </DropdownMenu>
-      {/snippet}
+    {/snippet}
   </Dropdown>
   <div class:arrowUp={open} class:arrowDown={!open}></div>
 </div>

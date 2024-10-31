@@ -35,7 +35,7 @@
 
 <ToolOptionsTooltip title="Кисти" bind:show {trigger} {placement}>
   {#snippet icon()}
-    <BrushIcon  />
+    <BrushIcon />
   {/snippet}
   <div>
     <Range

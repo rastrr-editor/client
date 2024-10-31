@@ -27,7 +27,7 @@
     placement = 'top',
     gap = 0,
     openDelay = 0,
-    hideDelay = 0
+    hideDelay = 0,
   }: Props = $props();
 
   const noop = () => {};
@@ -35,20 +35,26 @@
   const dispatch = createEventDispatcher();
   let tooltip: HTMLDivElement;
 
-  const tooltipVisibilityTransition = $derived(disabled ? '' : (open ? `visibility 0ms ${openDelay}ms` : `visibility 0ms ${hideDelay}ms`));
+  const tooltipVisibilityTransition = $derived(
+    disabled
+      ? ''
+      : open
+        ? `visibility 0ms ${openDelay}ms`
+        : `visibility 0ms ${hideDelay}ms`,
+  );
 
   function updateTooltipPosition(): void {
     tooltip.style.left = calculateLeftPosition(
       trigger,
       tooltip,
       placement,
-      BASE_SPACING * gap
+      BASE_SPACING * gap,
     );
     tooltip.style.top = calculateTopPosition(
       trigger,
       tooltip,
       placement,
-      BASE_SPACING * gap
+      BASE_SPACING * gap,
     );
   }
 

@@ -15,9 +15,7 @@
     oncreateNewProject: () => void;
   }
 
-  let {
-    oncreateNewProject
-  }: Props = $props();
+  let { oncreateNewProject }: Props = $props();
 
   let openFileMenu: boolean = $state(false);
   let openViewMenu: boolean = $state(false);
@@ -33,7 +31,7 @@
           .update(
             project.id!,
             { name, width, height, preview, hasTransparentBackground },
-            viewport.layers
+            viewport.layers,
           )
           .then(() => {
             console.log('saved');
@@ -60,7 +58,7 @@
             class:active={openFileMenu}
             onclick={() => (openFileMenu = true)}>Файл</button>
           {#snippet menu()}
-                    <DropdownMenu >
+            <DropdownMenu>
               <DropdownMenuItem onclick={oncreateNewProject}>
                 Создать проект
               </DropdownMenuItem>
@@ -73,7 +71,7 @@
                 <DropdownMenuItem nested>Сохранить как</DropdownMenuItem>
 
                 {#snippet menu()}
-                            <DropdownMenu  nested>
+                  <DropdownMenu nested>
                     <DropdownMenuItem
                       disabled={$activeProject == null}
                       onclick={() =>
@@ -87,10 +85,10 @@
                       PNG
                     </DropdownMenuItem>
                   </DropdownMenu>
-                          {/snippet}
+                {/snippet}
               </Dropdown>
             </DropdownMenu>
-                  {/snippet}
+          {/snippet}
         </Dropdown>
       </li>
 
@@ -101,21 +99,21 @@
             class:active={openViewMenu}
             onclick={() => (openViewMenu = true)}>Вид</button>
           {#snippet menu()}
-                    <DropdownMenu >
+            <DropdownMenu>
               <!-- <DropdownMenuItem on:click={() => console.log('Hide rulers...')}>
                 Скрыть линейки
               </DropdownMenuItem> -->
               <DropdownMenuItem
                 onclick={() =>
                   toolPanelStore.position.set(
-                    $toolPanelPosition === 'bottom' ? 'left' : 'bottom'
+                    $toolPanelPosition === 'bottom' ? 'left' : 'bottom',
                   )}>
                 Панель инструметов {$toolPanelPosition === 'bottom'
                   ? 'слева'
                   : 'снизу'}
               </DropdownMenuItem>
             </DropdownMenu>
-                  {/snippet}
+          {/snippet}
         </Dropdown>
       </li>
       <li>

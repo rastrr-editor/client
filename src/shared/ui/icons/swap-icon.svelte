@@ -13,7 +13,6 @@
   stroke-linecap="round"
   stroke-linejoin="round"
   xmlns="http://www.w3.org/2000/svg"
-  {...rest}
->
+  {...rest}>
   <path d="m17 8 4 4m0 0-4 4m4-4H3m4-4-4 4m0 0 4 4" />
 </svg>

@@ -24,7 +24,7 @@
 
 <ToolOptionsTooltip title="Фигуры" bind:show {trigger} {placement}>
   {#snippet icon()}
-    <ShapesIcon  />
+    <ShapesIcon />
   {/snippet}
 
   <div class="shape-types">

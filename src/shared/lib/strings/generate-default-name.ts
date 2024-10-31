@@ -8,7 +8,7 @@
  */
 export default function generateDefaultName(
   existingNames: string[],
-  defaultName: string
+  defaultName: string,
 ): string {
   function iterate(name: string, postfix: number = 0): string {
     const newName = postfix === 0 ? name : `${name} ${postfix}`;

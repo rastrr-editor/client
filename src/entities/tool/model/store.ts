@@ -17,5 +17,5 @@ activeTool.subscribe(
   },
   () => {
     prevTool?.destroy();
-  }
+  },
 );

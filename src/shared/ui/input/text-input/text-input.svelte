@@ -2,12 +2,12 @@
   import type { Snippet } from 'svelte';
   import type { HTMLInputAttributes } from 'svelte/elements';
 
-  interface Props extends Omit<HTMLInputAttributes, 'children'> { 
+  interface Props extends Omit<HTMLInputAttributes, 'children'> {
     label?: string;
     value?: string | number;
     densed?: boolean;
     noBorder?: boolean;
-    children?: Snippet<[{props: HTMLInputAttributes}]>;
+    children?: Snippet<[{ props: HTMLInputAttributes }]>;
   }
 
   let {
@@ -24,7 +24,7 @@
 
   const defineInputType = (
     node: HTMLInputElement,
-    inputType: HTMLInputAttributes['type']
+    inputType: HTMLInputAttributes['type'],
   ) => {
     node.type = inputType ?? 'text';
   };
@@ -37,15 +37,14 @@
 
   <div class="wrapper" class:noBorder>
     {#if children}
-      {@render children({ props: { ...rest, disabled }, })}
+      {@render children({ props: { ...rest, disabled } })}
     {:else}
       <input
         {...rest}
         {disabled}
         class:densed
         use:defineInputType={type}
-        bind:value
-      />
+        bind:value />
     {/if}
   </div>
 </label>

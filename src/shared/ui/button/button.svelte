@@ -4,10 +4,7 @@
   let { type = 'button', children, ...rest }: HTMLButtonAttributes = $props();
 </script>
 
-<button
-  {...rest}
-  {type}
->
+<button {...rest} {type}>
   {@render children?.()}
 </button>
 

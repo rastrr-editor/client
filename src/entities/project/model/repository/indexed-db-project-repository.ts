@@ -45,7 +45,7 @@ export default class IndexedDBProjectRepository implements ProjectRepository {
   async update(
     id: number,
     meta: Project | Partial<ProjectMeta>,
-    layers?: LayerList
+    layers?: LayerList,
   ): Promise<Project | undefined> {
     const changes: Partial<Project & { normalizedName: string }> = {
       ...meta,
@@ -75,7 +75,7 @@ export default class IndexedDBProjectRepository implements ProjectRepository {
 
   @delay(300)
   async paginate(
-    filter: ProjectPaginateFilter
+    filter: ProjectPaginateFilter,
   ): Promise<ProjectPaginateResult> {
     const { page = 1 } = filter;
     const table = db.projects;

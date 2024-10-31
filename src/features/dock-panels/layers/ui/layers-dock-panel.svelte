@@ -13,7 +13,11 @@
     withBorder?: boolean;
   }
 
-  let { layerList = null, imageSize = { x: 0, y: 0 }, withBorder = false }: Props = $props();
+  let {
+    layerList = null,
+    imageSize = { x: 0, y: 0 },
+    withBorder = false,
+  }: Props = $props();
 
   let layersStore = $derived(createLayersStore(layerList));
   let search: string = $state('');
@@ -21,16 +25,13 @@
 
 <DockPanel title="Слои" {withBorder}>
   {#snippet icon()}
-    <LayersIcon  />
+    <LayersIcon />
   {/snippet}
   {#snippet actions()}
-    <LayersDockPanelActions  {imageSize} {layerList} bind:search />
+    <LayersDockPanelActions {imageSize} {layerList} bind:search />
   {/snippet}
   {#snippet addons()}
-    <LayersDockPanelAddons
-      
-      {layerList}
-      opacity={$layersStore.opacity} />
+    <LayersDockPanelAddons {layerList} opacity={$layersStore.opacity} />
   {/snippet}
   <LayerListComponent {layerList} {layersStore} {search} />
 </DockPanel>

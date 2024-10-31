@@ -14,7 +14,7 @@
     if (Number.isSafeInteger(opacity)) {
       layerList?.activeLayer?.setOpacity(
         // FIXME: min value should be 0, this is temporary solution
-        Math.min(Math.max(0.01, opacity / 100), 1)
+        Math.min(Math.max(0.01, opacity / 100), 1),
       );
     }
   }

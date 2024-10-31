@@ -9,7 +9,7 @@ export enum HistoryEvents {
 
 const handleAction = function handleAction(
   this: Viewport,
-  alias: string
+  alias: string,
 ): void {
   const {
     history,
@@ -26,7 +26,7 @@ const handleAction = function handleAction(
 };
 
 export const handleHistoryHotkeys = (
-  value: Viewport | null
+  value: Viewport | null,
 ): Unsubscriber | undefined => {
   if (value === null) {
     return;

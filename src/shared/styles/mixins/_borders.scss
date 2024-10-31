@@ -7,7 +7,8 @@
     width: 0;
     border-radius: 14px;
     visibility: hidden;
-    transition: width ease-in-out $animation-time,
+    transition:
+      width ease-in-out $animation-time,
       visibility if($animateVisibility, $animation-time, 0s);
     @content;
   }

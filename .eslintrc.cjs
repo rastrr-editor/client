@@ -1,5 +1,9 @@
 module.exports = {
-  extends: ['plugin:svelte/recommended', 'plugin:@typescript-eslint/recommended', 'prettier'],
+  extends: [
+    'plugin:svelte/recommended',
+    'plugin:@typescript-eslint/recommended',
+    'prettier',
+  ],
   env: {
     browser: true,
     es2021: true,
@@ -21,7 +25,7 @@ module.exports = {
       files: ['*.svelte'],
       parser: 'svelte-eslint-parser',
       parserOptions: {
-        parser: '@typescript-eslint/parser'
+        parser: '@typescript-eslint/parser',
       },
       globals: {
         svelte: true,

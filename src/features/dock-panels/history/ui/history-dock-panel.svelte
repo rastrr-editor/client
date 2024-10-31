@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Viewport } from '@rastrr-editor/core';
-  
+
   import { DockPanel } from '~/shared/ui';
   import { HistoryIcon } from '~/shared/ui/icons';
   import {
@@ -23,20 +23,25 @@
     requestAnimationFrame(() => {
       if (historyContainer != null) {
         const activeNode = historyContainer.querySelector(
-          `li:nth-child(${(viewport?.history?.index ?? 0) + 1})`
+          `li:nth-child(${(viewport?.history?.index ?? 0) + 1})`,
         ) as HTMLElement;
 
         historyContainer.scrollTop = activeNode.offsetTop;
       }
     });
 
-  let store: HistoryStore = $state(createHistoryStore(null, updateScrollPosition));
+  let store: HistoryStore = $state(
+    createHistoryStore(null, updateScrollPosition),
+  );
 
   // Update history store only if new viewport differs from previous
   $effect(() => {
     if (prevViewport !== viewport) {
       prevViewport = viewport;
-      store = createHistoryStore(viewport?.history ?? null, updateScrollPosition);
+      store = createHistoryStore(
+        viewport?.history ?? null,
+        updateScrollPosition,
+      );
     }
   });
 
@@ -45,7 +50,7 @@
 
 <DockPanel title="История" {withBorder}>
   {#snippet icon()}
-    <HistoryIcon  />
+    <HistoryIcon />
   {/snippet}
   <ul bind:this={historyContainer}>
     {#each $store.commands as command, index}

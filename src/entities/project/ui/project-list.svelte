@@ -38,10 +38,11 @@
   let totalPages: number = $state(0);
   let center = $state(true);
   let renameModeEnableForId = $state(-1);
-  let firstLoad: ReturnType<typeof repository.paginate> | Promise<null> = $derived(
-    open 
-      ? repository.paginate({ page: 1, name: search, sort: $sortBy }) 
-      : Promise.resolve(null)
+  let firstLoad: ReturnType<typeof repository.paginate> | Promise<null> =
+    $derived(
+      open
+        ? repository.paginate({ page: 1, name: search, sort: $sortBy })
+        : Promise.resolve(null),
     );
 
   $effect.pre(() => {
@@ -52,7 +53,6 @@
         center = false;
         items = Array.from(result.items);
         totalPages = result.total;
-
       } else {
         items = [];
       }

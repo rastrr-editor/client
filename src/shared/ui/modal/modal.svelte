@@ -24,7 +24,6 @@
     onhide,
     onclick,
   }: Props = $props();
-  
 
   function hide(): void {
     open = false;

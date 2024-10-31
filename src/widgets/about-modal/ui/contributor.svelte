@@ -16,7 +16,7 @@
     linkHref,
     linkImage,
     linkImageAlt,
-    linkTitle
+    linkTitle,
   }: Props = $props();
 </script>
 

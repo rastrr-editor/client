@@ -7,7 +7,7 @@
     disabled?: boolean;
   }
 
-  let { 
+  let {
     nested = false,
     children,
     onclick,
@@ -41,8 +41,7 @@
     oncontextmenu={(e: MouseEvent) => {
       e.preventDefault();
       oncontextmenu?.(cast(e));
-    }}
-  >
+    }}>
     {@render children?.()}
   </svelte:element>
 </svelte:element>

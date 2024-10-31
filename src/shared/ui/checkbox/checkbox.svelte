@@ -1,6 +1,6 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
-  import type { HTMLInputAttributes } from "svelte/elements";
+  import type { HTMLInputAttributes } from 'svelte/elements';
 
   interface Props extends HTMLInputAttributes {
     value?: string | number;
@@ -18,7 +18,7 @@
 
   function initiateCheckedState(
     _: HTMLElement,
-    valuesGroup: (string | number)[]
+    valuesGroup: (string | number)[],
   ): void {
     checked = checked || valuesGroup.includes(value);
   }
@@ -46,8 +46,7 @@
     onchange={(e) => {
       handleChange(e);
       rest.onchange?.(e);
-    }}
-  />
+    }} />
   {@render children?.()}
 </label>
 

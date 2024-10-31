@@ -15,7 +15,7 @@
     hover = false,
     nested = false,
     children,
-    menu
+    menu,
   }: Props = $props();
 
   const noop = () => {};
@@ -44,8 +44,7 @@
   onmouseleave={hover ? hideMenu : undefined}
   onfocuscapture={hover ? openMenu : undefined}
   onblurcapture={hover ? hideMenu : undefined}
-  onkeydowncapture={hideMenuByKeydown}
->
+  onkeydowncapture={hideMenuByKeydown}>
   {@render children?.()}
 
   <div
@@ -53,8 +52,7 @@
     class:open
     onclick={hideMenu}
     oncontextmenu={hideMenu}
-    onkeydown={noop}
-  >
+    onkeydown={noop}>
     {@render menu?.()}
   </div>
 </svelte:element>

@@ -45,9 +45,13 @@
     },
   };
 
-  let placement: 'top' | 'right' = $derived($position === 'bottom' ? 'top' : 'right');
+  let placement: 'top' | 'right' = $derived(
+    $position === 'bottom' ? 'top' : 'right',
+  );
   let isShapeToolSelected: boolean = $derived($activeTool instanceof ShapeTool);
-  let currentShapeToolData: ShapeToolData = $derived(shapeToolMap[$shapeOptions.type]);
+  let currentShapeToolData: ShapeToolData = $derived(
+    shapeToolMap[$shapeOptions.type],
+  );
 
   function onShapeToolSelect(): void {
     const { tool: CurrentShapeTool } = currentShapeToolData;

@@ -55,7 +55,7 @@ export default abstract class DrawLineTool<TOptions extends DrawLineToolOptions>
           fill="none"
           stroke="${TOOL_CURSOR_COLOR}"
         />
-      </svg>`
+      </svg>`,
     )}") ${this.options.size / 2 + 1} ${this.options.size / 2 + 1}`;
   }
 
@@ -69,6 +69,6 @@ export default abstract class DrawLineTool<TOptions extends DrawLineToolOptions>
 
   abstract createCommand(
     viewport: Viewport,
-    toolCreateCommandOptions: ToolCreateCommandOptions<PointerEvent>
+    toolCreateCommandOptions: ToolCreateCommandOptions<PointerEvent>,
   ): Command | null;
 }

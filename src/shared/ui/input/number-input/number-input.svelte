@@ -2,7 +2,7 @@
   import type { HTMLInputAttributes } from 'svelte/elements';
   import { TextInput } from '~/shared/ui/input/';
 
-  interface Props extends HTMLInputAttributes { 
+  interface Props extends HTMLInputAttributes {
     label?: string;
     units?: string;
     value?: number;
@@ -21,9 +21,7 @@
   }: Props = $props();
 
   function getNumericFieldWidth(): string {
-    return fitWidth && rest.max
-      ? `${String(rest.max).length}ch`
-      : '';
+    return fitWidth && rest.max ? `${String(rest.max).length}ch` : '';
   }
 </script>
 
@@ -34,8 +32,7 @@
       type="number"
       class:densed
       style:width={getNumericFieldWidth()}
-      bind:value
-    />
+      bind:value />
 
     {#if units}
       <span class="units" class:densed>{units}</span>

@@ -13,11 +13,9 @@
   stroke-linecap="round"
   stroke-linejoin="round"
   xmlns="http://www.w3.org/2000/svg"
-  {...rest}
->
+  {...rest}>
   <path d="M14 12a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" fill="currentColor" />
   <path
     d="M22 12c-2.666 4.666-6 7-10 7s-7.334-2.334-10-7c2.666-4.666 6-7 10-7s7.334 2.334 10 7Z"
-    stroke-width="1.5"
-  />
+    stroke-width="1.5" />
 </svg>

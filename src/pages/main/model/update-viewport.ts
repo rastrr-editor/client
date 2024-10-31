@@ -8,7 +8,7 @@ const CanvasLayerFactory = LayerFactory.setType('canvas');
 export default function updateViewport(
   container: HTMLElement | null,
   project: Project | null,
-  viewportStore: Writable<Viewport | null>
+  viewportStore: Writable<Viewport | null>,
 ): void {
   let viewport = get(viewportStore);
   // Preserve in memory layers
@@ -37,7 +37,7 @@ export default function updateViewport(
         viewport.layers.add(layer);
       }
       viewport.layers.setActive(
-        inMemoryActiveIndex ?? viewport.layers.length - 1
+        inMemoryActiveIndex ?? viewport.layers.length - 1,
       );
     } else if (project.layers.length > 0) {
       // Restore layers from project
@@ -46,7 +46,7 @@ export default function updateViewport(
         const layer = CanvasLayerFactory.empty(
           layerData.width,
           layerData.height,
-          { opacity: layerData.opacity, id: layerData.id }
+          { opacity: layerData.opacity, id: layerData.id },
         );
         layer.name = layerData.name;
         layer.locked = layerData.locked;

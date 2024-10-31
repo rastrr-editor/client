@@ -10,7 +10,11 @@
     search?: string;
   }
 
-  let { layerList = null, imageSize = { x: 0, y: 0 }, search = $bindable('') }: Props = $props();
+  let {
+    layerList = null,
+    imageSize = { x: 0, y: 0 },
+    search = $bindable(''),
+  }: Props = $props();
 
   // TODO: it's better to insert new layer after active
   function addLayer() {
@@ -19,11 +23,11 @@
     const layer = LayerFactory.setType('canvas').filled(
       imageSize.x,
       imageSize.y,
-      new Color(0, 0, 0, 0)
+      new Color(0, 0, 0, 0),
     );
     layer.name = generateDefaultName(
       Array.from(layerList).map(({ name }) => name),
-      'Новый слой'
+      'Новый слой',
     );
     layerList.add(layer);
     layerList.setActive(layerList.length - 1);

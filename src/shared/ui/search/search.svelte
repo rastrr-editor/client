@@ -6,21 +6,20 @@
     value?: string;
   }
 
-  let { value = $bindable(''), class: className = '', ...rest }: Props = $props();
+  let {
+    value = $bindable(''),
+    class: className = '',
+    ...rest
+  }: Props = $props();
 </script>
 
 <label
   class={`root ${className}`}
   class:disabled={rest.disabled}
-  class:filled={value.length > 0}
->
+  class:filled={value.length > 0}>
   <SearchIcon />
 
-  <input
-    type="search"
-    {...rest}
-    bind:value
-  />
+  <input type="search" {...rest} bind:value />
 </label>
 
 <style lang="scss">

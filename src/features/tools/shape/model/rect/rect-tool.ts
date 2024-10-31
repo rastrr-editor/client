@@ -11,12 +11,12 @@ export default class RectTool extends ShapeTool {
 
   createCommand(
     viewport: Viewport,
-    { triggerEvent, color }: ToolCreateCommandOptions<PointerEvent>
+    { triggerEvent, color }: ToolCreateCommandOptions<PointerEvent>,
   ): RectCommand | null {
     const iterable = createPointerIterable(
       triggerEvent,
       viewport.container,
-      viewport.offset
+      viewport.offset,
     );
     return new RectCommand(viewport.layers, iterable, {
       color,

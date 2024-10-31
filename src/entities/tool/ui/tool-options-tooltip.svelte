@@ -19,7 +19,7 @@
     trigger,
     placement = 'top',
     icon,
-    children
+    children,
   }: Props = $props();
 </script>
 
@@ -31,8 +31,7 @@
       <IconButton
         aria-label="Close tooltip"
         class="close-button"
-        onclick={() => (show = false)}><CloseIcon /></IconButton
-      >
+        onclick={() => (show = false)}><CloseIcon /></IconButton>
     </div>
 
     {@render children?.()}

@@ -100,7 +100,7 @@
     const palettes = await palettesLoading;
 
     const paletteToRename = palettes.find(
-      ({ id }) => id === $contextMenuStore.paletteId
+      ({ id }) => id === $contextMenuStore.paletteId,
     )!;
 
     editablePalette.set(paletteToRename);
@@ -117,11 +117,11 @@
 
 <DockPanel title="Палитра" {withBorder}>
   {#snippet icon()}
-    <PaletteIcon  />
+    <PaletteIcon />
   {/snippet}
 
   {#snippet actions()}
-    <div  class="palette-actions">
+    <div class="palette-actions">
       {#if $editablePalette !== null}
         <IconButton id={APPLY_BUTTON_ID} onclick={onApply}>
           <CheckIcon />
