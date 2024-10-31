@@ -11,7 +11,7 @@ type ToolConstants = {
 };
 
 export type ShapeToolData = {
-  icon: typeof SvelteComponent;
+  icon: typeof SvelteComponent<any>;
   tool: ShapeToolConstructor;
   constants: ToolConstants;
 };
