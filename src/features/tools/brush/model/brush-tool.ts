@@ -6,7 +6,7 @@ import { options as defaultOptions } from './store';
 import type { BrushOptions } from '../types';
 import * as constants from './constants';
 
-export default class EraserTool extends DrawLineTool<BrushOptions> {
+export default class BrushTool extends DrawLineTool<BrushOptions> {
   readonly id: string = constants.id;
   readonly name: string = constants.name;
   readonly hotkey: string = constants.hotkey;
