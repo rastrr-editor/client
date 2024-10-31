@@ -1,27 +1,34 @@
 <script lang="ts">
+  import { createBubbler } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import type { ButtonType } from './types';
 
-  interface $$Props extends svelte.JSX.HTMLAttributes<HTMLButtonElement> {
+  
+
+  interface Props {
     type?: ButtonType;
+    children?: import('svelte').Snippet;
+    [key: string]: any
   }
 
-  export let type: ButtonType = 'button';
+  let { type = 'button', children, ...rest }: Props = $props();
 </script>
 
 <button
-  {...$$restProps}
+  {...rest}
   {type}
-  on:keyup
-  on:keydown
-  on:keypress
-  on:focus
-  on:blur
-  on:click
-  on:mouseover
-  on:mouseenter
-  on:mouseleave
+  onkeyup={bubble('keyup')}
+  onkeydown={bubble('keydown')}
+  onkeypress={bubble('keypress')}
+  onfocus={bubble('focus')}
+  onblur={bubble('blur')}
+  onclick={bubble('click')}
+  onmouseover={bubble('mouseover')}
+  onmouseenter={bubble('mouseenter')}
+  onmouseleave={bubble('mouseleave')}
 >
-  <slot />
+  {@render children?.()}
 </button>
 
 <style lang="scss">

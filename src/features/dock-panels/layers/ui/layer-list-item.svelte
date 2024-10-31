@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { Layer } from '@rastrr-editor/core';
-  import { afterUpdate, createEventDispatcher } from 'svelte';
   import { clickOutside } from '~/shared/lib/actions';
   import {
     InvisibleIcon,
@@ -9,35 +8,48 @@
     VisibleIcon,
   } from '~/shared/ui/icons';
 
-  export let layer: Layer;
-  export let active: boolean = false;
-  export let dimmed: boolean = false;
-  export let renameMode = false;
+  interface Props {
+    layer: Layer;
+    onlockToggle: (params: { prev: boolean; next: boolean }) => void;
+    onvisibleToggle: (params: { prev: boolean; next: boolean }) => void;
+    onrenamed: (params: { prev: string; next: string }) => void;
+    onclick: (e: MouseEvent) => void;
+    oncontextmenu: (e: MouseEvent) => void;
+    active?: boolean;
+    dimmed?: boolean;
+    renameMode?: boolean;
+  }
 
-  let inputNode: HTMLInputElement;
+  let {
+    layer,
+    onlockToggle,
+    onvisibleToggle,
+    onrenamed,
+    onclick,
+    oncontextmenu,
+    active = false,
+    dimmed = false,
+    renameMode = false,
+  }: Props = $props();
 
-  afterUpdate(() => {
+  let inputNode: HTMLInputElement | undefined = $state();
+
+  $effect(() => {
     if (inputNode) {
       inputNode.focus();
     }
   });
 
-  const dispatch = createEventDispatcher<{
-    lockToggle: { prev: boolean; next: boolean };
-    visibleToggle: { prev: boolean; next: boolean };
-    renamed: { prev: string; next: string };
-  }>();
-
   function toggleLocked(): void {
     const prev = layer.locked;
     layer.locked = !prev;
-    dispatch('lockToggle', { prev, next: layer.locked });
+    onlockToggle({ prev, next: layer.locked });
   }
 
   function toggleVisible(): void {
     const prev = layer.visible;
     layer.setVisible(!layer.visible);
-    dispatch('visibleToggle', { prev, next: layer.visible });
+    onvisibleToggle({ prev, next: layer.visible });
   }
 
   function renameLayer(e: Event): void {
@@ -47,23 +59,24 @@
       layer.name = value;
       renameMode = false;
     }
-    dispatch('renamed', { prev, next: layer.name });
+    onrenamed({ prev, next: layer.name });
   }
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <li
   class:active
   class:dimmed
-  on:click
-  on:contextmenu|preventDefault
-  on:dblclick={() => {
+  onclick={onclick}
+  oncontextmenu={(e: MouseEvent) => (e.preventDefault(), oncontextmenu(e))}
+  ondblclick={() => {
     renameMode = true;
   }}
   use:clickOutside={{
     callback: () => {
       renameMode = false;
-      dispatch('renamed', { prev: layer.name, next: layer.name });
+      onrenamed({ prev: layer.name, next: layer.name });
     },
   }}>
   {#if renameMode}
@@ -71,13 +84,16 @@
       bind:this={inputNode}
       type="text"
       value={layer.name}
-      on:change={renameLayer} />
+      onchange={renameLayer} />
   {:else}
     {layer.name}
   {/if}
   <div class="actions" class:active={!layer.visible || layer.locked}>
     <button
-      on:click|stopPropagation={toggleLocked}
+      onclick={(e) => {
+        e.stopPropagation();
+        toggleLocked();
+      }}
       class:deactivated={layer.locked}>
       {#if layer.locked}
         <LockedIcon />
@@ -86,7 +102,10 @@
       {/if}
     </button>
     <button
-      on:click|stopPropagation={toggleVisible}
+      onclick={(e) => {
+        e.stopPropagation();
+        toggleVisible();
+      }}
       class:deactivated={!layer.visible}>
       {#if layer.visible}
         <VisibleIcon />

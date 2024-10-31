@@ -1,19 +1,28 @@
 <script lang="ts">
+  import { createBubbler } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import { NumberInput } from '~/shared/ui/input/';
 
-  interface $$Props extends svelte.JSX.HTMLAttributes<HTMLInputElement> {
+  
+
+
+  
+  interface Props {
     label?: string;
     class?: string;
     units?: string;
     value?: number;
+    [key: string]: any
   }
 
-  let className: string = '';
-
-  export { className as class };
-  export let label: string = '';
-  export let units: string = '';
-  export let value: number = 0;
+  let {
+    label = '',
+    class = '',
+    units = '',
+    value = $bindable(0),
+    ...rest
+  }: Props = $props();
 </script>
 
 <label class={`root ${className}`}>
@@ -23,20 +32,20 @@
 
   <div class="wrapper">
     <input
-      {...$$restProps}
+      {...rest}
       type="range"
       bind:value
-      on:change
-      on:click
-      on:keypress
-      on:keydown
-      on:keyup />
+      onchange={bubble('change')}
+      onclick={bubble('click')}
+      onkeypress={bubble('keypress')}
+      onkeydown={bubble('keydown')}
+      onkeyup={bubble('keyup')} />
 
     <div class="numeric">
       <NumberInput
-        {...$$restProps}
+        {...rest}
         {units}
-        max={$$restProps.max ?? 100}
+        max={rest.max ?? 100}
         bind:value
         on:change
         densed

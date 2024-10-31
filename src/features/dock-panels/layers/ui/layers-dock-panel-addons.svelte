@@ -2,8 +2,12 @@
   import type { LayerList } from '@rastrr-editor/core';
   import { Range } from '~/shared/ui';
 
-  export let layerList: LayerList | null = null;
-  export let opacity: number = 100;
+  interface Props {
+    layerList?: LayerList | null;
+    opacity?: number;
+  }
+
+  let { layerList = null, opacity = 100 }: Props = $props();
 
   function setOpacity(e: Event) {
     const opacity = parseInt((e.target as HTMLInputElement).value, 10);

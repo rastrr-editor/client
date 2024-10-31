@@ -22,9 +22,13 @@
   import { generateDefaultName } from '~/shared/lib/strings';
   import { draggable } from '~/shared/lib/actions';
 
-  export let mainColor: Writable<Color>;
-  export let secondaryColor: Writable<Color>;
-  export let withBorder = false;
+  interface Props {
+    mainColor: Writable<Color>;
+    secondaryColor: Writable<Color>;
+    withBorder?: boolean;
+  }
+
+  let { mainColor, secondaryColor, withBorder = false }: Props = $props();
 
   const { editablePalette } = paletteStore;
   const repository = createPaletteRepository();
@@ -33,7 +37,7 @@
   const CANCEL_BUTTON_ID = 'palette-cancel';
   const contextMenuStore = createContextMenuStore({ paletteId: '' });
 
-  let palettesLoading = repository.get();
+  let palettesLoading = $state(repository.get());
   let isAddingPalette = false;
 
   async function onAddPalette(): Promise<void> {
@@ -111,22 +115,26 @@
 </script>
 
 <DockPanel title="Палитра" {withBorder}>
-  <PaletteIcon slot="icon" />
+  {#snippet icon()}
+    <PaletteIcon  />
+  {/snippet}
 
-  <div slot="actions" class="palette-actions">
-    {#if $editablePalette !== null}
-      <IconButton id={APPLY_BUTTON_ID} on:click={onApply}>
-        <CheckIcon />
-      </IconButton>
-      <IconButton class="cancel" id={CANCEL_BUTTON_ID} on:click={onCancel}>
-        <CloseIcon />
-      </IconButton>
-    {:else}
-      <IconButton on:click={onAddPalette}>
-        <AddIcon />
-      </IconButton>
-    {/if}
-  </div>
+  {#snippet actions()}
+    <div  class="palette-actions">
+      {#if $editablePalette !== null}
+        <IconButton id={APPLY_BUTTON_ID} on:click={onApply}>
+          <CheckIcon />
+        </IconButton>
+        <IconButton class="cancel" id={CANCEL_BUTTON_ID} on:click={onCancel}>
+          <CloseIcon />
+        </IconButton>
+      {:else}
+        <IconButton on:click={onAddPalette}>
+          <AddIcon />
+        </IconButton>
+      {/if}
+    </div>
+  {/snippet}
 
   <div
     class="palettes"
@@ -147,9 +155,9 @@
             {palette}
             {mainColor}
             {secondaryColor}
-            on:cancel={onCancel}
-            on:apply={onApply}
-            on:contextmenu={contextMenuStore.createOnContextMenu({
+            oncancel={onCancel}
+            onapply={onApply}
+            oncontextmenu={contextMenuStore.createOnContextMenu({
               paletteId: palette.id,
             })} />
         {/each}
@@ -159,11 +167,11 @@
 </DockPanel>
 
 <ContextMenu store={contextMenuStore}>
-  <button class="context-menu-button" on:click={onRenamePalette}>
+  <button class="context-menu-button" onclick={onRenamePalette}>
     Переименовать палитру
   </button>
 
-  <button class="context-menu-button" on:click={onDeletePalette}>
+  <button class="context-menu-button" onclick={onDeletePalette}>
     Удалить палитру
   </button>
 </ContextMenu>

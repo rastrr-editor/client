@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { preventDefault, createBubbler, stopPropagation } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import { createEventDispatcher } from 'svelte';
   import { IconButton } from '~/shared/ui';
   import { CloseIcon } from '~/shared/ui/icons';
@@ -7,12 +10,23 @@
 
   const dispatch = createEventDispatcher<{ hide: void }>();
 
-  let className: string = '';
 
-  export let open: boolean = false;
-  export let densed: boolean = false;
-  export let size: ModalSize = 'medium';
-  export { className as class };
+  interface Props {
+    class?: string;
+    open?: boolean;
+    densed?: boolean;
+    size?: ModalSize;
+    children?: import('svelte').Snippet;
+  }
+
+  let {
+    class: className = '',
+    open = $bindable(false),
+    densed = false,
+    size = 'medium',
+    children
+  }: Props = $props();
+  
 
   function hide(): void {
     open = false;
@@ -34,18 +48,18 @@
     role="dialog"
     tabindex="-1"
     use:focusTrap={open}
-    on:keydown|preventDefault={keyboardEventHandler}
-    on:click={hide}>
+    onkeydown={preventDefault(keyboardEventHandler)}
+    onclick={hide}>
     <div
       class={`modal ${[size]} ${className}`}
       class:densed
-      on:click|stopPropagation
-      on:keydown|stopPropagation={keyboardEventHandler}>
+      onclick={stopPropagation(bubble('click'))}
+      onkeydown={stopPropagation(keyboardEventHandler)}>
       <IconButton aria-label="Close modal" class="close-button" on:click={hide}>
         <CloseIcon />
       </IconButton>
 
-      <slot />
+      {@render children?.()}
     </div>
   </div>
 {/if}

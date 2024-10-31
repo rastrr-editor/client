@@ -1,5 +1,5 @@
 <!-- Credits to: https://codepen.io/nzbin/pen/GGrXbp -->
-<div class="dot-flashing" />
+<div class="dot-flashing"></div>
 
 <style lang="scss">
   $dot-color: #fff;

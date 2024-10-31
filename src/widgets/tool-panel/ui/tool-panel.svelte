@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run, preventDefault } from 'svelte/legacy';
+
   import {
     CursorIcon,
     BrushIcon,
@@ -45,40 +47,46 @@
     },
   };
 
-  let placement: 'top' | 'right';
-  let isShapeToolSelected: boolean;
-  let currentShapeToolData: ShapeToolData;
+  let placement: 'top' | 'right' = $derived($position === 'bottom' ? 'top' : 'right');
+  let isShapeToolSelected: boolean = $state();
+  let currentShapeToolData: ShapeToolData = $state();
 
-  $: placement = $position === 'bottom' ? 'top' : 'right';
-  $: isShapeToolSelected = $activeTool instanceof ShapeTool;
-  $: currentShapeToolData = shapeToolMap[$shapeOptions.type];
+  
+  run(() => {
+    isShapeToolSelected = $activeTool instanceof ShapeTool;
+  });
+  run(() => {
+    currentShapeToolData = shapeToolMap[$shapeOptions.type];
+  });
 
   function onShapeToolSelect(): void {
     const { tool: CurrentShapeTool } = currentShapeToolData;
     activeTool.set(new CurrentShapeTool());
   }
 
-  $: if (
-    isShapeToolSelected &&
-    !($activeTool instanceof currentShapeToolData.tool)
-  ) {
-    onShapeToolSelect();
-  }
+  run(() => {
+    if (
+      isShapeToolSelected &&
+      !($activeTool instanceof currentShapeToolData.tool)
+    ) {
+      onShapeToolSelect();
+    }
+  });
 
-  const brushTooltip: ToolTooltip = {
+  const brushTooltip: ToolTooltip = $state({
     show: false,
     trigger: null,
-  };
+  });
 
-  const eraserTooltip: ToolTooltip = {
+  const eraserTooltip: ToolTooltip = $state({
     show: false,
     trigger: null,
-  };
+  });
 
-  const shapeTooltip: ToolTooltip = {
+  const shapeTooltip: ToolTooltip = $state({
     show: false,
     trigger: null,
-  };
+  });
 </script>
 
 <div>
@@ -86,14 +94,14 @@
     class="tool-panel"
     class:bottom={$position === 'bottom'}
     class:left={$position === 'left'}>
-    <button on:click={() => activeTool.set(null)}><CursorIcon /></button>
+    <button onclick={() => activeTool.set(null)}><CursorIcon /></button>
 
     <button
       class:active={$activeTool?.id === brushConstants.id}
       class="withOptions"
       bind:this={brushTooltip.trigger}
-      on:click={() => activeTool.set(new BrushTool())}
-      on:contextmenu|preventDefault={() => (brushTooltip.show = true)}>
+      onclick={() => activeTool.set(new BrushTool())}
+      oncontextmenu={preventDefault(() => (brushTooltip.show = true))}>
       <BrushIcon />
     </button>
 
@@ -101,8 +109,8 @@
       class:active={$activeTool?.id === eraserConstants.id}
       class="withOptions"
       bind:this={eraserTooltip.trigger}
-      on:click={() => activeTool.set(new EraserTool())}
-      on:contextmenu|preventDefault={() => (eraserTooltip.show = true)}>
+      onclick={() => activeTool.set(new EraserTool())}
+      oncontextmenu={preventDefault(() => (eraserTooltip.show = true))}>
       <EraserIcon />
     </button>
 
@@ -110,9 +118,9 @@
       class:active={isShapeToolSelected}
       class="withOptions"
       bind:this={shapeTooltip.trigger}
-      on:click={onShapeToolSelect}
-      on:contextmenu|preventDefault={() => (shapeTooltip.show = true)}>
-      <svelte:component this={currentShapeToolData.icon} />
+      onclick={onShapeToolSelect}
+      oncontextmenu={preventDefault(() => (shapeTooltip.show = true))}>
+      <currentShapeToolData.icon />
     </button>
 
     <ChooseColor

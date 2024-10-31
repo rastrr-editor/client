@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import { get } from 'svelte/store';
   import { onMount } from 'svelte';
   import type { Viewport } from '@rastrr-editor/core';
@@ -8,18 +10,22 @@
   import { chooseColorStore } from '~/features/tools/choose-color';
   import updateViewport from '../model/update-viewport';
 
-  export let projectId: number = Number.NaN;
+  interface Props {
+    projectId?: number;
+  }
+
+  let { projectId = Number.NaN }: Props = $props();
 
   const { activeProject } = projectStore;
   const { toolCursor } = toolStore;
   const projectRepository = createProjectRepository();
 
-  let container: HTMLElement;
+  let container: HTMLElement = $state();
 
-  $: cursor = $toolCursor.match(/^url/) ? `${$toolCursor}, auto` : $toolCursor;
+  let cursor = $derived($toolCursor.match(/^url/) ? `${$toolCursor}, auto` : $toolCursor);
 
   // NOTE: this is WIP - refactor nedeed
-  $: {
+  run(() => {
     // Load project
     // TODO: check if current project is saved
     if (Number.isFinite(projectId) && $activeProject?.id !== projectId) {
@@ -27,7 +33,7 @@
         activeProject.set(project ?? null);
       });
     }
-  }
+  });
   onMount(() => {
     let viewport: Viewport | null = null;
     let activeTool: Tool<any, any> | null = null;
@@ -68,7 +74,7 @@
 </script>
 
 <!-- NOTE: max cursor size is 128 x 128, @see https://developer.mozilla.org/en-US/docs/Web/CSS/cursor#icon_size_limits -->
-<main id="canvas-container" style:--cursor={cursor} bind:this={container} />
+<main id="canvas-container" style:--cursor={cursor} bind:this={container}></main>
 
 <style lang="scss">
   #canvas-container {

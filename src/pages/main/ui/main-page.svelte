@@ -9,9 +9,13 @@
   import MainPageDockPanel from './main-page-dock-panel.svelte';
   import MainPageHeader from './main-page-header.svelte';
 
-  export let params: MainPageRouterParams = {};
+  interface Props {
+    params?: MainPageRouterParams;
+  }
 
-  let showNewProject = false;
+  let { params = {} }: Props = $props();
+
+  let showNewProject = $state(false);
 </script>
 
 <div class="root">

@@ -14,7 +14,11 @@
   import { activeProject, sortBy } from '../model/store';
   import ProjectSort from './project-sort.svelte';
 
-  export let open: boolean = false;
+  interface Props {
+    open?: boolean;
+  }
+
+  let { open = $bindable(false) }: Props = $props();
 
   // TODO: refactor
   const unexpectedError = 'Не удалось загрузить данные, попробуйте ещё раз!';
@@ -22,20 +26,20 @@
   const scrollToEndDelta = 10;
   const contextMenuStore = createContextMenuStore({ projectId: -1 });
 
-  let content: HTMLDivElement;
-  let search = '';
+  let content: HTMLDivElement | undefined = $state();
+  let search = $state('');
   let searchTimeout: any;
-  let page = 1;
-  let error = '';
-  let pageLoading = false;
-  let items: Project[] = [];
-  let totalPages: number = 0;
-  let center = true;
+  let page = $state(1);
+  let error = $state('');
+  let pageLoading = $state(false);
+  let items: Project[] = $state([]);
+  let totalPages: number = $state(0);
+  let center = $state(true);
   let firstLoad: ReturnType<typeof repository.paginate> | Promise<null> =
-    Promise.resolve(null);
-  let renameModeEnableForId = -1;
+    $state(Promise.resolve(null));
+  let renameModeEnableForId = $state(-1);
 
-  $: {
+  $effect.pre(() => {
     center = true;
     page = 1;
     firstLoad = open
@@ -46,19 +50,20 @@
         center = false;
         items = Array.from(result.items);
         totalPages = result.total;
+
       } else {
         items = [];
       }
     });
-  }
+  });
 
   function enableRenameMode(projectId: number) {
     renameModeEnableForId = projectId;
     contextMenuStore.close();
   }
 
-  function renameProject(e: CustomEvent<{ prev: string; next: string }>) {
-    const { prev, next } = e.detail;
+  function renameProject(params: { prev: string; next: string }) {
+    const { prev, next } = params;
     if (renameModeEnableForId >= 0) {
       if (prev !== next) {
         repository.update(renameModeEnableForId, { name: next }).catch(() => {
@@ -97,6 +102,7 @@
     if (
       !pageLoading &&
       page < totalPages &&
+      content != null &&
       content.offsetHeight + content.scrollTop >
         content.scrollHeight - scrollToEndDelta
     ) {
@@ -140,7 +146,7 @@
       on:input={onSearchInput} />
     <ProjectSort class="project-sort" />
   </header>
-  <div bind:this={content} on:scroll={loadMore} class="content" class:center>
+  <div bind:this={content} onscroll={loadMore} class="content" class:center>
     {#await firstLoad}
       <DotFlashing />
     {:then _}
@@ -150,10 +156,10 @@
             <ProjectCard
               {project}
               renameMode={renameModeEnableForId === project.id}
-              on:contextmenu={contextMenuStore.createOnContextMenu({
+              oncontextmenu={contextMenuStore.createOnContextMenu({
                 projectId: project.id ?? -1,
               })}
-              on:renamed={renameProject}
+              onrenamed={renameProject}
               showDate={$sortBy === 'updatedAt' ? 'updatedAt' : 'createdAt'} />
           {/each}
         </div>
@@ -183,11 +189,11 @@
   <ContextMenu store={contextMenuStore}>
     <button
       class="context-menu-button"
-      on:click={() => enableRenameMode($contextMenuStore.projectId)}
+      onclick={() => enableRenameMode($contextMenuStore.projectId)}
       >Переименовать</button>
     <button
       class="context-menu-button"
-      on:click={() => deleteProject($contextMenuStore.projectId)}
+      onclick={() => deleteProject($contextMenuStore.projectId)}
       >Удалить</button>
   </ContextMenu>
 </Modal>

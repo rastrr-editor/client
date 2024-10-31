@@ -1,10 +1,16 @@
 <script lang="ts">
-  interface $$Props
-    extends svelte.JSX.HTMLAttributes<HTMLButtonElement & HTMLAnchorElement> {
+  import { createBubbler, handlers, preventDefault } from 'svelte/legacy';
+
+  const bubble = createBubbler();
+  
+
+  interface Props {
     nested?: boolean;
+    children?: import('svelte').Snippet;
+    [key: string]: any
   }
 
-  export let nested: boolean = false;
+  let { nested = false, children, ...rest }: Props = $props();
 
   function preventNestedPropagation(event: Event): void {
     if (nested) {
@@ -21,17 +27,16 @@
 
 <svelte:element this={nested ? 'div' : 'li'} class="list-item" class:nested>
   <svelte:element
-    this={$$restProps.href ? 'a' : 'button'}
-    {...$$restProps}
-    on:mousedown={preventNestedFocus}
-    on:click={preventNestedPropagation}
-    on:contextmenu|preventDefault
-    on:click
-    on:keydown
-    on:keyup
-    on:keypress
+    this={rest.href ? 'a' : 'button'}
+    {...rest}
+    onmousedown={preventNestedFocus}
+    onclick={handlers(preventNestedPropagation, bubble('click'))}
+    oncontextmenu={preventDefault(bubble('contextmenu'))}
+    onkeydown={bubble('keydown')}
+    onkeyup={bubble('keyup')}
+    onkeypress={bubble('keypress')}
   >
-    <slot />
+    {@render children?.()}
   </svelte:element>
 </svelte:element>
 

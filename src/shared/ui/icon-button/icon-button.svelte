@@ -1,21 +1,30 @@
 <script lang="ts">
-  interface $$Props extends svelte.JSX.HTMLAttributes<HTMLButtonElement> {}
+  import { createBubbler } from 'svelte/legacy';
+
+  const bubble = createBubbler();
+  interface Props {
+    children?: import('svelte').Snippet;
+    [key: string]: any
+  }
+
+  let { children, ...rest }: Props = $props();
+  
 </script>
 
 <button
-  {...$$restProps}
+  {...rest}
   type="button"
-  on:keyup
-  on:keydown
-  on:keypress
-  on:focus
-  on:blur
-  on:click
-  on:mouseover
-  on:mouseenter
-  on:mouseleave
+  onkeyup={bubble('keyup')}
+  onkeydown={bubble('keydown')}
+  onkeypress={bubble('keypress')}
+  onfocus={bubble('focus')}
+  onblur={bubble('blur')}
+  onclick={bubble('click')}
+  onmouseover={bubble('mouseover')}
+  onmouseenter={bubble('mouseenter')}
+  onmouseleave={bubble('mouseleave')}
 >
-  <slot />
+  {@render children?.()}
 </button>
 
 <style lang="scss">

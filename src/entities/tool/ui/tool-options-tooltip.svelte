@@ -2,17 +2,31 @@
   import { Tooltip, IconButton } from '~/shared/ui';
   import { CloseIcon } from '~/shared/ui/icons';
   import { focusTrap } from '~/shared/lib/actions';
+  import type { Snippet } from 'svelte';
 
-  export let title: string;
-  export let show = false;
-  export let trigger: HTMLElement;
-  export let placement: 'top' | 'right' = 'top';
+  interface Props {
+    title: string;
+    show?: boolean;
+    trigger: HTMLElement;
+    placement?: 'top' | 'right';
+    icon?: Snippet;
+    children?: Snippet;
+  }
+
+  let {
+    title,
+    show = $bindable(false),
+    trigger,
+    placement = 'top',
+    icon,
+    children
+  }: Props = $props();
 </script>
 
 <div use:focusTrap={show} class="tool-options">
   <Tooltip bind:open={show} {trigger} {placement} gap={4} active>
     <div class="header">
-      <slot name="icon" />
+      {@render icon?.()}
       <div>{title}</div>
       <IconButton
         aria-label="Close tooltip"
@@ -21,7 +35,7 @@
       >
     </div>
 
-    <slot />
+    {@render children?.()}
   </Tooltip>
 </div>
 

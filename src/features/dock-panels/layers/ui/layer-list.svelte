@@ -1,18 +1,27 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import LayerListItem from './layer-list-item.svelte';
   import { draggable } from '~/shared/lib/actions';
   import { ContextMenu, createContextMenuStore } from '~/shared/ui';
   import type { LayersStore } from '../model';
   import type { Layer, LayerList } from '@rastrr-editor/core';
 
-  export let layerList: LayerList | null = null;
-  export let layersStore: LayersStore;
-  export let search: string = '';
+  interface Props {
+    layerList?: LayerList | null;
+    layersStore: LayersStore;
+    search?: string;
+  }
+
+  let { layerList = null, layersStore, search = '' }: Props = $props();
 
   const contextMenuStore = createContextMenuStore({ layerIndex: -1 });
-  let renameModeEnableForIndex = -1;
+  let renameModeEnableForIndex = $state(-1);
 
-  $: layers = $layersStore.layers;
+  let layers;
+  run(() => {
+    layers = $layersStore.layers;
+  });
 
   function getIndex(reversedIndex: number): number {
     return (layers?.length ?? 0) - 1 - reversedIndex;
@@ -70,11 +79,11 @@
 <ContextMenu store={contextMenuStore}>
   <button
     class="context-menu-button"
-    on:click={() => enableRenameMode($contextMenuStore.layerIndex)}
+    onclick={() => enableRenameMode($contextMenuStore.layerIndex)}
     >Переименовать</button>
   <button
     class="context-menu-button"
-    on:click={() => removeLayer($contextMenuStore.layerIndex)}>Удалить</button>
+    onclick={() => removeLayer($contextMenuStore.layerIndex)}>Удалить</button>
 </ContextMenu>
 
 <style lang="scss">

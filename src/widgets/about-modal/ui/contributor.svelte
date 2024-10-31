@@ -1,11 +1,23 @@
 <script lang="ts">
-  export let image: string;
-  export let name: string;
-  export let role: string;
-  export let linkHref: string;
-  export let linkImage: string;
-  export let linkImageAlt: string;
-  export let linkTitle: string;
+  interface Props {
+    image: string;
+    name: string;
+    role: string;
+    linkHref: string;
+    linkImage: string;
+    linkImageAlt: string;
+    linkTitle: string;
+  }
+
+  let {
+    image,
+    name,
+    role,
+    linkHref,
+    linkImage,
+    linkImageAlt,
+    linkTitle
+  }: Props = $props();
 </script>
 
 <div class="contributor">

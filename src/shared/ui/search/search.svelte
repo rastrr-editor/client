@@ -1,41 +1,46 @@
 <script lang="ts">
+  import { createBubbler } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import SearchIcon from './search-icon.svelte';
 
-  interface $$Props extends svelte.JSX.HTMLAttributes<HTMLInputElement> {
+  
+
+
+  interface Props {
     value?: string;
     class?: string;
+    [key: string]: any
   }
 
-  let className: string = '';
-
-  export let value: string = '';
-  export { className as class };
+  let { value = $bindable(''), class = '', ...rest }: Props = $props();
+  
 </script>
 
 <label
   class={`root ${className}`}
-  class:disabled={$$restProps.disabled}
+  class:disabled={rest.disabled}
   class:filled={value.length > 0}
 >
   <SearchIcon />
 
   <input
     type="search"
-    {...$$restProps}
+    {...rest}
     bind:value
-    on:input
-    on:change
-    on:focus
-    on:blur
-    on:keydown
-    on:keyup
-    on:keypress
-    on:click
-    on:mouseenter
-    on:mouseover
-    on:mouseleave
-    on:paste
-    on:copy
+    oninput={bubble('input')}
+    onchange={bubble('change')}
+    onfocus={bubble('focus')}
+    onblur={bubble('blur')}
+    onkeydown={bubble('keydown')}
+    onkeyup={bubble('keyup')}
+    onkeypress={bubble('keypress')}
+    onclick={bubble('click')}
+    onmouseenter={bubble('mouseenter')}
+    onmouseover={bubble('mouseover')}
+    onmouseleave={bubble('mouseleave')}
+    onpaste={bubble('paste')}
+    oncopy={bubble('copy')}
   />
 </label>
 

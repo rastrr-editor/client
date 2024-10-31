@@ -1,5 +1,10 @@
 <script lang="ts">
-  interface $$Props extends svelte.JSX.SVGProps<SVGSVGElement> {}
+  interface Props {
+    [key: string]: any
+  }
+
+  let { ...rest }: Props = $props();
+  
 </script>
 
 <svg
@@ -10,7 +15,7 @@
   stroke="currentColor"
   stroke-width="1.5"
   xmlns="http://www.w3.org/2000/svg"
-  {...$$restProps}
+  {...rest}
 >
   <path
     d="M12 21a9 9 0 1 1 0-18c4.97 0 9 3.582 9 8 0 1.06-.474 2.078-1.318 2.828-.844.75-1.989 1.172-3.182 1.172H14a2.002 2.002 0 0 0-1.872 2.783c.174.411.481.751.872.967a1.296 1.296 0 0 1 .306 1.483A1.295 1.295 0 0 1 12 21"

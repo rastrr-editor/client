@@ -4,9 +4,13 @@
   import { BrushIcon } from '~/shared/ui/icons';
   import { options } from '../model/store';
 
-  export let show = false;
-  export let trigger: HTMLElement;
-  export let placement: 'top' | 'right' = 'top';
+  interface Props {
+    show?: boolean;
+    trigger: HTMLElement;
+    placement?: 'top' | 'right';
+  }
+
+  let { show = $bindable(false), trigger, placement = 'top' }: Props = $props();
 
   function onSizeChange(e: Event) {
     const size = parseInt((e.target as HTMLInputElement).value, 10);
@@ -30,7 +34,9 @@
 </script>
 
 <ToolOptionsTooltip title="Кисти" bind:show {trigger} {placement}>
-  <BrushIcon slot="icon" />
+  {#snippet icon()}
+    <BrushIcon  />
+  {/snippet}
   <div>
     <Range
       label="Размер"

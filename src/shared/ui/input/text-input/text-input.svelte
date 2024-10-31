@@ -1,7 +1,14 @@
 <script lang="ts">
+  import { createBubbler } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import type { TextFieldType } from './types';
 
-  interface $$Props extends svelte.JSX.HTMLAttributes<HTMLInputElement> {
+  
+
+
+  
+  interface Props {
     label?: string;
     class?: string;
     type?: TextFieldType;
@@ -9,17 +16,21 @@
     disabled?: boolean;
     densed?: boolean;
     noBorder?: boolean;
+    children?: import('svelte').Snippet<[any]>;
+    [key: string]: any
   }
 
-  let className: string = '';
-
-  export { className as class };
-  export let label: string = '';
-  export let type: TextFieldType = 'text';
-  export let value: string | number = '';
-  export let disabled: boolean = false;
-  export let densed: boolean = false;
-  export let noBorder: boolean = false;
+  let {
+    label = '',
+    class = '',
+    type = 'text',
+    value = $bindable(''),
+    disabled = false,
+    densed = false,
+    noBorder = false,
+    children,
+    ...rest
+  }: Props = $props();
 
   const defineInputType = (
     node: HTMLInputElement,
@@ -35,27 +46,27 @@
   {/if}
 
   <div class="wrapper" class:noBorder>
-    <slot props={{ ...$$restProps, disabled }}>
+    {#if children}{@render children({ props: { ...rest, disabled }, })}{:else}
       <input
-        {...$$restProps}
+        {...rest}
         {disabled}
         class:densed
         use:defineInputType={type}
         bind:value
-        on:input
-        on:change
-        on:focus
-        on:blur
-        on:keydown
-        on:keyup
-        on:keypress
-        on:click
-        on:mouseenter
-        on:mouseover
-        on:mouseleave
-        on:paste
-        on:copy />
-    </slot>
+        oninput={bubble('input')}
+        onchange={bubble('change')}
+        onfocus={bubble('focus')}
+        onblur={bubble('blur')}
+        onkeydown={bubble('keydown')}
+        onkeyup={bubble('keyup')}
+        onkeypress={bubble('keypress')}
+        onclick={bubble('click')}
+        onmouseenter={bubble('mouseenter')}
+        onmouseover={bubble('mouseover')}
+        onmouseleave={bubble('mouseleave')}
+        onpaste={bubble('paste')}
+        oncopy={bubble('copy')} />
+    {/if}
   </div>
 </label>
 

@@ -4,9 +4,13 @@
   import { options } from '../model/store';
   import type { ShapeType } from '../types';
 
-  export let show = false;
-  export let trigger: HTMLElement;
-  export let placement: 'top' | 'right' = 'top';
+  interface Props {
+    show?: boolean;
+    trigger: HTMLElement;
+    placement?: 'top' | 'right';
+  }
+
+  let { show = $bindable(false), trigger, placement = 'top' }: Props = $props();
 
   function createChangeShapeType(type: ShapeType): () => void {
     return () => {
@@ -19,13 +23,15 @@
 </script>
 
 <ToolOptionsTooltip title="Фигуры" bind:show {trigger} {placement}>
-  <ShapesIcon slot="icon" />
+  {#snippet icon()}
+    <ShapesIcon  />
+  {/snippet}
 
   <div class="shape-types">
     <button
       class="shape-item"
       class:active={$options.type === 'ellipse'}
-      on:click={createChangeShapeType('ellipse')}>
+      onclick={createChangeShapeType('ellipse')}>
       <svg
         width="1em"
         height="1em"
@@ -40,7 +46,7 @@
     <button
       class="shape-item"
       class:active={$options.type === 'rect'}
-      on:click={createChangeShapeType('rect')}>
+      onclick={createChangeShapeType('rect')}>
       <svg
         width="1em"
         height="1em"

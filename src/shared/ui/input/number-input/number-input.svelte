@@ -1,52 +1,63 @@
 <script lang="ts">
+  import { createBubbler } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import { TextInput } from '~/shared/ui/input/';
 
-  interface $$Props extends svelte.JSX.HTMLAttributes<HTMLInputElement> {
+  
+
+  interface Props {
     units?: string;
     value?: number;
     densed?: boolean;
     noBorder?: boolean;
     fitWidth?: boolean;
+    [key: string]: any
   }
 
-  export let units: string = '';
-  export let value: number | null = null;
-  export let densed: boolean = false;
-  export let noBorder: boolean = false;
-  export let fitWidth: boolean = false;
+  let {
+    units = '',
+    value = $bindable(null),
+    densed = false,
+    noBorder = false,
+    fitWidth = false,
+    ...rest
+  }: Props = $props();
 
   function getNumericFieldWidth(): string {
-    return fitWidth && $$restProps.max
-      ? `${String($$restProps.max).length}ch`
+    return fitWidth && rest.max
+      ? `${String(rest.max).length}ch`
       : '';
   }
 </script>
 
-<TextInput let:props {...$$restProps} {noBorder}>
-  <input
-    {...props}
-    type="number"
-    class:densed
-    style:width={getNumericFieldWidth()}
-    bind:value
-    on:input
-    on:change
-    on:focus
-    on:blur
-    on:keydown
-    on:keyup
-    on:keypress
-    on:click
-    on:mouseenter
-    on:mouseover
-    on:mouseleave
-    on:paste
-    on:copy
-  />
+<TextInput  {...rest} {noBorder}>
+  {#snippet children({ props })}
+    <input
+      {...props}
+      type="number"
+      class:densed
+      style:width={getNumericFieldWidth()}
+      bind:value
+      oninput={bubble('input')}
+      onchange={bubble('change')}
+      onfocus={bubble('focus')}
+      onblur={bubble('blur')}
+      onkeydown={bubble('keydown')}
+      onkeyup={bubble('keyup')}
+      onkeypress={bubble('keypress')}
+      onclick={bubble('click')}
+      onmouseenter={bubble('mouseenter')}
+      onmouseover={bubble('mouseover')}
+      onmouseleave={bubble('mouseleave')}
+      onpaste={bubble('paste')}
+      oncopy={bubble('copy')}
+    />
 
-  {#if units}
-    <span class="units" class:densed>{units}</span>
-  {/if}
+    {#if units}
+      <span class="units" class:densed>{units}</span>
+    {/if}
+  {/snippet}
 </TextInput>
 
 <style lang="scss">

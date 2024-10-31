@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import type { Viewport } from '@rastrr-editor/core';
   import { DockPanel } from '~/shared/ui';
   import { HistoryIcon } from '~/shared/ui/icons';
@@ -8,11 +10,15 @@
     type HistoryStore,
   } from '../model';
 
-  export let viewport: Viewport | null = null;
-  export let withBorder = false;
+  interface Props {
+    viewport?: Viewport | null;
+    withBorder?: boolean;
+  }
 
-  let historyContainer: HTMLElement;
-  let prevViewport: Viewport | null = null;
+  let { viewport = null, withBorder = false }: Props = $props();
+
+  let historyContainer: HTMLElement = $state();
+  let prevViewport: Viewport | null = $state(null);
 
   const updateScrollPosition = () =>
     requestAnimationFrame(() => {
@@ -22,25 +28,29 @@
       historyContainer.scrollTop = activeNode.offsetTop;
     });
 
-  let store: HistoryStore = createHistoryStore(null, updateScrollPosition);
+  let store: HistoryStore = $state(createHistoryStore(null, updateScrollPosition));
 
   // Update history store only if new viewport differs from previous
-  $: if (prevViewport !== viewport) {
-    prevViewport = viewport;
-    store = createHistoryStore(viewport?.history ?? null, updateScrollPosition);
-  }
+  run(() => {
+    if (prevViewport !== viewport) {
+      prevViewport = viewport;
+      store = createHistoryStore(viewport?.history ?? null, updateScrollPosition);
+    }
+  });
 
-  $: gotoCommand = viewport ? createGotoCommand(viewport) : () => {};
+  let gotoCommand = $derived(viewport ? createGotoCommand(viewport) : () => {});
 </script>
 
 <DockPanel title="История" {withBorder}>
-  <HistoryIcon slot="icon" />
+  {#snippet icon()}
+    <HistoryIcon  />
+  {/snippet}
   <ul bind:this={historyContainer}>
     {#each $store.commands as command, index}
-      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y_click_events_have_key_events -->
       <li
         class:dimmed={index > $store.historyIndex}
-        on:click={() => gotoCommand(index)}>
+        onclick={() => gotoCommand(index)}>
         {command.name}
       </li>
     {/each}

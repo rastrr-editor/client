@@ -4,7 +4,11 @@
   import Contributor from './contributor.svelte';
   import RastrrIcon from './rastrr-icon.svelte';
 
-  export let open: boolean = false;
+  interface Props {
+    open?: boolean;
+  }
+
+  let { open = $bindable(false) }: Props = $props();
 
   function onHide(): void {
     // TODO: fix route if project is selected

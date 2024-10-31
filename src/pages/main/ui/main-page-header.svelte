@@ -18,8 +18,8 @@
 
   const dispatch = createEventDispatcher<NavigationEvents>();
 
-  let openFileMenu: boolean = false;
-  let openViewMenu: boolean = false;
+  let openFileMenu: boolean = $state(false);
+  let openViewMenu: boolean = $state(false);
 
   // WIP - refactor
   function onProjectSave() {
@@ -57,35 +57,39 @@
           <button
             class="menu-item dropdown"
             class:active={openFileMenu}
-            on:click={() => (openFileMenu = true)}>Файл</button>
-          <DropdownMenu slot="menu">
-            <DropdownMenuItem on:click={() => dispatch('createNewProject')}>
-              Создать проект
-            </DropdownMenuItem>
+            onclick={() => (openFileMenu = true)}>Файл</button>
+          {#snippet menu()}
+                    <DropdownMenu >
+              <DropdownMenuItem on:click={() => dispatch('createNewProject')}>
+                Создать проект
+              </DropdownMenuItem>
 
-            <DropdownMenuItem on:click={onProjectSave}>
-              Сохранить проект
-            </DropdownMenuItem>
+              <DropdownMenuItem on:click={onProjectSave}>
+                Сохранить проект
+              </DropdownMenuItem>
 
-            <Dropdown nested hover>
-              <DropdownMenuItem nested>Сохранить как</DropdownMenuItem>
+              <Dropdown nested hover>
+                <DropdownMenuItem nested>Сохранить как</DropdownMenuItem>
 
-              <DropdownMenu slot="menu" nested>
-                <DropdownMenuItem
-                  disabled={$activeProject == null}
-                  on:click={() =>
-                    exportImage($activeProject?.name ?? '', 'jpg')}>
-                  JPEG
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  disabled={$activeProject == null}
-                  on:click={() =>
-                    exportImage($activeProject?.name ?? '', 'png')}>
-                  PNG
-                </DropdownMenuItem>
-              </DropdownMenu>
-            </Dropdown>
-          </DropdownMenu>
+                {#snippet menu()}
+                            <DropdownMenu  nested>
+                    <DropdownMenuItem
+                      disabled={$activeProject == null}
+                      on:click={() =>
+                        exportImage($activeProject?.name ?? '', 'jpg')}>
+                      JPEG
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      disabled={$activeProject == null}
+                      on:click={() =>
+                        exportImage($activeProject?.name ?? '', 'png')}>
+                      PNG
+                    </DropdownMenuItem>
+                  </DropdownMenu>
+                          {/snippet}
+              </Dropdown>
+            </DropdownMenu>
+                  {/snippet}
         </Dropdown>
       </li>
 
@@ -94,21 +98,23 @@
           <button
             class="menu-item dropdown"
             class:active={openViewMenu}
-            on:click={() => (openViewMenu = true)}>Вид</button>
-          <DropdownMenu slot="menu">
-            <!-- <DropdownMenuItem on:click={() => console.log('Hide rulers...')}>
-              Скрыть линейки
-            </DropdownMenuItem> -->
-            <DropdownMenuItem
-              on:click={() =>
-                toolPanelStore.position.set(
-                  $toolPanelPosition === 'bottom' ? 'left' : 'bottom'
-                )}>
-              Панель инструметов {$toolPanelPosition === 'bottom'
-                ? 'слева'
-                : 'снизу'}
-            </DropdownMenuItem>
-          </DropdownMenu>
+            onclick={() => (openViewMenu = true)}>Вид</button>
+          {#snippet menu()}
+                    <DropdownMenu >
+              <!-- <DropdownMenuItem on:click={() => console.log('Hide rulers...')}>
+                Скрыть линейки
+              </DropdownMenuItem> -->
+              <DropdownMenuItem
+                on:click={() =>
+                  toolPanelStore.position.set(
+                    $toolPanelPosition === 'bottom' ? 'left' : 'bottom'
+                  )}>
+                Панель инструметов {$toolPanelPosition === 'bottom'
+                  ? 'слева'
+                  : 'снизу'}
+              </DropdownMenuItem>
+            </DropdownMenu>
+                  {/snippet}
         </Dropdown>
       </li>
       <li>

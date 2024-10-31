@@ -4,9 +4,13 @@
   import { IconButton, Search } from '~/shared/ui';
   import { AddIcon } from '~/shared/ui/icons';
 
-  export let layerList: LayerList | null = null;
-  export let imageSize: Rastrr.Point = { x: 0, y: 0 };
-  export let search: string = '';
+  interface Props {
+    layerList?: LayerList | null;
+    imageSize?: Rastrr.Point;
+    search?: string;
+  }
+
+  let { layerList = null, imageSize = { x: 0, y: 0 }, search = $bindable('') }: Props = $props();
 
   // TODO: it's better to insert new layer after active
   function addLayer() {
