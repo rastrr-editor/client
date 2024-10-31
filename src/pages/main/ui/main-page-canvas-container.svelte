@@ -65,12 +65,12 @@
         });
       }
     };
-    container.addEventListener('pointerdown', onPointerDown);
+    container?.addEventListener('pointerdown', onPointerDown);
     return () => {
       unsubsribeViewport();
       unsubsribeActiveTool();
       unsubscribeProject();
-      container.removeEventListener('pointerdown', onPointerDown);
+      container?.removeEventListener('pointerdown', onPointerDown);
     };
   });
 </script>

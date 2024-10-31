@@ -44,14 +44,14 @@
       min={1}
       max={125}
       units="px"
-      on:change={onSizeChange} />
+      onchange={onSizeChange} />
     <Range
       label="Непрозрачность"
       value={Math.round($options.opacity * 100)}
       min={0}
       max={100}
       units="%"
-      on:change={onOpacityChange} />
+      onchange={onOpacityChange} />
   </div>
 </ToolOptionsTooltip>
 

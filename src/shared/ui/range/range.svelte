@@ -32,7 +32,11 @@
         {units}
         max={rest.max ?? 100}
         bind:value
-        {onchange}
+        onchange={(e) => {
+          // FIXME: on change is triggered only when focus is lost
+          console.log(e);
+          onchange?.(e);
+        }}
         densed
         noBorder
         fitWidth />

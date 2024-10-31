@@ -100,7 +100,7 @@
             onclick={() => (openViewMenu = true)}>Вид</button>
           {#snippet menu()}
             <DropdownMenu>
-              <!-- <DropdownMenuItem on:click={() => console.log('Hide rulers...')}>
+              <!-- <DropdownMenuItem onclick={() => console.log('Hide rulers...')}>
                 Скрыть линейки
               </DropdownMenuItem> -->
               <DropdownMenuItem
