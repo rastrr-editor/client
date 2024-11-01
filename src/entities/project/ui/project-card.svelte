@@ -1,4 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use `export let` in runes mode — use `$props()` instead -->
 <script lang="ts">
   import { onDestroy } from 'svelte';
   import { link } from 'svelte-spa-router';
