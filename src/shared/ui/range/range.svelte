@@ -2,10 +2,11 @@
   import type { HTMLInputAttributes } from 'svelte/elements';
   import { NumberInput } from '~/shared/ui/input/';
 
-  interface Props extends HTMLInputAttributes {
+  interface Props extends Omit<HTMLInputAttributes, 'onchange'> {
     label?: string;
     units?: string;
     value?: number;
+    onchange?: (value: number) => void;
   }
 
   let {
@@ -16,6 +17,12 @@
     onchange,
     ...rest
   }: Props = $props();
+
+  $effect(() => {
+    if (Number.isSafeInteger(value)) {
+      onchange?.(value);
+    }
+  });
 </script>
 
 <label class={`root ${className}`}>
@@ -33,9 +40,10 @@
         max={rest.max ?? 100}
         bind:value
         onchange={(e) => {
-          // FIXME: on change is triggered only when focus is lost
-          console.log(e);
-          onchange?.(e);
+          const value = parseInt((e.target as HTMLInputElement).value, 10);
+          if (Number.isSafeInteger(value)) {
+            onchange?.(value);
+          }
         }}
         densed
         noBorder

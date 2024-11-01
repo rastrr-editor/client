@@ -12,24 +12,18 @@
 
   let { show = $bindable(false), trigger, placement = 'top' }: Props = $props();
 
-  function onSizeChange(e: Event) {
-    const size = parseInt((e.target as HTMLInputElement).value, 10);
-    if (Number.isSafeInteger(size)) {
-      options.update((value) => ({
-        ...value,
-        size: Math.max(1, size),
-      }));
-    }
+  function onSizeChange(size: number) {
+    options.update((value) => ({
+      ...value,
+      size: Math.max(1, size),
+    }));
   }
 
-  function onOpacityChange(e: Event) {
-    const opacity = parseInt((e.target as HTMLInputElement).value, 10);
-    if (Number.isSafeInteger(opacity)) {
-      options.update((value) => ({
-        ...value,
-        opacity: Math.min(Math.max(0, opacity / 100), 1),
-      }));
-    }
+  function onOpacityChange(opacity: number) {
+    options.update((value) => ({
+      ...value,
+      opacity: Math.min(Math.max(0, opacity / 100), 1),
+    }));
   }
 </script>
 

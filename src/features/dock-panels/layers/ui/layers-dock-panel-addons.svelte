@@ -9,14 +9,11 @@
 
   let { layerList = null, opacity = 100 }: Props = $props();
 
-  function setOpacity(e: Event) {
-    const opacity = parseInt((e.target as HTMLInputElement).value, 10);
-    if (Number.isSafeInteger(opacity)) {
-      layerList?.activeLayer?.setOpacity(
-        // FIXME: min value should be 0, this is temporary solution
-        Math.min(Math.max(0.01, opacity / 100), 1),
-      );
-    }
+  function setOpacity(opacity: number) {
+    layerList?.activeLayer?.setOpacity(
+      // FIXME: min value should be 0, this is temporary solution
+      Math.min(Math.max(0.01, opacity / 100), 1),
+    );
   }
 </script>
 
