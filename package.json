@@ -25,7 +25,7 @@
     "eslint-plugin-n": "^15.5.1",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-svelte": "^2.46.0",
-    "lint-staged": "^13.0.4",
+    "lefthook": "^1.8.2",
     "prettier": "^3.1.0",
     "prettier-plugin-svelte": "^3.2.6",
     "sass": "^1.56.1",
@@ -35,13 +35,6 @@
     "tslib": "^2.4.0",
     "typescript": "^5.5.0",
     "vite": "^5.4.4"
-  },
-  "lint-staged": {
-    "*.{ts,svelte}": [
-      "prettier --write",
-      "eslint"
-    ],
-    "*.{css,scss,json,svg,js,cjs,html,md}": "prettier --write --ignore-unknown"
   },
   "dependencies": {
     "@rastrr-editor/core": "^0.24.0",
