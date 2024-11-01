@@ -1,7 +1,7 @@
 import { RenderMode, type Viewport } from '@rastrr-editor/core';
 
 export default function createGotoCommand(
-  viewport: Viewport
+  viewport: Viewport,
 ): (index: number) => void {
   const { history } = viewport;
 
@@ -16,7 +16,7 @@ export default function createGotoCommand(
         if (resultingIndex !== index) {
           // TODO: show custom alert
           alert(
-            `Не удалось вернуться к операции: ${index}, текущая операция: ${resultingIndex}`
+            `Не удалось вернуться к операции: ${index}, текущая операция: ${resultingIndex}`,
           );
         }
       })

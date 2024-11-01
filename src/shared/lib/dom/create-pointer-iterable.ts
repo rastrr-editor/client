@@ -4,7 +4,7 @@ import getCoords from './get-coords';
 export default function createPointerIterable(
   initialEvent: PointerEvent,
   boundingContainer: HTMLElement = document.body,
-  offset: Rastrr.Point = { x: 0, y: 0 }
+  offset: Rastrr.Point = { x: 0, y: 0 },
 ): AsyncIterable<Rastrr.Point> {
   const coords = getCoords(boundingContainer);
   const maxYDiff = (coords.bottom - coords.top) * 0.5;
@@ -20,10 +20,10 @@ export default function createPointerIterable(
           asyncIter.until(
             asyncIter.any(
               events.on(document.body, 'pointermove'),
-              events.on(document.body, 'pointerup')
+              events.on(document.body, 'pointerup'),
             ),
-            events.onlyEvent('pointerup')
-          )
+            events.onlyEvent('pointerup'),
+          ),
         ),
         (e) => {
           return !(
@@ -32,7 +32,7 @@ export default function createPointerIterable(
             e.pageY < coords.top ||
             e.pageY > coords.bottom
           );
-        }
+        },
       ),
       (e) => {
         const point = {
@@ -40,7 +40,7 @@ export default function createPointerIterable(
           y: e.offsetY - offset.y,
         };
         return point;
-      }
+      },
     ),
     (point) => {
       // Ignore fluctuations to prevent cursor jumps when user reaches the container border.
@@ -57,6 +57,6 @@ export default function createPointerIterable(
       }
       prevPoint = point;
       return true;
-    }
+    },
   );
 }

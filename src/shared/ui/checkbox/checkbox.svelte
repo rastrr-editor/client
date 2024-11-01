@@ -1,19 +1,23 @@
 <script lang="ts">
-  interface $$Props extends svelte.JSX.HTMLAttributes<HTMLInputElement> {
+  import type { HTMLInputAttributes } from 'svelte/elements';
+
+  interface Props extends HTMLInputAttributes {
     value?: string | number;
     group?: (string | number)[];
-    checked?: boolean;
-    disabled?: boolean;
   }
 
-  export let value: string | number = '';
-  export let group: (string | number)[] = [];
-  export let checked: boolean = false;
-  export let disabled: boolean = false;
+  let {
+    value = '',
+    group = [],
+    checked = false,
+    disabled = false,
+    children,
+    ...rest
+  }: Props = $props();
 
   function initiateCheckedState(
     _: HTMLElement,
-    valuesGroup: (string | number)[]
+    valuesGroup: (string | number)[],
   ): void {
     checked = checked || valuesGroup.includes(value);
   }
@@ -32,25 +36,17 @@
 
 <label class:disabled>
   <input
-    {...$$restProps}
+    {...rest}
     type="checkbox"
     {value}
     {disabled}
     use:initiateCheckedState={group}
     bind:checked
-    on:keyup
-    on:keydown
-    on:keypress
-    on:focus
-    on:blur
-    on:click
-    on:mouseover
-    on:mouseenter
-    on:mouseleave
-    on:change={handleChange}
-    on:change
-  />
-  <slot />
+    onchange={(e) => {
+      handleChange(e);
+      rest.onchange?.(e);
+    }} />
+  {@render children?.()}
 </label>
 
 <style lang="scss">

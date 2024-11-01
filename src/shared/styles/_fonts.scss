@@ -1,6 +1,7 @@
 @font-face {
   font-family: "PT Root UI";
-  src: url("/fonts/pt-root-ui-light.woff2") format("woff2"),
+  src:
+    url("/fonts/pt-root-ui-light.woff2") format("woff2"),
     url("/fonts/pt-root-ui-light.woff") format("woff");
   font-display: swap;
   font-weight: 300;
@@ -9,7 +10,8 @@
 
 @font-face {
   font-family: "PT Root UI";
-  src: url("/fonts/pt-root-ui-regular.woff2") format("woff2"),
+  src:
+    url("/fonts/pt-root-ui-regular.woff2") format("woff2"),
     url("/fonts/pt-root-ui-regular.woff") format("woff");
   font-display: swap;
   font-weight: normal;
@@ -18,7 +20,8 @@
 
 @font-face {
   font-family: "PT Root UI";
-  src: url("/fonts/pt-root-ui-medium.woff2") format("woff2"),
+  src:
+    url("/fonts/pt-root-ui-medium.woff2") format("woff2"),
     url("/fonts/pt-root-ui-medium.woff") format("woff");
   font-display: swap;
   font-weight: 500;
@@ -27,7 +30,8 @@
 
 @font-face {
   font-family: "PT Root UI";
-  src: url("/fonts/pt-root-ui-bold.woff2") format("woff2"),
+  src:
+    url("/fonts/pt-root-ui-bold.woff2") format("woff2"),
     url("/fonts/pt-root-ui-bold.woff") format("woff");
   font-display: swap;
   font-weight: 700;

@@ -1,20 +1,37 @@
 <script lang="ts">
-  export let title: string;
-  export let withBorder = false;
+  import type { Snippet } from 'svelte';
+
+  interface Props {
+    title: string;
+    withBorder?: boolean;
+    icon?: Snippet;
+    actions?: Snippet;
+    addons?: Snippet;
+    children?: Snippet;
+  }
+
+  let {
+    title,
+    withBorder = false,
+    icon,
+    actions,
+    addons,
+    children,
+  }: Props = $props();
 </script>
 
 <section>
   <div class="header" class:withBorder>
     <div class="row">
-      <slot name="icon" />
+      {@render icon?.()}
       <h3>{title}</h3>
-      <slot name="actions" />
+      {@render actions?.()}
     </div>
 
-    <slot name="addons" />
+    {@render addons?.()}
   </div>
 
-  <slot />
+  {@render children?.()}
 </section>
 
 <style lang="scss">

@@ -5,23 +5,26 @@
   import { EraserIcon } from '~/shared/ui/icons';
   import { options } from '../model/store';
 
-  export let show = false;
-  export let trigger: HTMLElement;
-  export let placement: 'top' | 'right' = 'top';
+  interface Props {
+    show?: boolean;
+    trigger: HTMLElement;
+    placement?: 'top' | 'right';
+  }
 
-  function onSizeChange(e: Event) {
-    const size = parseInt((e.target as HTMLInputElement).value, 10);
-    if (Number.isSafeInteger(size)) {
-      options.update((value) => ({
-        ...value,
-        size: Math.max(1, size),
-      }));
-    }
+  let { show = $bindable(false), trigger, placement = 'top' }: Props = $props();
+
+  function onSizeChange(size: number) {
+    options.update((value) => ({
+      ...value,
+      size: Math.max(1, size),
+    }));
   }
 </script>
 
 <ToolOptionsTooltip title="Ластики" bind:show {trigger} {placement}>
-  <EraserIcon slot="icon" />
+  {#snippet icon()}
+    <EraserIcon />
+  {/snippet}
   <div>
     <Range
       label="Размер"
@@ -29,7 +32,7 @@
       min={1}
       max={125}
       units="px"
-      on:change={onSizeChange} />
+      onchange={onSizeChange} />
   </div>
 </ToolOptionsTooltip>
 

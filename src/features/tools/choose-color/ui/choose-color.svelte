@@ -1,10 +1,15 @@
 <script lang="ts">
+  import type { FormEventHandler } from 'svelte/elements';
   import { Color } from '@rastrr-editor/core';
   import { get, type Writable } from 'svelte/store';
   import { SwapIcon } from '~/shared/ui/icons';
   import { mainColor, secondaryColor } from '../model/store';
 
-  export let orientation: 'vertical' | 'horizontal' = 'horizontal';
+  interface Props {
+    orientation?: 'vertical' | 'horizontal';
+  }
+
+  let { orientation = 'horizontal' }: Props = $props();
 
   function swapColors() {
     const tmp = get(mainColor);
@@ -13,7 +18,7 @@
   }
 
   const createUpdateColor =
-    (color: Writable<Color>): svelte.JSX.FormEventHandler<HTMLInputElement> =>
+    (color: Writable<Color>): FormEventHandler<HTMLInputElement> =>
     (e) => {
       const input = e.target as HTMLInputElement;
       if (input.value) {
@@ -30,9 +35,9 @@
     <input
       type="color"
       value={$mainColor.toString('hex')}
-      on:input={createUpdateColor(mainColor)} />
+      oninput={createUpdateColor(mainColor)} />
   </div>
-  <button on:click={swapColors}>
+  <button onclick={swapColors}>
     <SwapIcon
       transform={`rotate(${orientation === 'vertical' ? '90' : '0'})`} />
   </button>
@@ -40,7 +45,7 @@
     <input
       type="color"
       value={$secondaryColor.toString('hex')}
-      on:input={createUpdateColor(secondaryColor)} />
+      oninput={createUpdateColor(secondaryColor)} />
   </div>
 </div>
 

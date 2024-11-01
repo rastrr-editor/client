@@ -1,18 +1,23 @@
 <script lang="ts">
+  import type { ComponentProps } from 'svelte';
   import LayerListItem from './layer-list-item.svelte';
   import { draggable } from '~/shared/lib/actions';
   import { ContextMenu, createContextMenuStore } from '~/shared/ui';
   import type { LayersStore } from '../model';
   import type { Layer, LayerList } from '@rastrr-editor/core';
 
-  export let layerList: LayerList | null = null;
-  export let layersStore: LayersStore;
-  export let search: string = '';
+  interface Props {
+    layerList?: LayerList | null;
+    layersStore: LayersStore;
+    search?: string;
+  }
+
+  let { layerList = null, layersStore, search = '' }: Props = $props();
 
   const contextMenuStore = createContextMenuStore({ layerIndex: -1 });
-  let renameModeEnableForIndex = -1;
+  let renameModeEnableForIndex = $state(-1);
 
-  $: layers = $layersStore.layers;
+  let layers = $derived($layersStore.layers);
 
   function getIndex(reversedIndex: number): number {
     return (layers?.length ?? 0) - 1 - reversedIndex;
@@ -46,17 +51,11 @@
 <ul use:draggable={{ draggableSelector: 'li', callback: dropCallback }}>
   {#each layers as layer, reversedIndex (layer.id)}
     <LayerListItem
-      on:click={() => setActive(reversedIndex)}
-      on:contextmenu={contextMenuStore.createOnContextMenu({
+      onclick={() => setActive(reversedIndex)}
+      oncontextmenu={contextMenuStore.createOnContextMenu({
         layerIndex: getIndex(reversedIndex),
       })}
-      on:lockToggle={() => {
-        layers = layers;
-      }}
-      on:visibleToggle={() => {
-        layers = layers;
-      }}
-      on:renamed={() => {
+      onrenamed={() => {
         renameModeEnableForIndex = -1;
       }}
       active={layer.id === $layersStore.activeLayer?.id}
@@ -67,14 +66,14 @@
   {/each}
 </ul>
 
-<ContextMenu store={contextMenuStore}>
+<ContextMenu store={contextMenuStore as ComponentProps<ContextMenu>['store']}>
   <button
     class="context-menu-button"
-    on:click={() => enableRenameMode($contextMenuStore.layerIndex)}
+    onclick={() => enableRenameMode($contextMenuStore.layerIndex)}
     >Переименовать</button>
   <button
     class="context-menu-button"
-    on:click={() => removeLayer($contextMenuStore.layerIndex)}>Удалить</button>
+    onclick={() => removeLayer($contextMenuStore.layerIndex)}>Удалить</button>
 </ContextMenu>
 
 <style lang="scss">

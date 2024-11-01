@@ -9,7 +9,7 @@ type LayerStoreValue = {
 export type LayersStore = SvelteStore<LayerStoreValue>;
 
 export default function createLayersStore(
-  layerList: LayerList | null
+  layerList: LayerList | null,
 ): LayersStore {
   const subscriptions = new Set<(value: LayerStoreValue) => void>();
 

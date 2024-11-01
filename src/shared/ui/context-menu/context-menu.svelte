@@ -1,11 +1,16 @@
 <script lang="ts">
-  import { createEventDispatcher, afterUpdate } from 'svelte';
+  import { createEventDispatcher, type Snippet } from 'svelte';
   import { clickOutside, focusTrap } from '~/shared/lib/actions';
   import { BASE_SPACING } from '~/shared/config';
   import { calculateLeftPosition, calculateTopPosition } from './utils';
   import type { ContextMenuStore } from './model';
 
-  export let store: ContextMenuStore<any>;
+  interface Props {
+    children: Snippet;
+    store: ContextMenuStore<unknown>;
+  }
+
+  let { children, store }: Props = $props();
 
   const viewportMenuGap = BASE_SPACING * 2;
   const dispatch = createEventDispatcher();
@@ -29,13 +34,14 @@
     }
   }
 
-  afterUpdate(() => {
+  $effect(() => {
     if ($store.open) {
       setMenuPosition();
     }
   });
 </script>
 
+<!-- svelte-ignore a11y_interactive_supports_focus -->
 <div
   role="menu"
   class="context-menu"
@@ -43,8 +49,8 @@
   bind:this={menu}
   use:clickOutside={{ callback: hideContextMenu }}
   use:focusTrap
-  on:keydown={hideContextMenuByKeydown}>
-  <slot />
+  onkeydown={hideContextMenuByKeydown}>
+  {@render children?.()}
 </div>
 
 <style lang="scss">

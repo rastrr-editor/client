@@ -4,7 +4,7 @@ export function calculateLeftPosition(
   trigger: HTMLElement,
   tooltip: HTMLElement,
   placement: Placement,
-  gap: number
+  gap: number,
 ): string {
   const { x: triggerLeftPosition } = trigger.getBoundingClientRect();
 
@@ -45,7 +45,7 @@ export function calculateTopPosition(
   trigger: HTMLElement,
   tooltip: HTMLElement,
   placement: Placement,
-  gap: number
+  gap: number,
 ): string {
   const { y: triggerTopPosition } = trigger.getBoundingClientRect();
 

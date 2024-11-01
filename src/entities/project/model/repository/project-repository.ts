@@ -18,7 +18,7 @@ export default interface ProjectRepository {
   update: (
     id: number,
     meta: Partial<ProjectMeta>,
-    layers?: LayerList
+    layers?: LayerList,
   ) => Promise<Project | undefined>;
   delete: (id: number) => Promise<boolean>;
   get: (id: number) => Promise<Project | undefined>;

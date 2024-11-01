@@ -1,19 +1,28 @@
 <script lang="ts">
+  import type { HTMLInputAttributes } from 'svelte/elements';
   import { NumberInput } from '~/shared/ui/input/';
 
-  interface $$Props extends svelte.JSX.HTMLAttributes<HTMLInputElement> {
+  interface Props extends Omit<HTMLInputAttributes, 'onchange'> {
     label?: string;
-    class?: string;
     units?: string;
     value?: number;
+    onchange?: (value: number) => void;
   }
 
-  let className: string = '';
+  let {
+    label = '',
+    class: className = '',
+    units = '',
+    value = $bindable(0),
+    onchange,
+    ...rest
+  }: Props = $props();
 
-  export { className as class };
-  export let label: string = '';
-  export let units: string = '';
-  export let value: number = 0;
+  $effect(() => {
+    if (Number.isSafeInteger(value)) {
+      onchange?.(value);
+    }
+  });
 </script>
 
 <label class={`root ${className}`}>
@@ -22,23 +31,20 @@
   {/if}
 
   <div class="wrapper">
-    <input
-      {...$$restProps}
-      type="range"
-      bind:value
-      on:change
-      on:click
-      on:keypress
-      on:keydown
-      on:keyup />
+    <input {...rest} type="range" bind:value />
 
     <div class="numeric">
       <NumberInput
-        {...$$restProps}
+        {...rest}
         {units}
-        max={$$restProps.max ?? 100}
+        max={rest.max ?? 100}
         bind:value
-        on:change
+        onchange={(e) => {
+          const value = parseInt((e.target as HTMLInputElement).value, 10);
+          if (Number.isSafeInteger(value)) {
+            onchange?.(value);
+          }
+        }}
         densed
         noBorder
         fitWidth />

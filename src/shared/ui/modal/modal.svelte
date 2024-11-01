@@ -1,23 +1,34 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+  import { type Snippet } from 'svelte';
   import { IconButton } from '~/shared/ui';
   import { CloseIcon } from '~/shared/ui/icons';
   import { focusTrap } from '~/shared/lib/actions';
   import type { ModalSize } from './types';
 
-  const dispatch = createEventDispatcher<{ hide: void }>();
+  interface Props {
+    onhide?: () => void;
+    onclick?: (e: MouseEvent) => void;
+    class?: string;
+    open?: boolean;
+    densed?: boolean;
+    size?: ModalSize;
+    children?: Snippet;
+  }
 
-  let className: string = '';
-
-  export let open: boolean = false;
-  export let densed: boolean = false;
-  export let size: ModalSize = 'medium';
-  export { className as class };
+  let {
+    class: className = '',
+    open = $bindable(false),
+    densed = false,
+    size = 'medium',
+    children,
+    onhide,
+    onclick,
+  }: Props = $props();
 
   function hide(): void {
     open = false;
 
-    dispatch('hide');
+    onhide?.();
   }
 
   function keyboardEventHandler(event: KeyboardEvent): void {
@@ -28,24 +39,35 @@
 </script>
 
 {#if open}
+  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
   <div
     class="backdrop"
     aria-modal="true"
     role="dialog"
     tabindex="-1"
     use:focusTrap={open}
-    on:keydown|preventDefault={keyboardEventHandler}
-    on:click={hide}>
+    onkeydown={(e: KeyboardEvent) => {
+      e.preventDefault();
+      keyboardEventHandler(e);
+    }}
+    onclick={hide}>
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
       class={`modal ${[size]} ${className}`}
       class:densed
-      on:click|stopPropagation
-      on:keydown|stopPropagation={keyboardEventHandler}>
-      <IconButton aria-label="Close modal" class="close-button" on:click={hide}>
+      onclick={(e: MouseEvent) => {
+        e.stopPropagation();
+        onclick?.(e);
+      }}
+      onkeydown={(e: KeyboardEvent) => {
+        e.stopPropagation();
+        keyboardEventHandler(e);
+      }}>
+      <IconButton aria-label="Close modal" class="close-button" onclick={hide}>
         <CloseIcon />
       </IconButton>
 
-      <slot />
+      {@render children?.()}
     </div>
   </div>
 {/if}

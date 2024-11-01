@@ -1,42 +1,42 @@
 import type { EventMap } from 'typed-emitter';
 
 export interface TypedEventEmitterWithContext<Events extends EventMap> {
-  addListener: <E extends keyof Events, Context extends {}>(
+  addListener: <E extends keyof Events, Context extends object>(
     event: E,
     listener: Events[E],
-    ctx?: Context
+    ctx?: Context,
   ) => this;
-  on: <E extends keyof Events, Context extends {}>(
+  on: <E extends keyof Events, Context extends object>(
     event: E,
     listener: Events[E],
-    ctx?: Context
+    ctx?: Context,
   ) => this;
-  once: <E extends keyof Events, Context extends {}>(
+  once: <E extends keyof Events, Context extends object>(
     event: E,
     listener: Events[E],
-    ctx: Context
+    ctx: Context,
   ) => this;
-  prependListener: <E extends keyof Events, Context extends {}>(
+  prependListener: <E extends keyof Events, Context extends object>(
     event: E,
     listener: Events[E],
-    ctx?: Context
+    ctx?: Context,
   ) => this;
-  prependOnceListener: <E extends keyof Events, Context extends {}>(
+  prependOnceListener: <E extends keyof Events, Context extends object>(
     event: E,
     listener: Events[E],
-    ctx?: Context
+    ctx?: Context,
   ) => this;
 
-  off: <E extends keyof Events, Context extends {}>(
+  off: <E extends keyof Events, Context extends object>(
     event: E,
     listener: Events[E],
-    ctx?: Context
+    ctx?: Context,
   ) => this;
   removeAllListeners: <E extends keyof Events>(event?: E) => this;
-  removeListener: <E extends keyof Events, Context extends {}>(
+  removeListener: <E extends keyof Events, Context extends object>(
     event: E,
     listener: Events[E],
-    ctx?: Context
+    ctx?: Context,
   ) => this;
 
   emit: <E extends keyof Events>(

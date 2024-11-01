@@ -1,21 +1,11 @@
 <script lang="ts">
-  interface $$Props extends svelte.JSX.HTMLAttributes<HTMLButtonElement> {}
+  import type { HTMLButtonAttributes } from 'svelte/elements';
+
+  let { children, ...rest }: HTMLButtonAttributes = $props();
 </script>
 
-<button
-  {...$$restProps}
-  type="button"
-  on:keyup
-  on:keydown
-  on:keypress
-  on:focus
-  on:blur
-  on:click
-  on:mouseover
-  on:mouseenter
-  on:mouseleave
->
-  <slot />
+<button {...rest} type="button">
+  {@render children?.()}
 </button>
 
 <style lang="scss">

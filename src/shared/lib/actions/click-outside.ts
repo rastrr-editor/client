@@ -1,19 +1,19 @@
-import type { Action } from 'svelte/types/runtime/action';
+import type { Action } from 'svelte/action';
 
 type СlickOutsideOptions = {
   excludeSelectors?: string[];
   callback: () => void;
 };
 
-const clickOutside: Action = (
+const clickOutside: Action<HTMLElement, СlickOutsideOptions> = (
   node: HTMLElement,
-  { excludeSelectors = [], callback }: СlickOutsideOptions
+  { excludeSelectors = [], callback }: СlickOutsideOptions,
 ) => {
   const handleClick = (event: MouseEvent): void => {
     const targetElement = event.target as HTMLElement;
 
     const hasEventOnExcluded = excludeSelectors.some((selector) =>
-      targetElement.closest(selector)
+      targetElement.closest(selector),
     );
 
     if (

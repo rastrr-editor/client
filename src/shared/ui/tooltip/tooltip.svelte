@@ -1,47 +1,60 @@
 <script lang="ts">
-  import { tick, onDestroy, afterUpdate, createEventDispatcher } from 'svelte';
-  import { noop } from 'svelte/internal';
+  import { tick, onDestroy, createEventDispatcher, type Snippet } from 'svelte';
 
   import { clickOutside } from '~/shared/lib/actions';
   import { BASE_SPACING } from '~/shared/config';
   import { calculateLeftPosition, calculateTopPosition } from './utils';
   import type { Placement } from './types';
 
-  export let trigger: HTMLElement;
-  export let open: boolean = false;
-  export let active: boolean = false;
-  export let disabled: boolean = false;
-  export let placement: Placement = 'top';
-  export let gap: number = 0;
-  export let openDelay: number = 0;
-  export let hideDelay: number = 0;
+  interface Props {
+    children: Snippet;
+    trigger: HTMLElement;
+    open?: boolean;
+    active?: boolean;
+    disabled?: boolean;
+    placement?: Placement;
+    gap?: number;
+    openDelay?: number;
+    hideDelay?: number;
+  }
+
+  let {
+    children,
+    trigger,
+    open = $bindable(false),
+    active = false,
+    disabled = $bindable(false),
+    placement = 'top',
+    gap = 0,
+    openDelay = 0,
+    hideDelay = 0,
+  }: Props = $props();
+
+  const noop = () => {};
 
   const dispatch = createEventDispatcher();
   let tooltip: HTMLDivElement;
-  let tooltipVisibilityTransition = '';
 
-  $: {
-    tooltipVisibilityTransition = open
-      ? `visibility 0ms ${openDelay}ms`
-      : `visibility 0ms ${hideDelay}ms`;
-
-    if (disabled) {
-      tooltipVisibilityTransition = '';
-    }
-  }
+  const tooltipVisibilityTransition = $derived(
+    disabled
+      ? ''
+      : open
+        ? `visibility 0ms ${openDelay}ms`
+        : `visibility 0ms ${hideDelay}ms`,
+  );
 
   function updateTooltipPosition(): void {
     tooltip.style.left = calculateLeftPosition(
       trigger,
       tooltip,
       placement,
-      BASE_SPACING * gap
+      BASE_SPACING * gap,
     );
     tooltip.style.top = calculateTopPosition(
       trigger,
       tooltip,
       placement,
-      BASE_SPACING * gap
+      BASE_SPACING * gap,
     );
   }
 
@@ -83,7 +96,7 @@
     }
   });
 
-  afterUpdate(() => {
+  $effect(() => {
     if (disabled) {
       open = false;
     }
@@ -100,8 +113,9 @@
   });
 </script>
 
-<svelte:window on:resize={updateTooltipPosition} />
+<svelte:window onresize={updateTooltipPosition} />
 
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <div
   role="tooltip"
   class="tooltip"
@@ -110,8 +124,8 @@
   style:transition={tooltipVisibilityTransition}
   bind:this={tooltip}
   use:clickOutside={{ callback: active ? hideTooltip : noop }}
-  on:keydown={active ? hideTooltipByKeydown : undefined}>
-  <slot />
+  onkeydown={active ? hideTooltipByKeydown : undefined}>
+  {@render children?.()}
 </div>
 
 <style lang="scss">

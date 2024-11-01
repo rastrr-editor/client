@@ -33,7 +33,7 @@ export default class LocalStoragePaletteRepository
     const storedPalettes = await this.get();
 
     const paletteToUpdate = storedPalettes.find(
-      (palette) => palette.id === id
+      (palette) => palette.id === id,
     )!;
 
     Object.assign(paletteToUpdate, palette);
@@ -46,7 +46,7 @@ export default class LocalStoragePaletteRepository
     const storedPalettes = await this.get();
 
     const paletteToDeleteIndex = storedPalettes.findIndex(
-      (palette) => palette.id === id
+      (palette) => palette.id === id,
     );
 
     if (paletteToDeleteIndex >= 0) {

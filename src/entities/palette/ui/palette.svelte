@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { afterUpdate, createEventDispatcher } from 'svelte';
+  import type { ComponentProps } from 'svelte';
+
   import type { Writable } from 'svelte/store';
   import { Color } from '@rastrr-editor/core';
 
@@ -9,22 +10,33 @@
   import { editablePalette } from '../model/store';
   import type { Palette } from '../model/repository';
 
-  let className: string = '';
+  interface Props {
+    palette: Palette;
+    triggers: string[];
+    mainColor: Writable<Color>;
+    secondaryColor: Writable<Color>;
+    onapply: () => void;
+    oncancel: () => void;
+    oncontextmenu?: (event: MouseEvent) => void;
+    class?: string;
+  }
 
-  export let palette: Palette;
-  export let triggers: string[];
-  export let mainColor: Writable<Color>;
-  export let secondaryColor: Writable<Color>;
-  export { className as class };
-
-  const dispatch = createEventDispatcher();
+  let {
+    palette,
+    triggers,
+    mainColor,
+    secondaryColor,
+    onapply,
+    oncancel,
+    oncontextmenu = () => {},
+    class: className = '',
+  }: Props = $props();
 
   const contextMenuStore = createContextMenuStore({ color: '' });
 
-  let isEditable: boolean = false;
-  let nameInput: HTMLInputElement;
+  let nameInput: HTMLInputElement | undefined = $state();
 
-  $: isEditable = $editablePalette?.id === palette.id;
+  const isEditable: boolean = $derived($editablePalette?.id === palette.id);
 
   function onChangeName(event: Event): void {
     const { value } = event.target as HTMLInputElement;
@@ -34,11 +46,11 @@
 
   function onNameInputKeydown(event: KeyboardEvent): void {
     if (event.key === 'Enter' || event.code === 'Enter') {
-      dispatch('apply');
+      onapply();
     }
 
     if (event.key === 'Escape' || event.code === 'Escape') {
-      dispatch('cancel');
+      oncancel();
     }
   }
 
@@ -49,19 +61,19 @@
 
       editablePalette.set(updatedPalette);
 
-      dispatch('apply');
+      onapply();
     }
   }
 
   function onDeleteColor(): void {
     const updatedPaletteColors = palette.colors.filter(
-      (color) => color !== $contextMenuStore.color
+      (color) => color !== $contextMenuStore.color,
     );
     const updatedPalette = { ...palette, colors: updatedPaletteColors };
 
     editablePalette.set(updatedPalette);
 
-    dispatch('apply');
+    onapply();
 
     contextMenuStore.close();
   }
@@ -72,14 +84,17 @@
     contextMenuStore.close();
   }
 
-  afterUpdate(() => {
+  $effect(() => {
     if (isEditable) {
-      nameInput.focus();
+      nameInput?.focus();
     }
   });
 </script>
 
-<div class={className} on:contextmenu|preventDefault>
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div
+  class={className}
+  oncontextmenu={(e) => (e.preventDefault(), oncontextmenu(e))}>
   {#if isEditable}
     <input
       class="name-input"
@@ -88,10 +103,10 @@
       bind:this={nameInput}
       use:clickOutside={{
         excludeSelectors: triggers,
-        callback: () => dispatch('cancel'),
+        callback: oncancel,
       }}
-      on:input={onChangeName}
-      on:keydown={onNameInputKeydown} />
+      oninput={onChangeName}
+      onkeydown={onNameInputKeydown} />
   {:else}
     <span class="name">{palette.name}</span>
   {/if}
@@ -100,14 +115,17 @@
     <!-- FIXME color is not guaranteed to be unique as a key -->
     {#each palette.colors as color (color)}
       <button
+        aria-label={color}
         class="color"
         class:disabled={$editablePalette !== null}
         style:background-color={color}
         disabled={$editablePalette !== null}
-        on:click={() => mainColor.set(Color.from(color, 'hex'))}
-        on:contextmenu|preventDefault|stopPropagation={contextMenuStore.createOnContextMenu(
-          { color }
-        )} />
+        onclick={() => mainColor.set(Color.from(color, 'hex'))}
+        oncontextmenu={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          contextMenuStore.createOnContextMenu({ color })(e);
+        }}></button>
     {/each}
 
     <div class="color-pick">
@@ -117,16 +135,16 @@
         type="color"
         class:disabled={$editablePalette !== null}
         disabled={$editablePalette !== null}
-        on:change={onAddColor} />
+        onchange={onAddColor} />
     </div>
   </div>
 
-  <ContextMenu store={contextMenuStore}>
-    <button class="context-menu-button" on:click={onSetColorAsSecondary}>
+  <ContextMenu store={contextMenuStore as ComponentProps<ContextMenu>['store']}>
+    <button class="context-menu-button" onclick={onSetColorAsSecondary}>
       Установить цвет вспомогательным
     </button>
 
-    <button class="context-menu-button" on:click={onDeleteColor}>
+    <button class="context-menu-button" onclick={onDeleteColor}>
       Удалить цвет из палитры
     </button>
   </ContextMenu>

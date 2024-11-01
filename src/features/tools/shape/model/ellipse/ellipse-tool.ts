@@ -11,12 +11,12 @@ export default class EllipseTool extends ShapeTool {
 
   createCommand(
     viewport: Viewport,
-    { triggerEvent, color }: ToolCreateCommandOptions<PointerEvent>
+    { triggerEvent, color }: ToolCreateCommandOptions<PointerEvent>,
   ): EllipseCommand | null {
     const iterable = createPointerIterable(
       triggerEvent,
       viewport.container,
-      viewport.offset
+      viewport.offset,
     );
     return new EllipseCommand(viewport.layers, iterable, {
       color,

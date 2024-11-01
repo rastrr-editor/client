@@ -14,10 +14,10 @@ const JSONOptions = {
 export const mainColor = persistent<Color>(
   'choose-color-main',
   new Color(0, 0, 0),
-  JSONOptions
+  JSONOptions,
 );
 export const secondaryColor = persistent<Color>(
   'choose-color-secondary',
   new Color(255, 255, 255),
-  JSONOptions
+  JSONOptions,
 );

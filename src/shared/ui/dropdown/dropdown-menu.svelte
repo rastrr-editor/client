@@ -1,7 +1,13 @@
 <script lang="ts">
+  import type { Snippet } from 'svelte';
   import { BASE_SPACING } from '~/shared/config';
 
-  export let nested: boolean = false;
+  interface Props {
+    nested?: boolean;
+    children?: Snippet;
+  }
+
+  let { nested = false, children }: Props = $props();
 
   function getMenuPlacement(): string {
     return nested
@@ -12,7 +18,7 @@
 
 <div class="wrapper" style={getMenuPlacement()}>
   <ul>
-    <slot />
+    {@render children?.()}
   </ul>
 </div>
 

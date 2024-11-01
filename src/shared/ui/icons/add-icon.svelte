@@ -1,5 +1,7 @@
 <script lang="ts">
-  interface $$Props extends svelte.JSX.SVGProps<SVGSVGElement> {}
+  import type { SVGAttributes } from 'svelte/elements';
+
+  let { ...rest }: SVGAttributes<SVGElement> = $props();
 </script>
 
 <svg
@@ -12,8 +14,7 @@
   stroke-linejoin="round"
   stroke-width="1.5"
   xmlns="http://www.w3.org/2000/svg"
-  {...$$restProps}
->
+  {...rest}>
   <path d="M12 5V19" />
   <path d="M5 12H19" />
 </svg>

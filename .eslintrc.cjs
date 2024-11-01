@@ -1,4 +1,9 @@
 module.exports = {
+  extends: [
+    'plugin:svelte/recommended',
+    'plugin:@typescript-eslint/recommended',
+    'prettier',
+  ],
   env: {
     browser: true,
     es2021: true,
@@ -11,15 +16,17 @@ module.exports = {
     project: 'tsconfig.json',
     extraFileExtensions: ['.svelte'],
   },
-  plugins: ['svelte3', '@typescript-eslint', 'filename-rules'],
-  extends: ['standard-with-typescript', 'prettier'],
+  plugins: ['@typescript-eslint', 'filename-rules'],
   globals: {
     Rastrr: true,
   },
   overrides: [
     {
       files: ['*.svelte'],
-      processor: 'svelte3/svelte3',
+      parser: 'svelte-eslint-parser',
+      parserOptions: {
+        parser: '@typescript-eslint/parser',
+      },
       globals: {
         svelte: true,
       },
@@ -28,10 +35,6 @@ module.exports = {
       },
     },
   ],
-  settings: {
-    'svelte3/typescript': () => require('typescript'),
-    'svelte3/ignore-styles': () => true,
-  },
   rules: {
     'filename-rules/match': [2, 'kebabcase'],
     '@typescript-eslint/triple-slash-reference': 'off',

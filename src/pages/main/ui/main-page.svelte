@@ -9,14 +9,18 @@
   import MainPageDockPanel from './main-page-dock-panel.svelte';
   import MainPageHeader from './main-page-header.svelte';
 
-  export let params: MainPageRouterParams = {};
+  interface Props {
+    params?: MainPageRouterParams;
+  }
 
-  let showNewProject = false;
+  let { params = {} }: Props = $props();
+
+  let showNewProject = $state(false);
 </script>
 
 <div class="root">
   <div>
-    <MainPageHeader on:createNewProject={() => (showNewProject = true)} />
+    <MainPageHeader oncreateNewProject={() => (showNewProject = true)} />
     <MainPageCanvasContainer projectId={parseInt(params.projectId ?? '', 10)} />
     <ToolPanel />
   </div>

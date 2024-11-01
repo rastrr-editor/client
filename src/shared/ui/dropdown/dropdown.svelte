@@ -1,11 +1,24 @@
 <script lang="ts">
-  import { noop } from 'svelte/internal';
-
+  import type { Snippet } from 'svelte';
   import { clickOutside } from '~/shared/lib/actions';
 
-  export let open: boolean = false;
-  export let hover: boolean = false;
-  export let nested: boolean = false;
+  interface Props {
+    open?: boolean;
+    hover?: boolean;
+    nested?: boolean;
+    children?: Snippet;
+    menu?: Snippet;
+  }
+
+  let {
+    open = $bindable(false),
+    hover = false,
+    nested = false,
+    children,
+    menu,
+  }: Props = $props();
+
+  const noop = () => {};
 
   function openMenu(): void {
     open = true;
@@ -22,26 +35,25 @@
   }
 </script>
 
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <svelte:element
   this={nested ? 'li' : 'div'}
   class="root"
   use:clickOutside={{ callback: !hover ? hideMenu : noop }}
-  on:mouseenter={hover ? openMenu : undefined}
-  on:mouseleave={hover ? hideMenu : undefined}
-  on:focus|capture={hover ? openMenu : undefined}
-  on:blur|capture={hover ? hideMenu : undefined}
-  on:keydown|capture={hideMenuByKeydown}
->
-  <slot />
+  onmouseenter={hover ? openMenu : undefined}
+  onmouseleave={hover ? hideMenu : undefined}
+  onfocuscapture={hover ? openMenu : undefined}
+  onblurcapture={hover ? hideMenu : undefined}
+  onkeydowncapture={hideMenuByKeydown}>
+  {@render children?.()}
 
   <div
     class="menu"
     class:open
-    on:click={hideMenu}
-    on:contextmenu={hideMenu}
-    on:keydown={noop}
-  >
-    <slot name="menu" />
+    onclick={hideMenu}
+    oncontextmenu={hideMenu}
+    onkeydown={noop}>
+    {@render menu?.()}
   </div>
 </svelte:element>
 

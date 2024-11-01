@@ -4,7 +4,7 @@ export const getIsStorageAvailable = (storage: Storage): boolean => {
     storage.setItem(key, key);
     storage.removeItem(key);
     return true;
-  } catch (e) {
+  } catch {
     return false;
   }
 };

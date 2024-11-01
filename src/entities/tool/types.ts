@@ -13,7 +13,7 @@ export interface Tool<TOption, TEvent> {
   setOptions: (options: TOption) => void;
   createCommand: (
     viewport: Viewport,
-    options: ToolCreateCommandOptions<TEvent>
+    options: ToolCreateCommandOptions<TEvent>,
   ) => Command | null;
   destroy: () => void;
 }

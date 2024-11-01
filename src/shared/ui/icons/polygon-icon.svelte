@@ -1,5 +1,7 @@
 <script lang="ts">
-  interface $$Props extends svelte.JSX.SVGProps<SVGSVGElement> {}
+  import type { SVGAttributes } from 'svelte/elements';
+
+  let { ...rest }: SVGAttributes<SVGElement> = $props();
 </script>
 
 <svg
@@ -9,7 +11,7 @@
   fill="none"
   stroke="currentColor"
   xmlns="http://www.w3.org/2000/svg"
-  {...$$restProps}>
+  {...rest}>
   <path
     d="M3.07722 9.10081L12 2.61803L20.9228 9.10081L17.5146 19.5902H6.48542L3.07722 9.10081Z" />
 </svg>

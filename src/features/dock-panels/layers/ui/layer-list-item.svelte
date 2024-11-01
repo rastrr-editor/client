@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { Layer } from '@rastrr-editor/core';
-  import { afterUpdate, createEventDispatcher } from 'svelte';
   import { clickOutside } from '~/shared/lib/actions';
   import {
     InvisibleIcon,
@@ -9,35 +8,51 @@
     VisibleIcon,
   } from '~/shared/ui/icons';
 
-  export let layer: Layer;
-  export let active: boolean = false;
-  export let dimmed: boolean = false;
-  export let renameMode = false;
+  interface Props {
+    layer: Layer;
+    onlockToggle?: (params: { prev: boolean; next: boolean }) => void;
+    onvisibleToggle?: (params: { prev: boolean; next: boolean }) => void;
+    onrenamed?: (params: { prev: string; next: string }) => void;
+    onclick: (e: MouseEvent) => void;
+    oncontextmenu: (e: MouseEvent) => void;
+    active?: boolean;
+    dimmed?: boolean;
+    renameMode?: boolean;
+  }
 
-  let inputNode: HTMLInputElement;
+  let {
+    layer,
+    onlockToggle,
+    onvisibleToggle,
+    onrenamed,
+    onclick,
+    oncontextmenu,
+    active = false,
+    dimmed = false,
+    renameMode = false,
+  }: Props = $props();
 
-  afterUpdate(() => {
+  let self: HTMLLIElement | undefined = $state();
+  let inputNode: HTMLInputElement | undefined = $state();
+  let visible = $state(layer.visible);
+  let locked = $state(layer.locked);
+
+  $effect(() => {
     if (inputNode) {
       inputNode.focus();
     }
   });
 
-  const dispatch = createEventDispatcher<{
-    lockToggle: { prev: boolean; next: boolean };
-    visibleToggle: { prev: boolean; next: boolean };
-    renamed: { prev: string; next: string };
-  }>();
-
   function toggleLocked(): void {
     const prev = layer.locked;
-    layer.locked = !prev;
-    dispatch('lockToggle', { prev, next: layer.locked });
+    locked = layer.locked = !prev;
+    onlockToggle?.({ prev, next: layer.locked });
   }
 
   function toggleVisible(): void {
     const prev = layer.visible;
-    layer.setVisible(!layer.visible);
-    dispatch('visibleToggle', { prev, next: layer.visible });
+    layer.setVisible((visible = !layer.visible));
+    onvisibleToggle?.({ prev, next: layer.visible });
   }
 
   function renameLayer(e: Event): void {
@@ -47,23 +62,27 @@
       layer.name = value;
       renameMode = false;
     }
-    dispatch('renamed', { prev, next: layer.name });
+    onrenamed?.({ prev, next: layer.name });
   }
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <li
+  bind:this={self}
   class:active
   class:dimmed
-  on:click
-  on:contextmenu|preventDefault
-  on:dblclick={() => {
-    renameMode = true;
+  {onclick}
+  oncontextmenu={(e: MouseEvent) => (e.preventDefault(), oncontextmenu(e))}
+  ondblclick={(e: MouseEvent) => {
+    if (e.target == self) {
+      renameMode = true;
+    }
   }}
   use:clickOutside={{
     callback: () => {
       renameMode = false;
-      dispatch('renamed', { prev: layer.name, next: layer.name });
+      onrenamed?.({ prev: layer.name, next: layer.name });
     },
   }}>
   {#if renameMode}
@@ -71,23 +90,19 @@
       bind:this={inputNode}
       type="text"
       value={layer.name}
-      on:change={renameLayer} />
+      onchange={renameLayer} />
   {:else}
     {layer.name}
   {/if}
-  <div class="actions" class:active={!layer.visible || layer.locked}>
-    <button
-      on:click|stopPropagation={toggleLocked}
-      class:deactivated={layer.locked}>
-      {#if layer.locked}
+  <div class="actions" class:active={!visible || locked}>
+    <button onclick={toggleLocked} class:deactivated={locked}>
+      {#if locked}
         <LockedIcon />
       {:else}
         <UnlockedIcon />
       {/if}
     </button>
-    <button
-      on:click|stopPropagation={toggleVisible}
-      class:deactivated={!layer.visible}>
+    <button onclick={toggleVisible} class:deactivated={!layer.visible}>
       {#if layer.visible}
         <VisibleIcon />
       {:else}
@@ -150,7 +165,9 @@
     transform: translateY(-50%);
     opacity: 0;
     visibility: hidden;
-    transition: opacity ease-in-out $animation-time, visibility $animation-time;
+    transition:
+      opacity ease-in-out $animation-time,
+      visibility $animation-time;
 
     &.active {
       visibility: visible;

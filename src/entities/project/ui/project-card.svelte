@@ -1,46 +1,50 @@
 <script lang="ts">
-  import { createEventDispatcher, onDestroy, afterUpdate } from 'svelte';
+  import { onDestroy } from 'svelte';
   import { link } from 'svelte-spa-router';
   import type { Project } from '~/shared/api';
   import { clickOutside } from '~/shared/lib/actions';
   import formatDate from '../lib/format-date';
 
-  export let project: Project;
-  export let showDate: Extract<keyof Project, 'createdAt' | 'updatedAt'> =
-    'createdAt';
-  export let renameMode = false;
-
-  const dispatch = createEventDispatcher<{
-    renamed: { prev: string; next: string };
-  }>();
-  let imageUrl: string | null = null;
-  let inputNode: HTMLInputElement | null = null;
-
-  $: date = project[showDate];
-
-  $: {
-    // Clean previous imageUrl
-    cleanup();
-    // Create new image url from preview
-    imageUrl =
-      project.preview != null ? URL.createObjectURL(project.preview) : null;
+  interface Props {
+    project: Project;
+    showDate: Extract<keyof Project, 'createdAt' | 'updatedAt'>;
+    renameMode: boolean;
+    onrenamed: (params: { prev: string; next: string }) => void;
+    oncontextmenu: (e: MouseEvent) => void;
   }
 
-  afterUpdate(() => {
+  let {
+    project,
+    showDate = 'createdAt',
+    renameMode = false,
+    onrenamed,
+    oncontextmenu,
+  }: Props = $props();
+
+  let inputNode: HTMLInputElement | null = $state(null);
+
+  const date = $derived(project[showDate]);
+  const imageUrl = $derived(
+    project.preview != null ? URL.createObjectURL(project.preview) : null,
+  );
+
+  const cleanup = () => {
+    if (imageUrl != null) {
+      URL.revokeObjectURL(imageUrl);
+    }
+  };
+
+  $effect(() => {
     if (inputNode) {
       inputNode.focus();
     }
+
+    return cleanup;
   });
 
   onDestroy(() => {
     cleanup();
   });
-
-  function cleanup() {
-    if (imageUrl != null) {
-      URL.revokeObjectURL(imageUrl);
-    }
-  }
 
   function renameProject(e: Event): void {
     const { value } = e.target as HTMLInputElement;
@@ -49,7 +53,7 @@
       project.name = value;
       renameMode = false;
     }
-    dispatch('renamed', { prev, next: project.name });
+    onrenamed({ prev, next: project.name });
   }
 </script>
 
@@ -58,7 +62,7 @@
   href={`/projects/${project.id}`}
   use:clickOutside={{
     callback: () => {
-      dispatch('renamed', {
+      onrenamed({
         prev: project.name,
         next: inputNode?.value || project.name,
       });
@@ -66,10 +70,10 @@
     },
   }}
   use:link
-  on:contextmenu>
+  {oncontextmenu}>
   <div class="image" class:empty={project.preview == null}>
     {#if imageUrl}
-      <img src={imageUrl} alt={project.name} on:load={cleanup} />
+      <img src={imageUrl} alt={project.name} onload={cleanup} />
     {/if}
   </div>
   <p>
@@ -78,7 +82,7 @@
         bind:this={inputNode}
         type="text"
         value={project.name}
-        on:change={renameProject} />
+        onchange={renameProject} />
     {:else}
       {project.name}
     {/if}

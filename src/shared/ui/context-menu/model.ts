@@ -14,7 +14,7 @@ export type ContextMenuStore<ExtraState> = SvelteStore<
 };
 
 export function createContextMenuStore<ExtraState>(
-  initialState: ExtraState
+  initialState: ExtraState,
 ): ContextMenuStore<ExtraState> {
   const { subscribe, set, update } = writable<ExtraState & ContextMenuState>({
     ...initialState,

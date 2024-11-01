@@ -5,9 +5,13 @@
   import { Modal } from '~/shared/ui/modal';
   import createProject from '../model/create-project';
 
-  export let open: boolean = false;
+  interface Props {
+    open?: boolean;
+  }
 
-  let disabled = false;
+  let { open = $bindable(false) }: Props = $props();
+
+  let disabled = $state(false);
 
   function onSubmit(e: Event) {
     e.preventDefault();
@@ -31,7 +35,7 @@
 <Modal size="small" bind:open>
   <div class="content">
     <h1>Новый проект</h1>
-    <form on:submit={onSubmit}>
+    <form onsubmit={onSubmit}>
       <TextInput name="name" label="Название" required />
       <div class="dimensions">
         <NumberInput name="width" label="Ширина" units="px" required />

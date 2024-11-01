@@ -3,9 +3,11 @@
   import type { ProjectPaginateFilter } from '../model/repository/project-repository';
   import { sortBy } from '../model/store';
 
-  let className: string;
+  interface Props {
+    class?: string;
+  }
 
-  export { className as class };
+  let { class: className = '' }: Props = $props();
 
   const sortToText: Record<
     Exclude<ProjectPaginateFilter['sort'], undefined>,
@@ -16,25 +18,27 @@
     updatedAt: 'Последнее изменение',
   };
 
-  let open = false;
+  let open = $state(false);
 </script>
 
 <div class={className}>
   <span>Сортировка</span>
   <Dropdown bind:open>
-    <button on:click={() => (open = true)}>
+    <button onclick={() => (open = true)}>
       {sortToText[$sortBy]}
     </button>
-    <DropdownMenu slot="menu">
-      <DropdownMenuItem on:click={() => ($sortBy = 'createdAt')}
-        >{sortToText.createdAt}</DropdownMenuItem>
-      <DropdownMenuItem on:click={() => ($sortBy = 'name')}
-        >{sortToText.name}</DropdownMenuItem>
-      <DropdownMenuItem on:click={() => ($sortBy = 'updatedAt')}
-        >{sortToText.updatedAt}</DropdownMenuItem>
-    </DropdownMenu>
+    {#snippet menu()}
+      <DropdownMenu>
+        <DropdownMenuItem onclick={() => ($sortBy = 'createdAt')}
+          >{sortToText.createdAt}</DropdownMenuItem>
+        <DropdownMenuItem onclick={() => ($sortBy = 'name')}
+          >{sortToText.name}</DropdownMenuItem>
+        <DropdownMenuItem onclick={() => ($sortBy = 'updatedAt')}
+          >{sortToText.updatedAt}</DropdownMenuItem>
+      </DropdownMenu>
+    {/snippet}
   </Dropdown>
-  <div class:arrowUp={open} class:arrowDown={!open} />
+  <div class:arrowUp={open} class:arrowDown={!open}></div>
 </div>
 
 <style lang="scss">

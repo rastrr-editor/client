@@ -1,31 +1,32 @@
 <script lang="ts">
-  import type { TextFieldType } from './types';
+  import type { Snippet } from 'svelte';
+  import type { HTMLInputAttributes } from 'svelte/elements';
 
-  interface $$Props extends svelte.JSX.HTMLAttributes<HTMLInputElement> {
+  interface Props extends Omit<HTMLInputAttributes, 'children'> {
     label?: string;
-    class?: string;
-    type?: TextFieldType;
     value?: string | number;
-    disabled?: boolean;
     densed?: boolean;
     noBorder?: boolean;
+    children?: Snippet<[{ props: HTMLInputAttributes }]>;
   }
 
-  let className: string = '';
-
-  export { className as class };
-  export let label: string = '';
-  export let type: TextFieldType = 'text';
-  export let value: string | number = '';
-  export let disabled: boolean = false;
-  export let densed: boolean = false;
-  export let noBorder: boolean = false;
+  let {
+    label = '',
+    class: className = '',
+    type = 'text',
+    value = $bindable(''),
+    disabled = false,
+    densed = false,
+    noBorder = false,
+    children,
+    ...rest
+  }: Props = $props();
 
   const defineInputType = (
     node: HTMLInputElement,
-    inputType: TextFieldType
+    inputType: HTMLInputAttributes['type'],
   ) => {
-    node.type = inputType;
+    node.type = inputType ?? 'text';
   };
 </script>
 
@@ -35,27 +36,16 @@
   {/if}
 
   <div class="wrapper" class:noBorder>
-    <slot props={{ ...$$restProps, disabled }}>
+    {#if children}
+      {@render children({ props: { ...rest, disabled } })}
+    {:else}
       <input
-        {...$$restProps}
+        {...rest}
         {disabled}
         class:densed
         use:defineInputType={type}
-        bind:value
-        on:input
-        on:change
-        on:focus
-        on:blur
-        on:keydown
-        on:keyup
-        on:keypress
-        on:click
-        on:mouseenter
-        on:mouseover
-        on:mouseleave
-        on:paste
-        on:copy />
-    </slot>
+        bind:value />
+    {/if}
   </div>
 </label>
 

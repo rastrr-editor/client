@@ -7,22 +7,31 @@
   import LayersDockPanelActions from './layers-dock-panel-actions.svelte';
   import LayersDockPanelAddons from './layers-dock-panel-addons.svelte';
 
-  export let layerList: LayerList | null = null;
-  export let imageSize: Rastrr.Point = { x: 0, y: 0 };
-  export let withBorder = false;
+  interface Props {
+    layerList?: LayerList | null;
+    imageSize?: Rastrr.Point;
+    withBorder?: boolean;
+  }
 
-  let layersStore = createLayersStore(null);
-  let search: string = '';
+  let {
+    layerList = null,
+    imageSize = { x: 0, y: 0 },
+    withBorder = false,
+  }: Props = $props();
 
-  $: layersStore = createLayersStore(layerList);
+  let layersStore = $derived(createLayersStore(layerList));
+  let search: string = $state('');
 </script>
 
 <DockPanel title="Слои" {withBorder}>
-  <LayersIcon slot="icon" />
-  <LayersDockPanelActions slot="actions" {imageSize} {layerList} bind:search />
-  <LayersDockPanelAddons
-    slot="addons"
-    {layerList}
-    opacity={$layersStore.opacity} />
+  {#snippet icon()}
+    <LayersIcon />
+  {/snippet}
+  {#snippet actions()}
+    <LayersDockPanelActions {imageSize} {layerList} bind:search />
+  {/snippet}
+  {#snippet addons()}
+    <LayersDockPanelAddons {layerList} opacity={$layersStore.opacity} />
+  {/snippet}
   <LayerListComponent {layerList} {layersStore} {search} />
 </DockPanel>

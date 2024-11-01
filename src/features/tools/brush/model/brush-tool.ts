@@ -6,7 +6,7 @@ import { options as defaultOptions } from './store';
 import type { BrushOptions } from '../types';
 import * as constants from './constants';
 
-export default class EraserTool extends DrawLineTool<BrushOptions> {
+export default class BrushTool extends DrawLineTool<BrushOptions> {
   readonly id: string = constants.id;
   readonly name: string = constants.name;
   readonly hotkey: string = constants.hotkey;
@@ -17,7 +17,7 @@ export default class EraserTool extends DrawLineTool<BrushOptions> {
 
   createCommand(
     viewport: Viewport,
-    { triggerEvent, color }: ToolCreateCommandOptions<PointerEvent>
+    { triggerEvent, color }: ToolCreateCommandOptions<PointerEvent>,
   ): BrushCommand | null {
     if (!this.checkActiveLayerAvailability(viewport)) {
       return null;
@@ -26,7 +26,7 @@ export default class EraserTool extends DrawLineTool<BrushOptions> {
     const iterable = createPointerIterable(
       triggerEvent,
       viewport.container,
-      viewport.offset
+      viewport.offset,
     );
 
     return new BrushCommand(viewport.layers, iterable, {

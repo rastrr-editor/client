@@ -4,33 +4,33 @@
   import { BrushIcon } from '~/shared/ui/icons';
   import { options } from '../model/store';
 
-  export let show = false;
-  export let trigger: HTMLElement;
-  export let placement: 'top' | 'right' = 'top';
-
-  function onSizeChange(e: Event) {
-    const size = parseInt((e.target as HTMLInputElement).value, 10);
-    if (Number.isSafeInteger(size)) {
-      options.update((value) => ({
-        ...value,
-        size: Math.max(1, size),
-      }));
-    }
+  interface Props {
+    show?: boolean;
+    trigger: HTMLElement;
+    placement?: 'top' | 'right';
   }
 
-  function onOpacityChange(e: Event) {
-    const opacity = parseInt((e.target as HTMLInputElement).value, 10);
-    if (Number.isSafeInteger(opacity)) {
-      options.update((value) => ({
-        ...value,
-        opacity: Math.min(Math.max(0, opacity / 100), 1),
-      }));
-    }
+  let { show = $bindable(false), trigger, placement = 'top' }: Props = $props();
+
+  function onSizeChange(size: number) {
+    options.update((value) => ({
+      ...value,
+      size: Math.max(1, size),
+    }));
+  }
+
+  function onOpacityChange(opacity: number) {
+    options.update((value) => ({
+      ...value,
+      opacity: Math.min(Math.max(0, opacity / 100), 1),
+    }));
   }
 </script>
 
 <ToolOptionsTooltip title="Кисти" bind:show {trigger} {placement}>
-  <BrushIcon slot="icon" />
+  {#snippet icon()}
+    <BrushIcon />
+  {/snippet}
   <div>
     <Range
       label="Размер"
@@ -38,14 +38,14 @@
       min={1}
       max={125}
       units="px"
-      on:change={onSizeChange} />
+      onchange={onSizeChange} />
     <Range
       label="Непрозрачность"
       value={Math.round($options.opacity * 100)}
       min={0}
       max={100}
       units="%"
-      on:change={onOpacityChange} />
+      onchange={onOpacityChange} />
   </div>
 </ToolOptionsTooltip>
 

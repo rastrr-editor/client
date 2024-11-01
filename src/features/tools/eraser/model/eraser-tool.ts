@@ -17,7 +17,7 @@ export default class EraserTool extends DrawLineTool<EraserOptions> {
 
   createCommand(
     viewport: Viewport,
-    { triggerEvent }: ToolCreateCommandOptions<PointerEvent>
+    { triggerEvent }: ToolCreateCommandOptions<PointerEvent>,
   ): EraserCommand | null {
     if (!this.checkActiveLayerAvailability(viewport)) {
       return null;
@@ -26,7 +26,7 @@ export default class EraserTool extends DrawLineTool<EraserOptions> {
     const iterable = createPointerIterable(
       triggerEvent,
       viewport.container,
-      viewport.offset
+      viewport.offset,
     );
 
     return new EraserCommand(viewport.layers, iterable, {

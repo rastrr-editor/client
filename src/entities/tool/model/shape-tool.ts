@@ -14,7 +14,7 @@ export default abstract class ShapeTool implements Tool<null, PointerEvent> {
     return 'crosshair';
   }
 
-  setOptions(options: null): void {}
+  setOptions(): void {}
 
   destroy(): void {
     this.unsubscribe();
@@ -24,13 +24,13 @@ export default abstract class ShapeTool implements Tool<null, PointerEvent> {
     return function (baseName: string): string {
       return generateDefaultName(
         Array.from(viewport.layers).map(({ name }) => name),
-        baseName
+        baseName,
       );
     };
   }
 
   abstract createCommand(
     viewport: Viewport,
-    { triggerEvent, color }: ToolCreateCommandOptions<PointerEvent>
+    { triggerEvent, color }: ToolCreateCommandOptions<PointerEvent>,
   ): Command | null;
 }

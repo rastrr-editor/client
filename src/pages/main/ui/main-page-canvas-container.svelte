@@ -8,18 +8,24 @@
   import { chooseColorStore } from '~/features/tools/choose-color';
   import updateViewport from '../model/update-viewport';
 
-  export let projectId: number = Number.NaN;
+  interface Props {
+    projectId?: number;
+  }
+
+  let { projectId = Number.NaN }: Props = $props();
 
   const { activeProject } = projectStore;
   const { toolCursor } = toolStore;
   const projectRepository = createProjectRepository();
 
-  let container: HTMLElement;
+  let container: HTMLElement | undefined = $state();
 
-  $: cursor = $toolCursor.match(/^url/) ? `${$toolCursor}, auto` : $toolCursor;
+  let cursor = $derived(
+    $toolCursor.match(/^url/) ? `${$toolCursor}, auto` : $toolCursor,
+  );
 
   // NOTE: this is WIP - refactor nedeed
-  $: {
+  $effect(() => {
     // Load project
     // TODO: check if current project is saved
     if (Number.isFinite(projectId) && $activeProject?.id !== projectId) {
@@ -27,9 +33,11 @@
         activeProject.set(project ?? null);
       });
     }
-  }
+  });
+
   onMount(() => {
     let viewport: Viewport | null = null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let activeTool: Tool<any, any> | null = null;
     const unsubsribeViewport = viewportStore.subscribe((value) => {
       viewport = value;
@@ -39,8 +47,8 @@
     });
     const unsubscribeProject = projectStore.activeProject.subscribe(
       (newProject) => {
-        updateViewport(container, newProject, viewportStore);
-      }
+        if (container) updateViewport(container, newProject, viewportStore);
+      },
     );
 
     const onPointerDown = (event: MouseEvent) => {
@@ -57,18 +65,19 @@
         });
       }
     };
-    container.addEventListener('pointerdown', onPointerDown);
+    container?.addEventListener('pointerdown', onPointerDown);
     return () => {
       unsubsribeViewport();
       unsubsribeActiveTool();
       unsubscribeProject();
-      container.removeEventListener('pointerdown', onPointerDown);
+      container?.removeEventListener('pointerdown', onPointerDown);
     };
   });
 </script>
 
 <!-- NOTE: max cursor size is 128 x 128, @see https://developer.mozilla.org/en-US/docs/Web/CSS/cursor#icon_size_limits -->
-<main id="canvas-container" style:--cursor={cursor} bind:this={container} />
+<main id="canvas-container" style:--cursor={cursor} bind:this={container}>
+</main>
 
 <style lang="scss">
   #canvas-container {

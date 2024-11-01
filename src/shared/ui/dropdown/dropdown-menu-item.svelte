@@ -1,10 +1,19 @@
 <script lang="ts">
-  interface $$Props
-    extends svelte.JSX.HTMLAttributes<HTMLButtonElement & HTMLAnchorElement> {
+  import type { HTMLBaseAttributes } from 'svelte/elements';
+  import { cast } from '~/shared/lib/ts';
+
+  interface Props extends HTMLBaseAttributes {
     nested?: boolean;
+    disabled?: boolean;
   }
 
-  export let nested: boolean = false;
+  let {
+    nested = false,
+    children,
+    onclick,
+    oncontextmenu,
+    ...rest
+  }: Props = $props();
 
   function preventNestedPropagation(event: Event): void {
     if (nested) {
@@ -20,18 +29,20 @@
 </script>
 
 <svelte:element this={nested ? 'div' : 'li'} class="list-item" class:nested>
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
   <svelte:element
-    this={$$restProps.href ? 'a' : 'button'}
-    {...$$restProps}
-    on:mousedown={preventNestedFocus}
-    on:click={preventNestedPropagation}
-    on:contextmenu|preventDefault
-    on:click
-    on:keydown
-    on:keyup
-    on:keypress
-  >
-    <slot />
+    this={rest.href ? 'a' : 'button'}
+    {...rest}
+    onmousedown={preventNestedFocus}
+    onclick={(e: MouseEvent) => {
+      preventNestedPropagation(e);
+      onclick?.(cast(e));
+    }}
+    oncontextmenu={(e: MouseEvent) => {
+      e.preventDefault();
+      oncontextmenu?.(cast(e));
+    }}>
+    {@render children?.()}
   </svelte:element>
 </svelte:element>
 

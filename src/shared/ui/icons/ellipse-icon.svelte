@@ -1,5 +1,7 @@
 <script lang="ts">
-  interface $$Props extends svelte.JSX.SVGProps<SVGSVGElement> {}
+  import type { SVGAttributes } from 'svelte/elements';
+
+  let { ...rest }: SVGAttributes<SVGElement> = $props();
 </script>
 
 <svg
@@ -10,6 +12,6 @@
   stroke="currentColor"
   stroke-width="1"
   xmlns="http://www.w3.org/2000/svg"
-  {...$$restProps}>
+  {...rest}>
   <circle cx="12" cy="12" r="8" />
 </svg>

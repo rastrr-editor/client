@@ -4,7 +4,7 @@ type HotkeysManagerActivatedEvent = {
   [K in `activated:${string}`]: (
     alias: string,
     context: string,
-    e: KeyboardEvent
+    e: KeyboardEvent,
   ) => void;
 };
 
@@ -12,7 +12,7 @@ type HotkeysManagerDeactivatedEvent = {
   [K in `deactivated:${string}`]: (
     alias: string,
     context: string,
-    e: KeyboardEvent
+    e: KeyboardEvent,
   ) => void;
 };
 

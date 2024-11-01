@@ -1,7 +1,9 @@
 <script lang="ts">
+  import type { HTMLInputAttributes } from 'svelte/elements';
   import { TextInput } from '~/shared/ui/input/';
 
-  interface $$Props extends svelte.JSX.HTMLAttributes<HTMLInputElement> {
+  interface Props extends HTMLInputAttributes {
+    label?: string;
     units?: string;
     value?: number;
     densed?: boolean;
@@ -9,44 +11,33 @@
     fitWidth?: boolean;
   }
 
-  export let units: string = '';
-  export let value: number | null = null;
-  export let densed: boolean = false;
-  export let noBorder: boolean = false;
-  export let fitWidth: boolean = false;
+  let {
+    units = '',
+    value = $bindable(undefined),
+    densed = false,
+    noBorder = false,
+    fitWidth = false,
+    ...rest
+  }: Props = $props();
 
   function getNumericFieldWidth(): string {
-    return fitWidth && $$restProps.max
-      ? `${String($$restProps.max).length}ch`
-      : '';
+    return fitWidth && rest.max ? `${String(rest.max).length}ch` : '';
   }
 </script>
 
-<TextInput let:props {...$$restProps} {noBorder}>
-  <input
-    {...props}
-    type="number"
-    class:densed
-    style:width={getNumericFieldWidth()}
-    bind:value
-    on:input
-    on:change
-    on:focus
-    on:blur
-    on:keydown
-    on:keyup
-    on:keypress
-    on:click
-    on:mouseenter
-    on:mouseover
-    on:mouseleave
-    on:paste
-    on:copy
-  />
+<TextInput {...rest} {noBorder}>
+  {#snippet children({ props })}
+    <input
+      {...props}
+      type="number"
+      class:densed
+      style:width={getNumericFieldWidth()}
+      bind:value />
 
-  {#if units}
-    <span class="units" class:densed>{units}</span>
-  {/if}
+    {#if units}
+      <span class="units" class:densed>{units}</span>
+    {/if}
+  {/snippet}
 </TextInput>
 
 <style lang="scss">

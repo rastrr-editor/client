@@ -1,7 +1,7 @@
 export function calculateLeftPosition(
   menu: HTMLElement,
   left: number,
-  gap: number
+  gap: number,
 ): string {
   let calculatedLeftPosition = left;
   if (left + menu.clientWidth > window.innerWidth) {
@@ -14,7 +14,7 @@ export function calculateLeftPosition(
 export function calculateTopPosition(
   menu: HTMLElement,
   top: number,
-  gap: number
+  gap: number,
 ): string {
   let calculatedTopPosition = top;
   if (top + menu.clientHeight > window.innerHeight) {
