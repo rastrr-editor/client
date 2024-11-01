@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import { get } from 'svelte/store';
   import { onMount } from 'svelte';
   import type { Viewport } from '@rastrr-editor/core';
@@ -27,7 +25,7 @@
   );
 
   // NOTE: this is WIP - refactor nedeed
-  run(() => {
+  $effect(() => {
     // Load project
     // TODO: check if current project is saved
     if (Number.isFinite(projectId) && $activeProject?.id !== projectId) {
@@ -36,6 +34,7 @@
       });
     }
   });
+  
   onMount(() => {
     let viewport: Viewport | null = null;
     let activeTool: Tool<any, any> | null = null;

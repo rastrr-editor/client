@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { FormEventHandler } from 'svelte/elements';
   import { Color } from '@rastrr-editor/core';
   import { get, type Writable } from 'svelte/store';
   import { SwapIcon } from '~/shared/ui/icons';
@@ -17,7 +18,7 @@
   }
 
   const createUpdateColor =
-    (color: Writable<Color>): svelte.JSX.FormEventHandler<HTMLInputElement> =>
+    (color: Writable<Color>): FormEventHandler<HTMLInputElement> =>
     (e) => {
       const input = e.target as HTMLInputElement;
       if (input.value) {

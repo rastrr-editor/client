@@ -1,5 +1,5 @@
+import type { Action } from 'svelte/action';
 import { events, asyncIter } from '@rastrr-editor/core';
-import type { Action } from 'svelte/types/runtime/action';
 import { getCoords } from '../dom';
 
 type DraggableOptions = {
@@ -32,7 +32,7 @@ type DragDataTransfter = {
   index: number;
 };
 
-const draggable: Action = (
+const draggable: Action<HTMLElement, DraggableOptions> = (
   draggableContainer,
   { draggableSelector, callback }: DraggableOptions,
 ) => {

@@ -28,6 +28,7 @@
   {/snippet}
 
   <div class="shape-types">
+    <!-- svelte-ignore a11y_consider_explicit_label -->
     <button
       class="shape-item"
       class:active={$options.type === 'ellipse'}
@@ -43,6 +44,7 @@
       </svg>
     </button>
 
+    <!-- svelte-ignore a11y_consider_explicit_label -->
     <button
       class="shape-item"
       class:active={$options.type === 'rect'}

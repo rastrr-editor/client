@@ -1,4 +1,4 @@
-import type { Action } from 'svelte/types/runtime/action';
+import type { Action } from 'svelte/action';
 
 const tabbableElementsSelector = `
   a[href],
@@ -10,7 +10,7 @@ const tabbableElementsSelector = `
   *[contenteditable=true]
 `;
 
-const focusTrap: Action = (node: HTMLElement, active: boolean = true) => {
+const focusTrap: Action<HTMLElement, boolean | undefined> = (node, active: boolean | undefined = true) => {
   const tabbableElements = [
     ...node.querySelectorAll<HTMLElement>(tabbableElementsSelector),
   ];
@@ -36,7 +36,7 @@ const focusTrap: Action = (node: HTMLElement, active: boolean = true) => {
   }
 
   return {
-    update(newActive: boolean) {
+    update(newActive: boolean = true) {
       if (newActive) {
         document.addEventListener('keydown', keyboardEventHandler, true);
       } else {

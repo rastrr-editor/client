@@ -1,11 +1,11 @@
-import type { Action } from 'svelte/types/runtime/action';
+import type { Action } from 'svelte/action';
 
 type СlickOutsideOptions = {
   excludeSelectors?: string[];
   callback: () => void;
 };
 
-const clickOutside: Action = (
+const clickOutside: Action<HTMLElement, СlickOutsideOptions> = (
   node: HTMLElement,
   { excludeSelectors = [], callback }: СlickOutsideOptions,
 ) => {
