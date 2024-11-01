@@ -14,7 +14,7 @@ export default abstract class ShapeTool implements Tool<null, PointerEvent> {
     return 'crosshair';
   }
 
-  setOptions(options: null): void {}
+  setOptions(): void {}
 
   destroy(): void {
     this.unsubscribe();

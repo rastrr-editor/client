@@ -3,6 +3,7 @@ import { STORAGE_PREFIX } from './consts';
 import { getIsStorageAvailable } from './get-is-storage-available';
 import type { PersistentOptions, Update } from './types';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const stores: Record<string, Writable<any>> = {};
 
 export const persistent = <T>(

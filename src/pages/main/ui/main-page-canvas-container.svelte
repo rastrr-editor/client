@@ -34,9 +34,10 @@
       });
     }
   });
-  
+
   onMount(() => {
     let viewport: Viewport | null = null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let activeTool: Tool<any, any> | null = null;
     const unsubsribeViewport = viewportStore.subscribe((value) => {
       viewport = value;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type StorageType = 'local' | 'session';
 
 export type PersistentOptions = {
