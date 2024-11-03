@@ -3,7 +3,7 @@ pre-commit:
   commands:
     format-and-lint:
       glob: "*.{ts,svelte}"
-      run: npx prettier --write {staged_files} && npx eslint {staged_files}
+      run: npx prettier --write {staged_files} && npx eslint {staged_files} && git add {staged_files}
     format:
       glob: "*.{css,scss,json,svg,js,cjs,html,md}"
-      run: "npx prettier --write --ignore-unknown {staged_files}"
+      run: npx prettier --write --ignore-unknown {staged_files} && git add {staged_files}
