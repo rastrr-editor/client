@@ -11,14 +11,18 @@ export default function updateViewport(
   viewportStore: Writable<Viewport | null>,
 ): void {
   let viewport = get(viewportStore);
+
   // Preserve in memory layers
   let inMemoryLayers: Layer[] | null = null;
   const inMemoryActiveIndex: number | undefined = viewport?.layers.activeIndex;
+
   if (viewport?.meta === project?.id) {
     inMemoryLayers = Array.from(viewport?.layers ?? []);
   }
+
   // Cleanup
   viewport?.destroy();
+
   if (project != null && container != null) {
     viewport = new Viewport(container, {
       strategy: 'canvas',
@@ -30,17 +34,21 @@ export default function updateViewport(
         ? Color.from(TOOL_CURSOR_COLOR, 'hex')
         : null,
     });
+
     viewport.setMeta(project.id);
+
     // Restore layers from memory
     if (inMemoryLayers != null) {
       for (const layer of inMemoryLayers) {
         viewport.layers.add(layer);
       }
+
       viewport.layers.setActive(
         inMemoryActiveIndex ?? viewport.layers.length - 1,
       );
-    } else if (project.layers.length > 0) {
+
       // Restore layers from project
+    } else if (project.layers.length > 0) {
       // TODO: move to core
       for (const layerData of project.layers) {
         const layer = CanvasLayerFactory.empty(
@@ -48,6 +56,7 @@ export default function updateViewport(
           layerData.height,
           { opacity: layerData.opacity, id: layerData.id },
         );
+
         layer.name = layerData.name;
         layer.locked = layerData.locked;
         layer.setVisible(layerData.visible);
@@ -56,16 +65,20 @@ export default function updateViewport(
         layer.setData(layerData.data);
         viewport.layers.add(layer);
       }
+
       viewport.layers.setActive(viewport.layers.length - 1);
-    } else {
+
       // New project
+    } else {
       const layer = project.hasTransparentBackground
         ? CanvasLayerFactory.empty(project.width, project.height)
         : CanvasLayerFactory.filled(project.width, project.height);
+
       layer.name = 'Фон';
       viewport.layers.add(layer);
       viewport.layers.setActive(0);
     }
+
     viewportStore.set(viewport);
   }
 }

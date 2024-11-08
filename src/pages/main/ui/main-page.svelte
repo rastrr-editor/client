@@ -16,12 +16,14 @@
   let { params = {} }: Props = $props();
 
   let showNewProject = $state(false);
+
+  let projectId = parseInt(params.projectId ?? '', 10);
 </script>
 
 <div class="root">
   <div>
     <MainPageHeader oncreateNewProject={() => (showNewProject = true)} />
-    <MainPageCanvasContainer projectId={parseInt(params.projectId ?? '', 10)} />
+    <MainPageCanvasContainer {projectId} />
     <ToolPanel />
   </div>
 

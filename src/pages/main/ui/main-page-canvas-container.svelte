@@ -65,6 +65,7 @@
         });
       }
     };
+
     container?.addEventListener('pointerdown', onPointerDown);
     return () => {
       unsubsribeViewport();
