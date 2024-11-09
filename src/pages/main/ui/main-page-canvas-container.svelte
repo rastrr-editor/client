@@ -2,77 +2,75 @@
   import { get } from 'svelte/store';
   import { onMount } from 'svelte';
   import type { Viewport } from '@rastrr-editor/core';
-  import { createProjectRepository, projectStore } from '~/entities/project';
-  import { toolStore, type Tool } from '~/entities/tool';
-  import { viewport as viewportStore } from '../model/store';
+
   import { chooseColorStore } from '~/features/tools/choose-color';
+  import { projectStore } from '~/entities/project';
+  import { toolStore, type Tool } from '~/entities/tool';
+  import { isMainButtonPressed } from '~/shared/lib/events';
+
+  import { viewport as viewportStore } from '../model/store';
   import updateViewport from '../model/update-viewport';
+  import executeCommand from '../model/execute-command';
+  import initializeProject from '../model/initialize-project';
 
   interface Props {
     projectId?: number;
   }
 
-  let { projectId = Number.NaN }: Props = $props();
-
-  const { activeProject } = projectStore;
-  const { toolCursor } = toolStore;
-  const projectRepository = createProjectRepository();
-
+  let { projectId = 0 }: Props = $props();
   let container: HTMLElement | undefined = $state();
+
+  const { toolCursor } = toolStore;
 
   let cursor = $derived(
     $toolCursor.match(/^url/) ? `${$toolCursor}, auto` : $toolCursor,
   );
 
-  // NOTE: this is WIP - refactor nedeed
   $effect(() => {
-    // Load project
-    // TODO: check if current project is saved
-    if (Number.isFinite(projectId) && $activeProject?.id !== projectId) {
-      projectRepository.get(projectId).then((project) => {
-        activeProject.set(project ?? null);
-      });
-    }
+    initializeProject(
+      projectId,
+      container
+        ? {
+            width: container.clientWidth - 120,
+            height: container.clientHeight - 120,
+          }
+        : null,
+    );
   });
 
   onMount(() => {
+    // Use closure to access current instances of the viewport and active tool
     let viewport: Viewport | null = null;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let activeTool: Tool<any, any> | null = null;
-    const unsubsribeViewport = viewportStore.subscribe((value) => {
-      viewport = value;
-    });
-    const unsubsribeActiveTool = toolStore.activeTool.subscribe((value) => {
-      activeTool = value;
-    });
-    const unsubscribeProject = projectStore.activeProject.subscribe(
-      (newProject) => {
-        if (container) updateViewport(container, newProject, viewportStore);
-      },
+    let activeTool: Tool | null = null;
+    let subscriptions: Array<() => void> = [];
+
+    subscriptions.push(viewportStore.subscribe((value) => (viewport = value)));
+    subscriptions.push(
+      toolStore.activeTool.subscribe((value) => (activeTool = value)),
     );
 
-    const onPointerDown = (event: MouseEvent) => {
-      if (event.button === 0 && activeTool && viewport) {
-        const command = activeTool.createCommand(viewport, {
+    subscriptions.push(
+      projectStore.activeProject.subscribe(
+        // Viewport should be updated when the active project changes
+        (newProject) => updateViewport(viewportStore, container, newProject),
+      ),
+    );
+
+    container?.addEventListener('pointerdown', onPointerDown);
+
+    return () => {
+      subscriptions.forEach((unsubscribe) => unsubscribe());
+      container?.removeEventListener('pointerdown', onPointerDown);
+    };
+
+    function onPointerDown(event: MouseEvent) {
+      if (isMainButtonPressed(event) && viewport && activeTool) {
+        executeCommand(viewport, activeTool, {
           triggerEvent: event,
           color: get(chooseColorStore.mainColor),
         });
-        command?.execute().then((done) => {
-          console.log(`Command '${command.name}' result: ${done}`);
-          if (done) {
-            viewport?.history.push(command);
-          }
-        });
       }
-    };
-
-    container?.addEventListener('pointerdown', onPointerDown);
-    return () => {
-      unsubsribeViewport();
-      unsubsribeActiveTool();
-      unsubscribeProject();
-      container?.removeEventListener('pointerdown', onPointerDown);
-    };
+    }
   });
 </script>
 
