@@ -12,10 +12,10 @@
   const projectRepository = createProjectRepository();
 
   interface Props {
-    oncreateNewProject: () => void;
+    onCreateNewProject: () => void;
   }
 
-  let { oncreateNewProject }: Props = $props();
+  let { onCreateNewProject }: Props = $props();
 
   let openFileMenu: boolean = $state(false);
   let openViewMenu: boolean = $state(false);
@@ -59,7 +59,7 @@
             onclick={() => (openFileMenu = true)}>Файл</button>
           {#snippet menu()}
             <DropdownMenu>
-              <DropdownMenuItem onclick={oncreateNewProject}>
+              <DropdownMenuItem onclick={onCreateNewProject}>
                 Создать проект
               </DropdownMenuItem>
 
