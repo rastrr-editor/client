@@ -5,7 +5,7 @@ export type ToolCreateCommandOptions<TEvent> = {
   color: Color;
 };
 
-export interface Tool<TOption, TEvent> {
+export interface Tool<TOption = unknown, TEvent = unknown> {
   id: string;
   name: string;
   hotkey: string | null;
