@@ -11,14 +11,16 @@ export default function initializeProject(
   defaults: { width: number; height: number } | null,
 ): Promise<boolean> {
   return new Promise((resolve) => {
+    const activeProjectId = get(activeProject)?.id;
+
     if (projectId > 0) {
       // TODO: check if current project is saved
-      if (get(activeProject)?.id !== projectId) {
+      if (activeProjectId !== projectId) {
         projectRepository.get(projectId).then((project) => {
           activeProject.set(project);
         });
       }
-    } else if (defaults != null) {
+    } else if (activeProjectId == null && defaults != null) {
       activeProject.set(createDraft(defaults.width, defaults.height));
     }
 
