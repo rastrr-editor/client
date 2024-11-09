@@ -1,44 +1,26 @@
 <script lang="ts">
   import { link } from 'svelte-spa-router';
-  import { viewport as viewportStore } from '../model/store';
+
   import { Dropdown, DropdownMenu, DropdownMenuItem } from '~/shared/ui';
   import { toolPanelStore } from '~/widgets/tool-panel';
-  import { createProjectRepository, projectStore } from '~/entities/project';
-  import { get } from 'svelte/store';
+  import { projectStore } from '~/entities/project';
+
   import exportImage from '../model/export-image';
+  import saveProject from '../model/save-project';
 
   const { position: toolPanelPosition } = toolPanelStore;
   const { activeProject } = projectStore;
-  const projectRepository = createProjectRepository();
 
   interface Props {
-    oncreateNewProject: () => void;
+    onCreateNewProject: () => void;
   }
 
-  let { oncreateNewProject }: Props = $props();
+  let { onCreateNewProject }: Props = $props();
 
   let openFileMenu: boolean = $state(false);
   let openViewMenu: boolean = $state(false);
 
-  // WIP - refactor
-  function onProjectSave() {
-    const project = get(projectStore.activeProject);
-    const viewport = get(viewportStore);
-    if (project && project.id != null && viewport) {
-      viewport.toBlob().then((preview) => {
-        const { name, width, height, hasTransparentBackground } = project;
-        projectRepository
-          .update(
-            project.id!,
-            { name, width, height, preview, hasTransparentBackground },
-            viewport.layers,
-          )
-          .then(() => {
-            console.log('saved');
-          });
-      });
-    }
-  }
+  const onSaveProject = () => saveProject().then(() => console.log('Saved'));
 </script>
 
 <header>
@@ -59,11 +41,11 @@
             onclick={() => (openFileMenu = true)}>Файл</button>
           {#snippet menu()}
             <DropdownMenu>
-              <DropdownMenuItem onclick={oncreateNewProject}>
+              <DropdownMenuItem onclick={onCreateNewProject}>
                 Создать проект
               </DropdownMenuItem>
 
-              <DropdownMenuItem onclick={onProjectSave}>
+              <DropdownMenuItem onclick={onSaveProject}>
                 Сохранить проект
               </DropdownMenuItem>
 

@@ -1,10 +1,11 @@
 <script lang="ts">
-  import ProjectList from '~/entities/project/ui/project-list.svelte';
-  import { CreateProject } from '~/features/create-project';
+  import { onMount } from 'svelte';
   import { ToolPanel } from '~/widgets/tool-panel';
-  import { About } from '~/widgets/about-modal';
+
   import { openProjects, openAbout } from '../model/store';
+  import { registerHotkeys } from '../model/hotkeys';
   import type { MainPageRouterParams } from '../types';
+
   import MainPageCanvasContainer from './main-page-canvas-container.svelte';
   import MainPageDockPanel from './main-page-dock-panel.svelte';
   import MainPageHeader from './main-page-header.svelte';
@@ -16,23 +17,33 @@
   let { params = {} }: Props = $props();
 
   let showNewProject = $state(false);
+
+  let projectId = parseInt(params.projectId ?? '0', 10);
+
+  onMount(() => registerHotkeys());
 </script>
 
 <div class="root">
   <div>
-    <MainPageHeader oncreateNewProject={() => (showNewProject = true)} />
-    <MainPageCanvasContainer projectId={parseInt(params.projectId ?? '', 10)} />
+    <MainPageHeader onCreateNewProject={() => (showNewProject = true)} />
+    <MainPageCanvasContainer {projectId} />
     <ToolPanel />
   </div>
 
   <MainPageDockPanel />
 </div>
 
-<CreateProject bind:open={showNewProject} />
+{#await import('~/features/create-project') then { CreateProject }}
+  <CreateProject bind:open={showNewProject} />
+{/await}
 
-<ProjectList bind:open={$openProjects} />
+{#await import('~/entities/project') then { ProjectList }}
+  <ProjectList bind:open={$openProjects} />
+{/await}
 
-<About bind:open={$openAbout} />
+{#await import('~/widgets/about-modal') then { About }}
+  <About bind:open={$openAbout} />
+{/await}
 
 <style lang="scss">
   .root {
