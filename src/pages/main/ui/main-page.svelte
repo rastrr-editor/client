@@ -1,7 +1,9 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { ToolPanel } from '~/widgets/tool-panel';
 
   import { openProjects, openAbout } from '../model/store';
+  import { registerHotkeys } from '../model/hotkeys';
   import type { MainPageRouterParams } from '../types';
 
   import MainPageCanvasContainer from './main-page-canvas-container.svelte';
@@ -17,6 +19,8 @@
   let showNewProject = $state(false);
 
   let projectId = parseInt(params.projectId ?? '0', 10);
+
+  onMount(() => registerHotkeys());
 </script>
 
 <div class="root">
