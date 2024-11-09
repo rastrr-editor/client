@@ -11,7 +11,7 @@
 
   let {
     name,
-    // hotkey = null,
+    hotkey = null,
     show = $bindable(false),
     trigger,
     placement = 'top',
@@ -21,10 +21,9 @@
 <Tooltip bind:disabled={show} {trigger} {placement} gap={4}>
   <div>
     {name}
-    <!-- TODO: uncomment when hotkeys will be implemented -->
-    <!-- {#if hotkey}
+    {#if hotkey}
       ({hotkey})
-    {/if} -->
+    {/if}
   </div>
 </Tooltip>
 

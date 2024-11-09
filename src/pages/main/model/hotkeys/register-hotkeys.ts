@@ -54,7 +54,6 @@ export default function registerHotkeys(): () => void {
     const event: `activated:${string}` = `activated:tool:${id}`;
 
     hotkeys.emitter.on(event, () => {
-      console.log(Tool?.name);
       toolStore.activeTool.set(Tool ? new Tool() : null);
     });
 
