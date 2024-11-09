@@ -1,8 +1,7 @@
 <script lang="ts">
-  import { Button } from '~/shared/ui/button';
-  import { Checkbox } from '~/shared/ui/checkbox';
-  import { NumberInput, TextInput } from '~/shared/ui/input';
-  import { Modal } from '~/shared/ui/modal';
+  import { push } from 'svelte-spa-router';
+  import { Button, Checkbox, NumberInput, TextInput, Modal } from '~/shared/ui';
+
   import createProject from '../model/create-project';
 
   interface Props {
@@ -18,9 +17,12 @@
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
     disabled = true;
+
     createProject(formData)
-      .then(() => {
+      .then((project) => {
         open = false;
+        // TODO: check if current active project is saved and perform necessary actions
+        push(`/projects/${project.id!}`).catch(() => {});
       })
       .catch((error) => {
         // TODO: show custom alert
