@@ -5,8 +5,6 @@ The project is the main entity of the system that the user is working on. Projec
 ## UI
 
 - `ProjectCard` - specific project card
-- `ProjectList` - modal to view all the projects
-- `ProjectSort` - dropdown to change the sort order in the project list
 
 ## Model
 
@@ -18,7 +16,6 @@ The project is the main entity of the system that the user is working on. Projec
 ### Store
 
 - `activeProject` - currently loaded project
-- `sortBy` - sorting order for the project list
 
 ## Lib
 

@@ -48,7 +48,7 @@
   <CreateProject bind:open={showNewProject} />
 {/await}
 
-{#await import('~/entities/project') then { ProjectList }}
+{#await import('~/widgets/project-list') then { ProjectList }}
   <ProjectList bind:open={openProjects} />
 {/await}
 
