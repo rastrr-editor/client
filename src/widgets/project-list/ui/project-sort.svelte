@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Dropdown, DropdownMenu, DropdownMenuItem } from '~/shared/ui';
-  import type { ProjectPaginateFilter } from '../model/repository/project-repository';
-  import { sortBy } from '../model/store';
+  import type { ProjectPaginateFilter } from '~/entities/project';
+  import { sortBy } from '../model/store.svelte';
 
   interface Props {
     class?: string;
