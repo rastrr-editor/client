@@ -1,8 +1,10 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
-  import { link } from 'svelte-spa-router';
+
+  import { link } from '~/shared/lib/actions/routing';
   import type { Project } from '~/shared/api';
   import { clickOutside } from '~/shared/lib/actions';
+
   import formatDate from '../lib/format-date';
 
   interface Props {

@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { link } from 'svelte-spa-router';
-
+  import { link } from '~/shared/lib/actions/routing';
   import { Dropdown, DropdownMenu, DropdownMenuItem } from '~/shared/ui';
   import { toolPanelStore } from '~/widgets/tool-panel';
   import { projectStore } from '~/entities/project';

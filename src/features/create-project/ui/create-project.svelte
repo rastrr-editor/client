@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { push } from 'svelte-spa-router';
+  import { push } from '~/shared/lib/router';
   import { Button, Checkbox, NumberInput, TextInput, Modal } from '~/shared/ui';
 
   import createProject from '../model/create-project';
