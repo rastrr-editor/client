@@ -1,8 +1,7 @@
 <script lang="ts">
   import type { ComponentProps } from 'svelte';
-
-  import { push } from 'svelte-spa-router';
   import { get } from 'svelte/store';
+
   import {
     Modal,
     DotFlashing,
@@ -10,6 +9,9 @@
     ContextMenu,
     createContextMenuStore,
   } from '~/shared/ui';
+
+  import { push } from '~/shared/lib/router';
+
   import { createProjectRepository } from '../model';
   import ProjectCard from './project-card.svelte';
   import type { Project } from '~/shared/api';

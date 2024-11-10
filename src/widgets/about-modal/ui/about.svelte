@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { push } from 'svelte-spa-router';
+  import { push } from '~/shared/lib/router';
   import { Modal } from '~/shared/ui';
   import Contributor from './contributor.svelte';
   import RastrrIcon from './rastrr-icon.svelte';

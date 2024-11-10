@@ -1,6 +1,5 @@
 <script lang="ts">
-  import Router from 'svelte-spa-router';
-  import routes from './routes';
+  import { MainPage } from '~/pages/main';
 </script>
 
-<Router {routes} />
+<MainPage />
