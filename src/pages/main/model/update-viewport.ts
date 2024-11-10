@@ -1,5 +1,6 @@
-import { Color, LayerFactory, Viewport, type Layer } from '@rastrr-editor/core';
 import { type Writable, get } from 'svelte/store';
+import { Color, LayerFactory, Viewport, type Layer } from '@rastrr-editor/core';
+
 import type { Project } from '~/shared/api';
 import { TOOL_CURSOR_COLOR } from '~/shared/config';
 
@@ -15,20 +16,68 @@ export default function updateViewport(
   }
 
   let viewport = get(viewportStore);
+  let layers: Iterable<Layer>;
+  let activeIndex = 0;
 
-  // Preserve in memory layers
-  // FIXME: viewport must be updated only when the project changes
-  let inMemoryLayers: Layer[] | null = null;
-  const inMemoryActiveIndex: number | undefined = viewport?.layers.activeIndex;
+  // Preserve layers for HMR
+  if (
+    import.meta.hot &&
+    project.id != null &&
+    viewport != null &&
+    viewport.meta === project.id
+  ) {
+    layers = Array.from(viewport.layers);
+    activeIndex = viewport.layers.activeIndex ?? viewport.layers.length - 1;
 
-  if (project?.id != null && viewport?.meta === project?.id) {
-    inMemoryLayers = Array.from(viewport?.layers ?? []);
+    viewport?.destroy();
+    viewport = createViewport(container, project);
+    fillViewport(viewport, layers, activeIndex);
+
+    viewportStore.set(viewport);
+    return;
   }
 
-  // Cleanup
   viewport?.destroy();
+  viewport = createViewport(container, project);
 
-  viewport = new Viewport(container, {
+  // Restore layers from project
+  if (project.layers.length > 0) {
+    // TODO: move to core
+    layers = (function* () {
+      for (const layerData of project.layers) {
+        const layer = CanvasLayerFactory.empty(
+          layerData.width,
+          layerData.height,
+          { opacity: layerData.opacity, id: layerData.id },
+        );
+
+        layer.name = layerData.name;
+        layer.locked = layerData.locked;
+        layer.setVisible(layerData.visible);
+        layer.setOffset(layerData.offset);
+        // TODO: Restore alpha data
+        layer.setData(layerData.data);
+
+        yield layer;
+      }
+    })();
+
+    // New project
+  } else {
+    const layer = project.hasTransparentBackground
+      ? CanvasLayerFactory.empty(project.width, project.height)
+      : CanvasLayerFactory.filled(project.width, project.height);
+
+    layer.name = 'Фон';
+    layers = [layer];
+  }
+
+  fillViewport(viewport, layers, activeIndex);
+  viewportStore.set(viewport);
+}
+
+function createViewport(container: HTMLElement, project: Project): Viewport {
+  const viewport = new Viewport(container, {
     strategy: 'canvas',
     minOffset: { x: 16, y: 40 },
     imageSize: { x: project.width, y: project.height },
@@ -41,47 +90,19 @@ export default function updateViewport(
 
   viewport.setMeta(project.id);
 
-  // Restore layers from memory
-  if (inMemoryLayers != null) {
-    for (const layer of inMemoryLayers) {
-      viewport.layers.add(layer);
-    }
+  return viewport;
+}
 
-    viewport.layers.setActive(
-      inMemoryActiveIndex ?? viewport.layers.length - 1,
-    );
-
-    // Restore layers from project
-  } else if (project.layers.length > 0) {
-    // TODO: move to core
-    for (const layerData of project.layers) {
-      const layer = CanvasLayerFactory.empty(
-        layerData.width,
-        layerData.height,
-        { opacity: layerData.opacity, id: layerData.id },
-      );
-
-      layer.name = layerData.name;
-      layer.locked = layerData.locked;
-      layer.setVisible(layerData.visible);
-      layer.setOffset(layerData.offset);
-      // TODO: Restore alpha data
-      layer.setData(layerData.data);
-      viewport.layers.add(layer);
-    }
-
-    viewport.layers.setActive(viewport.layers.length - 1);
-
-    // New project
-  } else {
-    const layer = project.hasTransparentBackground
-      ? CanvasLayerFactory.empty(project.width, project.height)
-      : CanvasLayerFactory.filled(project.width, project.height);
-
-    layer.name = 'Фон';
+function fillViewport(
+  viewport: Viewport,
+  layers: Iterable<Layer>,
+  activeIndex?: number,
+) {
+  for (const layer of layers) {
     viewport.layers.add(layer);
-    viewport.layers.setActive(0);
   }
 
-  viewportStore.set(viewport);
+  if (activeIndex != null) {
+    viewport.layers.setActive(activeIndex);
+  }
 }
