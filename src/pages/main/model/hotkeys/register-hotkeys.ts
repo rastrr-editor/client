@@ -1,17 +1,20 @@
+import { get } from 'svelte/store';
 import { hotkeys } from '~/features/hotkeys-manager';
+import { saveProject } from '~/features/save-project';
+
 import { brushConstants, BrushTool } from '~/features/tools/brush';
 import { eraserConstants, EraserTool } from '~/features/tools/eraser';
+import { toolStore, type Tool } from '~/entities/tool';
+
 import {
   ellipseConstants,
   EllipseTool,
   rectConstants,
   RectTool,
 } from '~/features/tools/shape';
-import { toolStore, type Tool } from '~/entities/tool';
 
 import { handleHistoryHotkeys, HistoryEvents } from './handle-history-hotkeys';
 
-import saveProject from '../save-project';
 import { viewport } from '../store';
 
 export default function registerHotkeys(): () => void {
@@ -30,7 +33,7 @@ export default function registerHotkeys(): () => void {
 
   hotkeys.emitter.on('activated:save', (_alias, _ctx, e) => {
     e.preventDefault();
-    saveProject().then(() => console.log('Saved'));
+    saveProject(get(viewport)).then(() => console.log('Saved'));
   });
 
   subscriptions.push(() =>
