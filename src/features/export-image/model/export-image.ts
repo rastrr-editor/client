@@ -1,17 +1,20 @@
-import { get } from 'svelte/store';
+import type { Viewport } from '@rastrr-editor/core';
 import { downloadBlob } from '~/shared/lib/url';
-import { viewport as viewportStore } from './store';
 
 const IMAGE_MIME_TYPE = {
   png: 'image/png',
   jpg: 'image/jpeg',
 };
 
-export default function exportImage(name: string, ext: 'png' | 'jpg'): void {
-  const viewport = get(viewportStore);
+export default function exportImage(
+  viewport: Viewport | null,
+  name: string,
+  ext: 'png' | 'jpg',
+): void {
   if (viewport == null) {
     return;
   }
+
   viewport
     .toBlob(IMAGE_MIME_TYPE[ext], ext === 'jpg' ? 0.85 : undefined)
     .then((blob) => {

@@ -1,14 +1,13 @@
 import { get } from 'svelte/store';
+import type { Viewport } from '@rastrr-editor/core';
 import { projectStore, createProjectRepository } from '~/entities/project';
-
-import { viewport as viewportStore } from './store';
 
 const projectRepository = createProjectRepository();
 
-export default async function saveProject(): Promise<boolean> {
+export default async function saveProject(
+  viewport: Viewport | null,
+): Promise<boolean> {
   const project = get(projectStore.activeProject);
-  const viewport = get(viewportStore);
-
   const isNewProject = project?.id == null;
 
   if (project && viewport) {

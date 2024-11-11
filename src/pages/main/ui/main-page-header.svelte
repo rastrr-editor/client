@@ -1,14 +1,11 @@
 <script lang="ts">
   import { link } from '~/shared/lib/actions/routing';
   import { Dropdown, DropdownMenu, DropdownMenuItem } from '~/shared/ui';
-  import { toolPanelStore } from '~/widgets/tool-panel';
-  import { projectStore } from '~/entities/project';
+  import { ExportImageDropdown } from '~/features/export-image';
+  import { SaveProjectDropdownItem } from '~/features/save-project';
+  import { ToolPanelDropdownItem } from '~/widgets/tool-panel';
 
-  import exportImage from '../model/export-image';
-  import saveProject from '../model/save-project';
-
-  const { position: toolPanelPosition } = toolPanelStore;
-  const { activeProject } = projectStore;
+  import { viewport } from '../model/store';
 
   interface Props {
     onCreateNewProject: () => void;
@@ -18,8 +15,6 @@
 
   let openFileMenu: boolean = $state(false);
   let openViewMenu: boolean = $state(false);
-
-  const onSaveProject = () => saveProject().then(() => console.log('Saved'));
 </script>
 
 <header>
@@ -44,28 +39,13 @@
                 Создать проект
               </DropdownMenuItem>
 
-              <DropdownMenuItem onclick={onSaveProject}>
-                Сохранить проект
-              </DropdownMenuItem>
+              <SaveProjectDropdownItem viewport={$viewport} />
 
               <Dropdown nested hover>
                 <DropdownMenuItem nested>Сохранить как</DropdownMenuItem>
 
                 {#snippet menu()}
-                  <DropdownMenu nested>
-                    <DropdownMenuItem
-                      disabled={$activeProject == null}
-                      onclick={() =>
-                        exportImage($activeProject?.name ?? '', 'jpg')}>
-                      JPEG
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      disabled={$activeProject == null}
-                      onclick={() =>
-                        exportImage($activeProject?.name ?? '', 'png')}>
-                      PNG
-                    </DropdownMenuItem>
-                  </DropdownMenu>
+                  <ExportImageDropdown viewport={$viewport} />
                 {/snippet}
               </Dropdown>
             </DropdownMenu>
@@ -84,15 +64,7 @@
               <!-- <DropdownMenuItem onclick={() => console.log('Hide rulers...')}>
                 Скрыть линейки
               </DropdownMenuItem> -->
-              <DropdownMenuItem
-                onclick={() =>
-                  toolPanelStore.position.set(
-                    $toolPanelPosition === 'bottom' ? 'left' : 'bottom',
-                  )}>
-                Панель инструметов {$toolPanelPosition === 'bottom'
-                  ? 'слева'
-                  : 'снизу'}
-              </DropdownMenuItem>
+              <ToolPanelDropdownItem />
             </DropdownMenu>
           {/snippet}
         </Dropdown>
