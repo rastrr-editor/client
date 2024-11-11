@@ -1,5 +1,9 @@
 import EventEmitter from 'eventemitter3';
-import { GLOBAL_CONTEXT_NAME, KEY_SEPARATOR } from '../config';
+import {
+  GLOBAL_CONTEXT_NAME,
+  KEY_SEPARATOR,
+  META_COMBINATION_KEYS,
+} from '../config';
 import type {
   HotkeysContext,
   HotkeysManagerEventEmitter,
@@ -28,6 +32,11 @@ export default class HotkeysManager {
 
       this.#activeKeys.add(key);
       this.#trigger(e);
+
+      // Hack for MacOS - regular keys do not emit keyup when meta key is pressed
+      if (key != 'meta' && e.metaKey && !META_COMBINATION_KEYS.has(key)) {
+        handleKeyUp(e);
+      }
     };
 
     const handleKeyUp = (e: KeyboardEvent): void => {

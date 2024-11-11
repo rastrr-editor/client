@@ -10,7 +10,11 @@ export enum HistoryEvents {
 const handleAction = function handleAction(
   this: Viewport,
   alias: string,
+  _ctx: string,
+  event: KeyboardEvent,
 ): void {
+  event.preventDefault();
+
   const {
     history,
     history: { isLocked },
